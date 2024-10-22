@@ -12,16 +12,14 @@ export default function Login() {
     const submitCheck = async (e) => {
         e.preventDefault();
 
-        // Check if fields are empty
         if (!username || !password) {
             setError('Username, password, and role cannot be empty.');
             clearErrorAfterTimeout();
             return;
         } else {
-            setError(''); // Clear previous errors
+            setError(''); 
         }
 
-        // Prepare data to send to backend
         const loginData = {
             username,
             password,
@@ -29,7 +27,7 @@ export default function Login() {
         };
 
         try {
-            // Make an API call to the backend
+
             const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -39,17 +37,14 @@ export default function Login() {
             const result = await response.json();
 
             if (response.ok) {
-                // If login is successful, proceed to the next step (e.g., redirect)
                 console.log('Login successful:', result);
-                // Example: Redirect to a dashboard or home page
-                // window.location.href = '/dashboard';
             } else {
-                // If login failed, show the error message from backend
+
                 setError(result.message || 'Login failed. Please try again.');
                 clearErrorAfterTimeout();
             }
         } catch (error) {
-            // Handle network or unexpected errors
+
             setError('Something went wrong. Please try again later.');
             clearErrorAfterTimeout();
         }
@@ -57,8 +52,8 @@ export default function Login() {
 
     const clearErrorAfterTimeout = () => {
         setTimeout(() => {
-            setError(''); // Clear the error state
-        }, 3000); // 3000 milliseconds = 3 seconds
+            setError('');
+        }, 3000);
     };
 
     return (
@@ -81,8 +76,8 @@ export default function Login() {
                         </div>
                         <form onSubmit={submitCheck}>
                             <div className="login-form-wrapper">
-                                <input type="text" name="username" id="username" placeholder="Enter username ... " value={username} onChange={(e) => setUsername(e.target.value)} />
-                                <input type="password" name="password" id="password" placeholder='Enter Password ...' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                <input type="text" name="username" id="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
+                                <input type="password" name="password" id="password" placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)} />
                                 <button type='submit'>Login</button>
                             </div>
                         </form>
