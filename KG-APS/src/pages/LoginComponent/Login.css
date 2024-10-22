@@ -40,3 +40,14 @@
     align-items: center;
     justify-content: end;
 }
+.login-form-container .drop-down-container select{
+    margin: 0 10%;
+    width:25%;
+    padding:10px;
+    font-weight:600;
+    background-color: rgb(39, 146, 221);
+    color:white;
+    border:2px solid white;
+    border-radius:10px;
+    outline:none;
+}
