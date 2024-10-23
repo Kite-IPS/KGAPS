@@ -1,9 +1,27 @@
-import React, { useState } from 'react';
-import './Coursesidebar.css'; 
+import React, { useState, useEffect } from 'react';
+import './Coursesidebar.css';
 
 function Coursesidebar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-  const [isDropupOpen, setIsDropupOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDropupOpen, setIsDropupOpen] = useState(false);
+  const [coordinatorDetails, setCoordinatorDetails] = useState({
+    name: '',
+    role: '',
+    department: '',
+    id: ''
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      const fetchedData = {
+        name: 'Adithya',
+        role: 'CourseCoordinator',
+        department: 'Computer Science',
+        id: '123456'
+      };
+      setCoordinatorDetails(fetchedData);
+    }, 0);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -28,17 +46,15 @@ function Coursesidebar() {
               <li><a href="#profile">Table</a></li>
               <li><a href="#logout">Logout</a></li>
             </ul>
-
-            {/* Faculty Name at the Bottom */}
             <div className="course-sidebar-info" onClick={toggleDropup}>
-              <div className="course-sidebar-name">John Doe</div>
+              <div className="course-sidebar-name">{coordinatorDetails.name}</div>
               {isDropupOpen && (
                 <div className="course-sidebar-dropup-content">
-                  <img src="faculty-image-url.jpg" alt="Faculty" className="course-sidebar-image" />
-                  <p><strong>Role:</strong> CourseCoordinator</p>
-                  <p><strong>Name:</strong> John Doe</p>
-                  <p><strong>Department:</strong> Computer Science</p>
-                  <p><strong>ID:</strong> 123456</p>
+                  <img src="faculty-image-url.jpg" alt="Course Coordinator" className="course-sidebar-image" />
+                  <p><strong>Role:</strong> {coordinatorDetails.role}</p>
+                  <p><strong>Name:</strong> {coordinatorDetails.name}</p>
+                  <p><strong>Department:</strong> {coordinatorDetails.department}</p>
+                  <p><strong>ID:</strong> {coordinatorDetails.id}</p>
                 </div>
               )}
             </div>

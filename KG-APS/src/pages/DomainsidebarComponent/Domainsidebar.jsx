@@ -1,9 +1,28 @@
-import React, { useState } from 'react';
-import './Domainsidebar.css'; 
+import React, { useState, useEffect } from 'react';
+import './Domainsidebar.css';
 
 function Domainsidebar() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-  const [isDropupOpen, setIsDropupOpen] = useState(false); 
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isDropupOpen, setIsDropupOpen] = useState(false);
+
+  const [mentorDetails, setMentorDetails] = useState({
+    name: '',
+    role: '',
+    department: '',
+    id: ''
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      const fetchedData = {
+        name: 'Marudhu',
+        role: 'Domainmentor',
+        department: 'Computer Science',
+        id: '123456'
+      };
+      setMentorDetails(fetchedData);
+    }, 0);
+  }, []);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -29,16 +48,15 @@ function Domainsidebar() {
               <li><a href="#logout">Logout</a></li>
             </ul>
 
-            {/* Faculty Name at the Bottom */}
             <div className="domain-sidebar-info" onClick={toggleDropup}>
-              <div className="domain-sidebar-name">John Doe</div>
+              <div className="domain-sidebar-name">{mentorDetails.name}</div>
               {isDropupOpen && (
                 <div className="domain-sidebar-dropup-content">
-                  <img src="faculty-image-url.jpg" alt="Faculty" className="domain-sidebar-image" />
-                  <p><strong>Role:</strong> Domainmentor</p>
-                  <p><strong>Name:</strong> John Doe</p>
-                  <p><strong>Department:</strong> Computer Science</p>
-                  <p><strong>ID:</strong> 123456</p>
+                  <img src="faculty-image-url.jpg" alt="Domainmentor" className="domain-sidebar-image" />
+                  <p><strong>Role:</strong> {mentorDetails.role}</p>
+                  <p><strong>Name:</strong> {mentorDetails.name}</p>
+                  <p><strong>Department:</strong> {mentorDetails.department}</p>
+                  <p><strong>ID:</strong> {mentorDetails.id}</p>
                 </div>
               )}
             </div>
