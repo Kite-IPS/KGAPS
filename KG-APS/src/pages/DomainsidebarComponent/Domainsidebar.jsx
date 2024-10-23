@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import './Facultysidebar.css'; 
+import './Domainsidebar.css'; 
 
-function Facultysidebar() {
+function Domainsidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true); 
-  const [isDropupOpen, setIsDropupOpen] = useState(false);
+  const [isDropupOpen, setIsDropupOpen] = useState(false); 
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -14,14 +14,14 @@ function Facultysidebar() {
   };
 
   return (
-    <div className="faculty-sidebar-container">
-      <div className={`faculty-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <button className="faculty-sidebar-toggle-button" onClick={toggleSidebar}>
+    <div className="domain-sidebar-container">
+      <div className={`domain-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <button className="domain-sidebar-toggle-button" onClick={toggleSidebar}>
           {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
         </button>
 
         {isSidebarOpen && (
-          <div className="faculty-sidebar-content">
+          <div className="domain-sidebar-content">
             <h3>KG-APS</h3>
             <ul>
               <li><a href="#dashboard">Dashboard</a></li>
@@ -30,12 +30,12 @@ function Facultysidebar() {
             </ul>
 
             {/* Faculty Name at the Bottom */}
-            <div className="faculty-sidebar-info" onClick={toggleDropup}>
-              <div className="faculty-sidebar-name">John Doe</div>
+            <div className="domain-sidebar-info" onClick={toggleDropup}>
+              <div className="domain-sidebar-name">John Doe</div>
               {isDropupOpen && (
-                <div className="faculty-sidebar-dropup-content">
-                  <img src="faculty-image-url.jpg" alt="Faculty" className="faculty-sidebar-image" />
-                  <p><strong>Role:</strong> Faculty</p>
+                <div className="domain-sidebar-dropup-content">
+                  <img src="faculty-image-url.jpg" alt="Faculty" className="domain-sidebar-image" />
+                  <p><strong>Role:</strong> Domainmentor</p>
                   <p><strong>Name:</strong> John Doe</p>
                   <p><strong>Department:</strong> Computer Science</p>
                   <p><strong>ID:</strong> 123456</p>
@@ -49,4 +49,4 @@ function Facultysidebar() {
   );
 }
 
-export default Facultysidebar;
+export default Domainsidebar;
