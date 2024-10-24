@@ -15,6 +15,32 @@ const PieChart = () => {
       },
     ],
   });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Replace with your actual API call
+        const response = await fetch('YOUR_API_ENDPOINT');
+        const data = await response.json();
+
+        // Process and update chart data
+        setChartData({
+          labels: data.labels, // Assume your API returns labels
+          datasets: [
+            {
+              label: data.label,  // Assume your API returns a label for the dataset
+              data: data.values,  // Assume your API returns the data values
+              backgroundColor: data.colors,  // Assume your API returns colors
+            },
+          ],
+        });
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []); // Empty dependency array to run the effect once when the component mounts
+
 
   return (
     <div style={{ width: '400px', height: '400px' }}>
