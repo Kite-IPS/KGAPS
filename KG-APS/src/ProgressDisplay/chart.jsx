@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
+import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
-
 Chart.register(ArcElement, Tooltip, Legend);
 
 const PieChart = () => {
@@ -18,9 +18,27 @@ const PieChart = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Replace with your actual API call
-        const response = await fetch('YOUR_API_ENDPOINT');
-        const data = await response.json();
+        axios({
+          // Endpoint to send files
+          url: "http://localhost:8000/creation/departments",
+          method: "POST",
+          headers: {
+              // Add any auth token here
+              authorization: "your token comes here",
+          },
+
+          // Attaching the form data
+          data:{"data":"hello"} ,
+      })
+          // Handle the response from backend here
+          .then((res) => {
+            console.log(res);
+          })
+
+          // Catch errors if any
+          .catch((err) => {});
+
+        console.log(data);
 
         // Process and update chart data
         setChartData({

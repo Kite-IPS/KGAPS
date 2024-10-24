@@ -13,7 +13,7 @@ export default function Login() {
         e.preventDefault();
 
         if (!username || !password) {
-            setError('Username, password, and role cannot be empty.');
+            setError('Invalid Username or Password.');
             clearErrorAfterTimeout();
             return;
         } else {
