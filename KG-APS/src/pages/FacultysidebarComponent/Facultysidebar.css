@@ -137,6 +137,7 @@
   color: white;
   padding: 20px;
   text-align: center;
+  margin-top: 2vh;
   margin-left: auto;
   width: fit-content;
   max-width: 90%;
@@ -182,8 +183,12 @@
 }
 
 @media (min-width: 700px) {
+  .faculty-sidebar-right-content {
+    transition: margin-left 0.3s ease, width 0.3s ease;
+  }
+  
   .faculty-sidebar-right-content.sidebar-closed {
-    margin-left: 0; 
+    margin-left: 2vw; 
     width: calc(100% - 0); 
   }
   
@@ -217,5 +222,17 @@
   .faculty-sidebar-right-content {
     padding: 10px;
     height: calc(100vh - 20px);
+  }
+
+  .faculty-sidebar-welcome-box {
+    background-color: #fe370f;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 5cap;
+    margin-left: auto;
+    width: fit-content;
+    max-width: 90%;
+    overflow: hidden;
   }
 }
