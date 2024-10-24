@@ -36,6 +36,22 @@ function Facultysidebar() {
     }, 0);
   }, []);
 
+  // Function to render the color comments based on bar_color
+  const renderColorComment = (barColor) => {
+    switch (barColor) {
+      case 'black':
+        return <p>Not yet started</p>;
+      case 'red':
+        return <p>Delayed</p>;
+      case 'green':
+        return <p>Ahead of time</p>;
+      case 'blue':
+        return <p>On Time</p>;
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="faculty-sidebar-container">
       <div className={`faculty-sidebar ${isSidebarOpen ? 'open' : ''}`}>
@@ -46,7 +62,7 @@ function Facultysidebar() {
           <div className="faculty-sidebar-content">
             <h3>KG-APS</h3>
             <ul>
-              <li><a href="#dashboard">Dashboard</a></li>
+              <li><a href="/facultysidebar">Dashboard</a></li>
               <li><a href="#profile">Table</a></li>
               <li><a href="#logout">Logout</a></li>
             </ul>
@@ -80,6 +96,10 @@ function Facultysidebar() {
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="faculty-sidebar-progressbar-horizontal">
                   <div style={{ width: `${(item.completed_hours / item.total_hours) * 100}%`, backgroundColor: item.bar_color }} />
+                </div>
+                {/* Color comment section */}
+                <div className="colorcomment">
+                  {renderColorComment(item.bar_color)}
                 </div>
               </div>
             </div>

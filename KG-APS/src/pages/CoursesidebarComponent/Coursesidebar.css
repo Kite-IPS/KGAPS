@@ -1,10 +1,12 @@
-.course-sidebar-container {
+.faculty-sidebar-container {
   display: flex;
   position: relative;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.course-sidebar {
-  position: fixed;
+.faculty-sidebar {
+  position: absolute;
   top: 0;
   left: 0;
   height: 100%;
@@ -12,14 +14,15 @@
   background-color: #1e1e2f;
   color: white;
   transition: transform 0.3s ease;
+  z-index: 2;
   transform: translateX(-90%);
 }
 
-.course-sidebar.open {
+.faculty-sidebar.open {
   transform: translateX(0);
 }
 
-.course-sidebar-toggle-button {
+.faculty-sidebar-toggle-button {
   position: absolute;
   top: 20px;
   right: -90px;
@@ -30,37 +33,37 @@
   cursor: pointer;
 }
 
-.course-sidebar-content {
+.faculty-sidebar-content {
   padding: 20px;
   height: calc(100% - 100px);
   display: flex;
   flex-direction: column;
 }
 
-.course-sidebar-content h3 {
+.faculty-sidebar-content h3 {
   color: #fe370f;
 }
 
-.course-sidebar-content ul {
+.faculty-sidebar-content ul {
   list-style: none;
   padding: 0;
   flex-grow: 1;
 }
 
-.course-sidebar-content ul li {
+.faculty-sidebar-content ul li {
   margin: 15px 0;
 }
 
-.course-sidebar-content ul li a {
+.faculty-sidebar-content ul li a {
   color: white;
   text-decoration: none;
 }
 
-.course-sidebar-content ul li a:hover {
+.faculty-sidebar-content ul li a:hover {
   color: #fe370f;
 }
 
-.course-sidebar-info {
+.faculty-sidebar-info {
   margin-top: auto;
   margin-bottom: -8vh;
   text-align: center;
@@ -70,11 +73,11 @@
   position: relative;
 }
 
-.course-sidebar-info:hover {
+.faculty-sidebar-info:hover {
   background-color: #3e3e5f;
 }
 
-.course-sidebar-dropup-content {
+.faculty-sidebar-dropup-content {
   position: absolute;
   bottom: 50px;
   margin-left: -0.5vw;
@@ -86,7 +89,7 @@
   z-index: 1;
 }
 
-.course-sidebar-dropup-content img {
+.faculty-sidebar-dropup-content img {
   width: 50px;
   height: 50px;
   border-radius: 50%;
@@ -96,11 +99,140 @@
   margin-right: auto;
 }
 
-.course-sidebar-dropup-content p {
+.faculty-sidebar-dropup-content p {
   margin: 5px 0;
   color: white;
 }
 
-.course-sidebar-dropup-content p strong {
+.faculty-sidebar-dropup-content p strong {
   color: #fe370f;
+}
+
+.faculty-sidebar-right-content {
+  flex-grow: 1;
+  padding: 20px;
+  z-index: -1;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: calc(100vh - 20px);
+  overflow: hidden;
+}
+
+.faculty-sidebar-nametext {
+  margin-bottom: 20px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.faculty-sidebar-greeting {
+  font-size: 1.5rem;
+  font-weight: light;
+  color: white;
+}
+
+.faculty-sidebar-welcome-box {
+  background-color: #fe370f;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: 2vh;
+  margin-left: auto;
+  width: fit-content;
+  max-width: 90%;
+  overflow: hidden;
+}
+
+.faculty-sidebar-card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.faculty-sidebar-card {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.faculty-sidebar-card-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.faculty-sidebar-card-content {
+  flex-grow: 1;
+  margin-bottom: 10px;
+}
+
+.faculty-sidebar-progressbar-horizontal {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.faculty-sidebar-progressbar-horizontal div {
+  height: 10px;
+  border-radius: 5px;
+}
+
+@media (min-width: 700px) {
+  .faculty-sidebar-right-content {
+    transition: margin-left 0.3s ease, width 0.3s ease;
+  }
+  
+  .faculty-sidebar-right-content.sidebar-closed {
+    margin-left: 2vw; 
+    width: calc(100% - 0); 
+  }
+  
+  .faculty-sidebar-right-content.sidebar-open {
+    margin-left: 250px; 
+    width: calc(100% - 250px); 
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .faculty-sidebar-card-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .faculty-sidebar-card-container {
+    grid-template-columns: 1fr;
+  }
+
+  .faculty-sidebar-greeting {
+    font-size: 1.2rem;
+  }
+
+  .faculty-sidebar-welcome-box {
+    margin-top: 6vh;
+    width: auto;
+  }
+
+  .faculty-sidebar-right-content {
+    padding: 10px;
+    height: calc(100vh - 20px);
+  }
+
+  .faculty-sidebar-welcome-box {
+    background-color: #fe370f;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 5cap;
+    margin-left: auto;
+    width: fit-content;
+    max-width: 90%;
+    overflow: hidden;
+  }
 }
