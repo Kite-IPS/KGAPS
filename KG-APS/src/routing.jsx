@@ -6,7 +6,7 @@ import PieChart from "./ProgressDisplay/chart"
 import Coursesidebar from "./pages/CoursesidebarComponent/Coursesidebar"
 import Domainsidebar from "./pages/DomainsidebarComponent/Domainsidebar"
 
-function App() {
+function Routing() {
 
   return (
     <BrowserRouter>
@@ -22,4 +22,4 @@ function App() {
   )
 }
 
-export default App
+export default Routing
