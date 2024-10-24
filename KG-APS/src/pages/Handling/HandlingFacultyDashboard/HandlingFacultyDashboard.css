@@ -1,0 +1,101 @@
+.handlingfaculty-dashboard-container {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.handlingfaculty-dashboard-content {
+  flex-grow: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.handlingfaculty-dashboard-nametext {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.handlingfaculty-dashboard-greeting {
+  font-size: 1.5rem;
+  color: white;
+}
+
+.handlingfaculty-dashboard-welcome-box {
+  background-color: #fe370f;
+  color: white;
+  padding: 20px;
+  text-align: center;
+  margin-top: 2vh;
+  width: fit-content;
+  max-width: 90%;
+  overflow: hidden;
+}
+
+.handlingfaculty-dashboard-card-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.handlingfaculty-dashboard-card {
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.handlingfaculty-dashboard-card-header {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.handlingfaculty-dashboard-card-content {
+  flex-grow: 1;
+}
+
+.handlingfaculty-dashboard-progressbar-horizontal {
+  width: 100%;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.handlingfaculty-dashboard-progressbar-horizontal div {
+  height: 10px;
+  border-radius: 5px;
+}
+
+.handlingfaculty-dashboard-colorcomment p {
+  margin: 5px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .handlingfaculty-dashboard-card-container {
+      grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .handlingfaculty-dashboard-card-container {
+      grid-template-columns: 1fr;
+  }
+
+  .handlingfaculty-dashboard-greeting {
+      font-size: 1.2rem;
+  }
+
+  .handlingfaculty-dashboard-welcome-box {
+      margin-top: 6vh;
+      width: auto;
+  }
+
+  .handlingfaculty-dashboard-content {
+      padding: 10px;
+  }
+}
