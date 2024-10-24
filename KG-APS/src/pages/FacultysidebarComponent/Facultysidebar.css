@@ -181,6 +181,18 @@
   border-radius: 5px;
 }
 
+@media (min-width: 700px) {
+  .faculty-sidebar-right-content.sidebar-closed {
+    margin-left: 0; 
+    width: calc(100% - 0); 
+  }
+  
+  .faculty-sidebar-right-content.sidebar-open {
+    margin-left: 250px; 
+    width: calc(100% - 250px); 
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .faculty-sidebar-card-container {
