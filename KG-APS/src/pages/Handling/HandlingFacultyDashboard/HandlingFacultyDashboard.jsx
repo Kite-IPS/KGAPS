@@ -6,8 +6,8 @@ import { useLocation } from 'react-router-dom';
 function HandlingFacultyDashboard() {
   const location = useLocation();
   const data = location.state;
-  // Initialize faculty details and any other state if needed
-  const [facultyDetails,setFacultyDetails] = useState(data); // Example name; replace with real data.
+
+  const [facultyDetails,setFacultyDetails] = useState(data); 
 
   // Course data
   const [courseDataCurrent,setCourseDataCurrent] = useState([
@@ -21,7 +21,7 @@ function HandlingFacultyDashboard() {
   ]);
 
   
-  // Function to render comments based on bar color
+
   const renderColorComment = (barColor) => {
     switch (barColor) {
       case 'black':

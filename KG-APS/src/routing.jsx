@@ -11,8 +11,8 @@ function Routing() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/handlingsidebar" element={ < HandlingSidebar />} />
-        <Route path="/handlingtables" element={ < HandlingTables />} />
-        <Route path="/handling/dashboard" element={ < HandlingFacultyDashboard />} />
+        <Route path="/handlingfacultytable" element={ < HandlingTables />} />
+        <Route path="/handling/faculty/dashboard/" element={ < HandlingFacultyDashboard />} />
         <Route path="/creation/dashboard" element={ < CreationFacultyDashboard />} />
       </Routes>
     </BrowserRouter>
