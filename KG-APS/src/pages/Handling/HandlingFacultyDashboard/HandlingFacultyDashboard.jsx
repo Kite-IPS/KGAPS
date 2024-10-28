@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './HandlingFacultyDashboard.css';
 
 function HandlingFacultyDashboard() {
-  // Initialize faculty details and any other state if needed
+
   const facultyDetails = { name: "John Doe" }; // Example name; replace with real data.
 
   // Course data
