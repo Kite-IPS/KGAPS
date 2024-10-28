@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend);
 
-const CreationFacultyDashboard = () => {
+const CreationCCDashboard = () => {
   const location = useLocation();
   const data = location.state;
   
@@ -94,4 +94,4 @@ const CreationFacultyDashboard = () => {
   );
 };
 
-export default CreationFacultyDashboard;
+export default CreationCCDashboard;

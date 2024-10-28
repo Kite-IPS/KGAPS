@@ -3,6 +3,7 @@ import Login from "./pages/LoginComponent/Login";
 import HandlingSidebar from "./pages/Handling/HandlingSidebar/HandlingSidebar";
 import HandlingFacultyDashboard from "./pages/Handling/HandlingFacultyDashboard/HandlingFacultyDashboard";
 import CreationFacultyDashboard from "./pages/Creation/Dashboard/FacultyDashboard";
+import CreationCCDashboard from "./pages/Creation/Dashboard/CCDashboard";
 
 function Routing() {
   return (
@@ -10,8 +11,10 @@ function Routing() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/handlingsidebar" element={ < HandlingSidebar />} />
-        <Route path="/handling/dashboard" element={ < HandlingFacultyDashboard />} />
-        <Route path="/creation/dashboard" element={ < CreationFacultyDashboard />} />
+        <Route path="/handling/faculty/dashboard" element={ < HandlingFacultyDashboard />} />
+        <Route path="/creation/faculty/dashboard" element={ < CreationFacultyDashboard />} />
+        <Route path="/handling/course-coordinator/dashboard" element={ < HandlingFacultyDashboard />} />
+        <Route path="/creation/course-coordinator/dashboard" element={ < CreationCCDashboard />} />
       </Routes>
     </BrowserRouter>
   );

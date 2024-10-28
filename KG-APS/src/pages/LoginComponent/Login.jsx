@@ -11,7 +11,7 @@ export default function Login() {
     const [error, setError] = useState("");
     const [role, setRole] = useState(1);
     const [section, setSection] = useState("0");
-
+    const roleMapping = {1:'faculty',2:'course-coordinator',3:'domain-mentor',4:'hod',5:'supervisor'}
     const submitCheck = async (e) => {
         e.preventDefault();
 
@@ -42,7 +42,7 @@ export default function Login() {
                 const response = res.data;
                 console.log(response);
                 if(loginData.section === "0"){
-                    navigate('/creation/dashboard',{state:response});
+                    navigate('/creation/$()/dashboard',{state:response});
 
                 }
                 else if(loginData.section === "1"){
@@ -85,7 +85,7 @@ export default function Login() {
                                 <option value="2">Course Coordinator</option>
                                 <option value="3">Domain Mentor</option>
                                 <option value="4">H.O.D</option>
-                                <option value="5">Admin</option>
+                                <option value="5">Supervisor</option>
                             </select>
                         </div>
                         <div className="drop-down-container">
