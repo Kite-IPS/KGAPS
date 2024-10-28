@@ -1,4 +1,3 @@
-// src/components/TableComponent.jsx
 import React from 'react';
 import "./HandlingTables.css"
 
