@@ -7,19 +7,17 @@ function HandlingFacultyDashboard() {
   const location = useLocation();
   const data = location.state;
   // Initialize faculty details and any other state if needed
-  const [facultyDetails,setFacultyDetails] = useState({ name: "John Doe" }); // Example name; replace with real data.
+  const [facultyDetails,setFacultyDetails] = useState(data); // Example name; replace with real data.
 
   // Course data
   const [courseDataCurrent,setCourseDataCurrent] = useState([
     { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
     { course_code: 'CSE102', completed_hours: 10, total_hours: 40, bar_color: 'red' },
-    { course_code: 'CSE103', completed_hours: 30, total_hours: 40, bar_color: 'green' },
   ]);
 
   const [courseDataOverall,setCourseDataOverall] = useState([
     { course_code: 'CSE101', count: 20, total_count: 40 },
     { course_code: 'CSE102', count: 10, total_count: 40 },
-    { course_code: 'CSE103', count: 30, total_count: 40 },
   ]);
 
   
