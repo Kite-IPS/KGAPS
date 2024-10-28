@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/LoginComponent/Login";
 import HandlingSidebar from "./pages/Handling/HandlingSidebar/HandlingSidebar";
 import HandlingFacultyDashboard from "./pages/Handling/HandlingFacultyDashboard/HandlingFacultyDashboard";
-import CreationDashboard from "./pages/Creation/Dashboard/Dashboard";
+import CreationDashboard from "./pages/Creation/Dashboard/FacultyDashboard";
 
 function Routing() {
   return (
