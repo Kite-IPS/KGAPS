@@ -2,13 +2,15 @@ import React, { useState } from 'react'
 import Image from '../../assets/image.jpg'
 import './Login.css'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
-
+    const navigate = useNavigate();
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const [role, setRole] = useState(1);
+    const [section, setSection] = useState("0");
 
     const submitCheck = async (e) => {
         e.preventDefault();
@@ -25,6 +27,7 @@ export default function Login() {
             username,
             password,
             role,
+            section
         };
 
         try {
@@ -32,18 +35,24 @@ export default function Login() {
                 // Endpoint to send the request
                 url: "http://localhost:8000/api/login",
                 method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',  // Ensures the server reads it as JSON
-                },
                 data: loginData,
               })
               .then((res) => {
                 console.log(loginData);
                 const response = res.data;
                 console.log(response);
+                if(loginData.section === "0"){
+                    navigate('/creation/dashboard',{state:response});
+
+                }
+                else if(loginData.section === "1"){
+                    navigate('/handling/dashboard',{state:response});
+
+                }
               })
               .catch((error) => {
                 console.error('Error fetching data:', error,loginData);
+
               });
 
         } catch (error) {
@@ -77,6 +86,12 @@ export default function Login() {
                                 <option value="3">Domain Mentor</option>
                                 <option value="4">H.O.D</option>
                                 <option value="5">Admin</option>
+                            </select>
+                        </div>
+                        <div className="drop-down-container">
+                            <select name="section" id="roles" value={section} onChange={((e) => setSection(e.target.value))}>
+                                <option value="0">Creation</option>
+                                <option value="1">Handling</option>
                             </select>
                         </div>
                         <form onSubmit={submitCheck}>
