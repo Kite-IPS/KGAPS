@@ -1,23 +1,28 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import './HandlingFacultyDashboard.css';
+import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 function HandlingFacultyDashboard() {
-
-  const facultyDetails = { name: "John Doe" }; // Example name; replace with real data.
+  const location = useLocation();
+  const data = location.state;
+  // Initialize faculty details and any other state if needed
+  const [facultyDetails,setFacultyDetails] = useState({ name: "John Doe" }); // Example name; replace with real data.
 
   // Course data
-  const courseDataCurrent = [
+  const [courseDataCurrent,setCourseDataCurrent] = useState([
     { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
     { course_code: 'CSE102', completed_hours: 10, total_hours: 40, bar_color: 'red' },
     { course_code: 'CSE103', completed_hours: 30, total_hours: 40, bar_color: 'green' },
-  ];
+  ]);
 
-  const courseDataOverall = [
+  const [courseDataOverall,setCourseDataOverall] = useState([
     { course_code: 'CSE101', count: 20, total_count: 40 },
     { course_code: 'CSE102', count: 10, total_count: 40 },
     { course_code: 'CSE103', count: 30, total_count: 40 },
-  ];
+  ]);
 
+  
   // Function to render comments based on bar color
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -33,6 +38,29 @@ function HandlingFacultyDashboard() {
         return null;
     }
   };
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios({
+          url: "http://localhost:8000/api/faculty_progress",
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: data,
+        });
+        if(res){
+          setCourseDataCurrent(res.data.course_data_current);
+          setCourseDataOverall(res.data.course_data_overall);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    
+    fetchData();
+  }, []); // Run only once when the component mounts
 
   return (
     <div className="handlingfaculty-dashboard-container">
