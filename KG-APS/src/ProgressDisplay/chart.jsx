@@ -21,14 +21,7 @@ const PieChart = () => {
         axios({
           // Endpoint to send files
           url: "http://localhost:8000/creation/departments",
-          method: "POST",
-          headers: {
-              // Add any auth token here
-              authorization: "your token comes here",
-          },
-
-          // Attaching the form data
-          data:{"data":"hello"} ,
+          method: "GET",
       })
           // Handle the response from backend here
           .then((res) => {

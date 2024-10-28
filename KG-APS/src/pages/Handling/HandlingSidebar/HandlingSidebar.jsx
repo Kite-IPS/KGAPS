@@ -4,7 +4,6 @@ import './HandlingSidebar.css';
 function HandlingSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
-
   const [facultyDetails, setFacultyDetails] = useState({
     name: '',
     role: '',

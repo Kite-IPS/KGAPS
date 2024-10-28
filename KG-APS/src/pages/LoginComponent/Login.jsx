@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import Image from '../../assets/image.jpg'
 import './Login.css'
+import axios from 'axios';
 
 export default function Login() {
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [role, setRole] = useState('faculty');
+    const [role, setRole] = useState(1);
 
     const submitCheck = async (e) => {
         e.preventDefault();
@@ -27,24 +28,26 @@ export default function Login() {
         };
 
         try {
+            axios({
+                // Endpoint to send the request
+                url: "http://localhost:8000/api/login",
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',  // Ensures the server reads it as JSON
+                },
+                data: loginData,
+              })
+              .then((res) => {
+                console.log(loginData);
+                const response = res.data;
+                console.log(response);
+              })
+              .catch((error) => {
+                console.error('Error fetching data:', error,loginData);
+              });
 
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(loginData),
-            });
-
-            const result = await response.json();
-
-            if (response.ok) {
-                console.log('Login successful:', result);
-            } else {
-
-                setError(result.message || 'Login failed. Please try again.');
-                clearErrorAfterTimeout();
-            }
         } catch (error) {
-
+            console.log(error);
             setError('Something went wrong. Please try again later.');
             clearErrorAfterTimeout();
         }
@@ -55,6 +58,8 @@ export default function Login() {
             setError('');
         }, 3000);
     };
+
+   
 
     return (
         <>
@@ -67,11 +72,11 @@ export default function Login() {
                     <div className="login-form-container">
                         <div className="drop-down-container">
                             <select name="roles" id="roles" value={role} onChange={((e) => setRole(e.target.value))}>
-                                <option value="faculty">Faculty</option>
-                                <option value="course-doordinator">Course Coordinator</option>
-                                <option value="domain-mentor">Domain Mentor</option>
-                                <option value="hod">H.O.D</option>
-                                <option value="admin">Admin</option>
+                                <option value="1">Faculty</option>
+                                <option value="2">Course Coordinator</option>
+                                <option value="3">Domain Mentor</option>
+                                <option value="4">H.O.D</option>
+                                <option value="5">Admin</option>
                             </select>
                         </div>
                         <form onSubmit={submitCheck}>

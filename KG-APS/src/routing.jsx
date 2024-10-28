@@ -3,6 +3,7 @@ import Login from "./pages/loginComponent/Login";
 import PieChart from "./ProgressDisplay/chart";
 import HandlingSidebar from "./pages/Handling/HandlingSidebar/HandlingSidebar";
 import HandlingFacultyDashboard from "./pages/Handling/HandlingFacultyDashboard/HandlingFacultyDashboard";
+import TestAxiosRequest from "./ProgressDisplay/testaxios";
 
 function Routing() {
   return (
@@ -12,6 +13,7 @@ function Routing() {
         <Route path="/handlingsidebar" element={ < HandlingSidebar />} />
         <Route path="/handlingfacultydashboard" element={ < HandlingFacultyDashboard />} />
         <Route path="/chart" element={<PieChart />} />
+        <Route path="/test" element={<TestAxiosRequest />} />
       </Routes>
     </BrowserRouter>
   );
