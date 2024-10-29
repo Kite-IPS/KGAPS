@@ -14,6 +14,33 @@ body {
     max-width: 100%; 
 }
   
+.button-1{
+    background-color: #fe370f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-right: 0.5vw;
+}
+
+.button-2{
+    background-color: #fe370f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-right: 0.5vw;
+}
+
+.button-3{
+    background-color: #fe370f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+    margin-right: 0.5vw;
+}
+
 h1 {
     text-align: center;
 }
