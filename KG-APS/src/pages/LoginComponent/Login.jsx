@@ -42,11 +42,11 @@ export default function Login() {
                 const response = res.data;
                 console.log(response);
                 if(loginData.section === "0"){
-                    navigate('/creation/$()/dashboard',{state:response});
+                    navigate('/creation/faculty/dashboard',{state:response});
 
                 }
                 else if(loginData.section === "1"){
-                    navigate('/handling/dashboard',{state:response});
+                    navigate('/handling/faculty/dashboard',{state:response});
 
                 }
               })
