@@ -63,13 +63,17 @@
 }
 
 .handling-sidebar-info {
-  margin-top: auto;
-  margin-bottom: -10vh;
+  margin-top: 1vh; 
+  margin-bottom: 2px;
   text-align: center;
   padding: 10px;
   background-color: #2e2e4f;
   cursor: pointer;
   position: relative;
+}
+
+.handling-sidebar-name{
+  margin-bottom: 2vh;
 }
 
 .handling-sidebar-info:hover {
@@ -78,7 +82,7 @@
 
 .handling-sidebar-dropup-content {
   position: absolute;
-  bottom: 50px;
+  bottom: 7vh;
   left: 0;
   width: 100%;
   background-color: #1e1e2f;
@@ -145,5 +149,9 @@
 
   .handling-sidebar-info{
     margin-bottom: -11vh;
+  }
+
+  .handling-sidebar-name{
+    margin-bottom: 1vh;
   }
 }

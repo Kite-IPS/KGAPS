@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import "./HandlingFacultyTable.css";
 
 const TableComponent = () => {
-
   const mockData = [
     { id: 1, topic: 'Data Structures', outcome: 'Understand basics', status_code: 3, link: 'http://example.com', hoursTaken: null },
     { id: 2, topic: 'Algorithms', outcome: 'Learn sorting', status_code: 2, link: '', hoursTaken: null },
@@ -45,13 +44,13 @@ const TableComponent = () => {
   const isUid1 = uidData.some(user => user.uid === 1);
 
   return (
-    <div className="table-container">
+    <div className="HFTtable-container">
       {isUid1 ? (
         <>
-          <div className="button-group">
-            <button className="button-1" onClick={() => setViewMode('all')}>All contents</button>
-            <button className="button-2" onClick={() => setViewMode('upload')}>To upload</button>
-            <button className="button-3" onClick={() => setViewMode('handle')}>Handle</button>
+          <div className="HFTbutton-group">
+            <button className="HFTbutton-1" onClick={() => setViewMode('all')}>All contents</button>
+            <button className="HFTbutton-2" onClick={() => setViewMode('upload')}>To upload</button>
+            <button className="HFTbutton-3" onClick={() => setViewMode('handle')}>Handle</button>
           </div>
 
           <table>
@@ -71,7 +70,7 @@ const TableComponent = () => {
                   <td>{item.outcome}</td>
                   <td style={{ justifyContent: 'center', alignItems: 'center' }}>
                     <span
-                      className="box"
+                      className="HFTbox"
                       style={{
                         display: 'inline-block',
                         width: '20px',
