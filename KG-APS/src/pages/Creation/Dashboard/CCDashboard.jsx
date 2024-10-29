@@ -20,22 +20,32 @@ const CreationCCDashboard = () => {
       },
     ],
   });
+  console.log(data);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios({
-          url: "http://localhost:8000/api/faculty_progress",
+        const course = await axios({
+          url: "http://localhost:8000/api/coordinator_courses",
           method: "POST",
           headers: {
             'Content-Type': 'application/json',
           },
           data: data,
         });
+        console.log(course.data[0]);
+        if(course){
+        const res = await axios({
+          url: "http://localhost:8000/api/course_progress",
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: course.data[0],
+        });
 
         const response = res.data;
         const { status_code, count, color } = response.main;
-        const otherCharts = JSON.parse(response.other);
 
         // Set main chart data
         setMainChartData({
@@ -73,6 +83,7 @@ const CreationCCDashboard = () => {
             ],
           };
         });
+      }
         console.log(chartConfigs);
         setChartsData(chartConfigs);
 

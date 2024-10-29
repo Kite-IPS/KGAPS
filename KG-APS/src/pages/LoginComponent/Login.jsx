@@ -41,12 +41,12 @@ export default function Login() {
                 console.log(loginData);
                 const response = res.data;
                 console.log(response);
-                if(loginData.section === "0"){
-                    navigate('/creation/faculty/dashboard',{state:response});
-
+                if(loginData.section === "0" && 'name' in response){
+                    navigate('/creation/'+roleMapping[loginData.role]+'/dashboard',{state:response});
+                    console.log('/creation/'+roleMapping[loginData.role]+'/dashboard')
                 }
-                else if(loginData.section === "1"){
-                    navigate('/handling/faculty/dashboard',{state:response});
+                else if(loginData.section === "1" && 'name' in response){
+                    navigate('/handling/'+roleMapping[loginData.role]+'/dashboard',{state:response});
 
                 }
               })
