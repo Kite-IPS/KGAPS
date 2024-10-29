@@ -4,11 +4,17 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 function HandlingFacultyDashboard() {
+  const value = (current,total) => {
+    if (total===0 || current === 0 || current>total){
+      return 100;
+    }
+    return (current/total)*100;
+  }
   const location = useLocation();
   const data = location.state;
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
-
+  console.log(facultyDetails);
   // Course data
   const [courseDataCurrent,setCourseDataCurrent] = useState([
     { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
@@ -44,7 +50,7 @@ function HandlingFacultyDashboard() {
           url: "http://localhost:8000/api/faculty_progress",
           method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json'
           },
           data: data,
         });
@@ -56,7 +62,7 @@ function HandlingFacultyDashboard() {
         console.error('Error fetching data:', error);
       }
     };
-    
+  
     fetchData();
   }, []); // Run only once when the component mounts
 
@@ -75,7 +81,7 @@ function HandlingFacultyDashboard() {
               <div className="handlingfaculty-dashboard-card-content">
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                  <div style={{ width: `${(item.completed_hours / item.total_hours) * 100}%`, backgroundColor: item.bar_color }} />
+                  <div style={{ width: `${value(item.completed_hours,item.total_hours)}%`, backgroundColor: item.bar_color }} />
                 </div>
                 {/* Color comment section */}
                 <div className="handlingfaculty-dashboard-colorcomment">
