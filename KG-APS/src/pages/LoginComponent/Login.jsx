@@ -14,7 +14,6 @@ export default function Login() {
     const roleMapping = {1:'faculty',2:'course-coordinator',3:'domain-mentor',4:'hod',5:'supervisor'}
     const submitCheck = async (e) => {
         e.preventDefault();
-
         if (!username || !password) {
             setError('Invalid Username or Password.');
             clearErrorAfterTimeout();
@@ -43,7 +42,6 @@ export default function Login() {
                 console.log(response);
                 if(loginData.section === "0" && 'name' in response){
                     navigate('/creation/'+roleMapping[loginData.role]+'/dashboard',{state:response});
-                    console.log('/creation/'+roleMapping[loginData.role]+'/dashboard')
                 }
                 else if(loginData.section === "1" && 'name' in response){
                     navigate('/handling/'+roleMapping[loginData.role]+'/dashboard',{state:response});
@@ -67,9 +65,6 @@ export default function Login() {
             setError('');
         }, 3000);
     };
-
-   
-
     return (
         <>
             <div className="login-container">
