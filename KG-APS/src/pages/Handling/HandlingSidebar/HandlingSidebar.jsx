@@ -2,26 +2,11 @@ import React, { useState, useEffect } from 'react';
 import './HandlingSidebar.css';
 
 function HandlingSidebar() {
+  const data = JSON.parse(sessionStorage.getItem('userData'));
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
-  const [facultyDetails, setFacultyDetails] = useState({
-    name: '',
-    role: '',
-    department: '',
-    id: '',
-  });
-
-  useEffect(() => {
-    setTimeout(() => {
-      const fetchedData = {
-        name: 'Nishanth',
-        role: 'Faculty',
-        department: 'Computer Science',
-        id: '123456',
-      };
-      setFacultyDetails(fetchedData);
-    }, 0);
-  }, []);
+  const [facultyDetails, setFacultyDetails] = useState(data);
 
   return (
     <div className="handling-sidebar-container">

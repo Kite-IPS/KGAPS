@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import axios from "axios";
-import { useLocation } from 'react-router-dom';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationFacultyDashboard = () => {
-  const location = useLocation();
-  const data = location.state;
-  
+  const data = JSON.parse(sessionStorage.getItem('userData')); 
   const [ChartData, setChartsData] = useState([]);
   const [MainChartData, setMainChartData] = useState({
     labels: ["Category A", "Category B", "Category C"],

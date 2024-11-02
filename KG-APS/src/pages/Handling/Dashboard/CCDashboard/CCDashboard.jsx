@@ -1,17 +1,16 @@
 import React, { useState,useEffect } from 'react';
 import './CCDashboard.css';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 
 function HandlingCCDashboard() {
+  const data = JSON.parse(sessionStorage.getItem('userData'));
+
   const value = (current,total) => {
     if (total===0 || current === 0 || current>total){
       return 100;
     }
     return (current/total)*100;
   }
-  const location = useLocation();
-  const data = location.state;
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
   console.log(facultyDetails);

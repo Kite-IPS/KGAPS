@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import "../../Table.css";
 
 const CreationFacultyTable = () => {
+  const data = JSON.parse(sessionStorage.getItem('userData'));
+
   const mockData = [
     { id: 1, topic: 'Data Structures', outcome: 'Understand basics', status_code: 3, link: 'http://example.com', hoursTaken: null },
     { id: 2, topic: 'Algorithms', outcome: 'Learn sorting', status_code: 2, link: '', hoursTaken: null },
@@ -42,6 +44,29 @@ const CreationFacultyTable = () => {
   });
 
   const isUid1 = uidData.some(user => user.uid === 1);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios({
+          url: "http://localhost:8000/api/faculty",
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          data: data,
+        });
+        if(res){
+          setCourseDataCurrent(res.data.course_data_current);
+          setCourseDataOverall(res.data.course_data_overall);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    fetchData();
+  }, []);
 
   return (
     <div className="HFTtable-container">

@@ -1,7 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import './HODDashboard.css';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+
 
 function HandlingHODDashboard() {
   const value = (current,total) => {
@@ -10,8 +10,7 @@ function HandlingHODDashboard() {
     }
     return (current/total)*100;
   }
-  const location = useLocation();
-  const data = location.state;
+  const data = JSON.parse(sessionStorage.getItem('userData'));
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
   console.log(facultyDetails);

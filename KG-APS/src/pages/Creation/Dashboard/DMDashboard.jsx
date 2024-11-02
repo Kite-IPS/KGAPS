@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationDMDashboard = () => {
-  const location = useLocation();
-  const data = location.state;
+  const data = JSON.parse(sessionStorage.getItem('userData'));
   const [selectedOption, setSelectedOption] = useState({ course_code: 0, course_name: "CS1" });
   const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({

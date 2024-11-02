@@ -41,18 +41,14 @@ export default function Login() {
                 const response = res.data;
                 console.log(response);
                 if(loginData.section === "0" && 'name' in response){
-                    navigate('/creation/'+roleMapping[loginData.role]+'/dashboard',{state:response});
+                    sessionStorage.setItem('userData', JSON.stringify(response));
+                    navigate('/creation/'+roleMapping[loginData.role]+'/dashboard');
                 }
                 else if(loginData.section === "1" && 'name' in response){
-                    navigate('/handling/'+roleMapping[loginData.role]+'/dashboard',{state:response});
-
+                    sessionStorage.setItem('userData', JSON.stringify(response));
+                    navigate('/handling/'+roleMapping[loginData.role]+'/dashboard');
                 }
-              })
-              .catch((error) => {
-                console.error('Error fetching data:', error,loginData);
-
               });
-
         } catch (error) {
             console.log(error);
             setError('Something went wrong. Please try again later.');

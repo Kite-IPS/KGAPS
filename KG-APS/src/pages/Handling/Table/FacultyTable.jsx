@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import "../../Table.css";
 
 const HandlingFacultyTable = () => {
+  const data = JSON.parse(sessionStorage.getItem('userData'));
+
   const mockData = [
     { id: 1, topic: 'Data Structures', outcome: 'Understand basics', status_code: 3, link: 'http://example.com', hoursTaken: null },
     { id: 2, topic: 'Algorithms', outcome: 'Learn sorting', status_code: 2, link: '', hoursTaken: null },

@@ -1,7 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import './DMDashboard.css';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
 
 function HandlingDMDashboard() {
   const value = (current,total) => {
@@ -10,8 +9,7 @@ function HandlingDMDashboard() {
     }
     return (current/total)*100;
   }
-  const location = useLocation();
-  const data = location.state;
+  const data = JSON.parse(sessionStorage.getItem('userData'));
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
   console.log(facultyDetails);

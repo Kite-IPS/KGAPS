@@ -1,20 +1,20 @@
 import React, { useState,useEffect } from 'react';
 import './FacultyDashboard.css';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 
 function HandlingFacultyDashboard() {
+  const navigate = useNavigate();
+
   const value = (current,total) => {
     if (total===0 || current === 0 || current>total){
       return 100;
     }
     return (current/total)*100;
   }
-  const location = useLocation();
-  const data = location.state;
+  const data = JSON.parse(sessionStorage.getItem('userData'));
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
-  console.log(facultyDetails);
   // Course data
   const [courseDataCurrent,setCourseDataCurrent] = useState([
     { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
@@ -66,10 +66,26 @@ function HandlingFacultyDashboard() {
     fetchData();
   }, []); // Run only once when the component mounts
 
+  const navItems = [
+
+  ];
   return (
     <div className="handlingfaculty-dashboard-container">
       <div className="handlingfaculty-dashboard-content">
         <div className="handlingfaculty-dashboard-nametext">
+        {navItems.length > 0 && (
+        <nav>
+          {navItems.map((item) => (
+            <button
+              key={item.name}
+              onClick={() => navigate(item.path, { state: facultyDetails })}
+            >
+              {item.name}
+            </button>
+          ))}
+        </nav>
+      )}
+        {/* navigate('/handling/'+roleMapping[loginData.role]+'/dashboard',{state:response}); */}
           <div className="handlingfaculty-dashboard-welcome-box">
             <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
           </div>
