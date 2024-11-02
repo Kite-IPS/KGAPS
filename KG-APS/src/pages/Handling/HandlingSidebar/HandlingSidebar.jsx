@@ -3,11 +3,44 @@ import './HandlingSidebar.css';
 
 function HandlingSidebar() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
+  function role(role) {
+    switch (role) {
+      case 2:
+      return 'Course Coordinator';
+      case 3:
+      return 'Department Mentor';
+      case 4:
+      return 'HOD';
+      case 5:
+      return 'Supervisor';
+      default:
+      return 'Faculty';
+    }
+  }
+  function department(department) {
+    switch (department) {
+      case 1:
+        return 'CSE';
+      case 2:
+        return 'ECE';
+      case 3:
+        return 'AI&DS';
+      case 4:
+        return 'IT';
+      case 5:
+        return 'CSBS';
+      case 6:
+        return 'MECH';
+      default:
+        return 'Dept not added yet';
+  }
+  }
+  const roleMapping = {1:'faculty',2:'course-coordinator',3:'domain-mentor',4:'hod',5:'supervisor'}
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
   const [facultyDetails, setFacultyDetails] = useState(data);
-
+  console.log(facultyDetails);
   return (
     <div className="handling-sidebar-container">
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
@@ -18,19 +51,19 @@ function HandlingSidebar() {
           <div className="handling-sidebar-content">
             <h3>KG-APS</h3>
             <ul>
-              <li><a href="/handlingsidebar">Dashboard</a></li>
-              <li><a href="#profile">Table</a></li>
-              <li><a href="#logout">Logout</a></li>
+              <li><a href={`/handling/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a></li>
+              <li><a href={`/handling/${roleMapping[facultyDetails.role_id]}/table`}>Table</a></li>
+              <li><a href="/">Logout</a></li>
             </ul>
             <div className="handling-sidebar-info" onClick={() => setIsDropupOpen(!isDropupOpen)}>
               <div className="handling-sidebar-name">{facultyDetails.name}</div>
               {isDropupOpen && (
                 <div className="handling-sidebar-dropup-content">
                   <img src="faculty-image-url.jpg" alt="Faculty" className="handling-sidebar-image" />
-                  <p><strong>Role:</strong> {facultyDetails.role}</p>
+                  <p><strong>Role:</strong> {role(facultyDetails.role_id)}</p>
                   <p><strong>Name:</strong> {facultyDetails.name}</p>
-                  <p><strong>Department:</strong> {facultyDetails.department}</p>
-                  <p><strong>ID:</strong> {facultyDetails.id}</p>
+                  <p><strong>Department:</strong> {department(facultyDetails.department_id)}</p>
+                  <p><strong>ID:</strong> {facultyDetails.uid}</p>
                 </div>
               )}
             </div>
