@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import './FacultyDashboard.css';
 import axios from 'axios';
 import {  useNavigate } from 'react-router-dom';
+import HandlingSidebar from '../../HandlingSidebar/HandlingSidebar';
 
 function HandlingFacultyDashboard() {
   const navigate = useNavigate();
@@ -70,9 +71,12 @@ function HandlingFacultyDashboard() {
 
   ];
   return (
+    <div className="page-cover">
+      <HandlingSidebar />
     <div className="handlingfaculty-dashboard-container">
       <div className="handlingfaculty-dashboard-content">
         <div className="handlingfaculty-dashboard-nametext">
+        {/* if decide to add functionality of moving between roles 
         {navItems.length > 0 && (
         <nav>
           {navItems.map((item) => (
@@ -84,7 +88,7 @@ function HandlingFacultyDashboard() {
             </button>
           ))}
         </nav>
-      )}
+      )} */}
         {/* navigate('/handling/'+roleMapping[loginData.role]+'/dashboard',{state:response}); */}
           <div className="handlingfaculty-dashboard-welcome-box">
             <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
@@ -108,6 +112,7 @@ function HandlingFacultyDashboard() {
           ))}
         </div>
       </div>
+    </div>
     </div>
   );
 }

@@ -45,7 +45,7 @@ function HandlingSidebar() {
     <div className="handling-sidebar-container">
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <button className="handling-sidebar-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
-          {isSidebarOpen ? 'Close Sidebar' : 'Open Sidebar'}
+          {isSidebarOpen ? '<' : '☰'}
         </button>
         {isSidebarOpen && (
           <div className="handling-sidebar-content">
