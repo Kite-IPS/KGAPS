@@ -8,97 +8,87 @@ Chart.register(ArcElement, Tooltip, Legend);
 const CreationHodDashboard = () => {
   const location = useLocation();
   const data = location.state;
-  
-  const [ChartData, setChartsData] = useState([]);
+  const [selectedOption, setSelectedOption] = useState({ course_code: 0, course_name: "CS1" });
+  const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({
     labels: ["Category A", "Category B", "Category C"],
     datasets: [
       {
-        label: 'Sample Pie Chart',
+        label: "Sample Pie Chart",
         data: [30, 50, 20],
         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
       },
     ],
   });
-  console.log(data);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios({
-          url: "http://localhost:8000/api/coordinator_courses",
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: data,
-        });
-        console.log(course.data[0]);
-        if(course){
-        const res = await axios({
-          url: "http://localhost:8000/api/course_progress",
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: course.data[0],
+        const course = await axios.post("http://localhost:8000/api/department_courses", data, {
+          headers: { "Content-Type": "application/json" },
         });
 
-        const response = res.data;
-        const { status_code, count, color } = response.main;
-
-        // Set main chart data
-        setMainChartData({
-          labels: status_code,
-          datasets: [
-            {
-              label: "Overall Progress",
-              data: count,
-              backgroundColor: color,
-            },
-          ],
-        });
-
-        // Map each course in `otherCharts` to a chart configuration
-        const chartConfigs = Object.keys(otherCharts).map((courseKey) => {
-          const courseData = otherCharts[courseKey];
-          const labels = [];
-          const dataValues = [];
-          const backgroundColors = [];
-
-          Object.keys(courseData).forEach((statusKey) => {
-            const [statusCount, statusColor] = courseData[statusKey];
-            dataValues.push(statusCount);
-            backgroundColors.push(statusColor);
-          });
-
-          return {
-            labels,
-            datasets: [
-              {
-                label: `Progress for ${courseKey}`,
-                data: dataValues,
-                backgroundColor: backgroundColors,
-              },
-            ],
-          };
-        });
-      }
-        console.log(chartConfigs);
-        setChartsData(chartConfigs);
-
+        setDomainCourses(course.data);
+        if (course.data.length > 0) {
+          setSelectedOption(course.data[0]);
+          await fetchChartData(course.data[0]); // Initial chart load
+        }
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
-    
+
     fetchData();
-  }, []); // Run only once when the component mounts
+  }, []);
+
+  const handleSelectChange = (event) => {
+    const selected = JSON.parse(event.target.value);
+    setSelectedOption(selected);
+  };
+
+  const fetchChartData = async (selectedCourse) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/course_progress", selectedCourse, {
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const { status_code, count, color } = res.data.main;
+
+      setMainChartData({
+        labels: status_code,
+        datasets: [
+          {
+            label: "Overall Progress",
+            data: count,
+            backgroundColor: color,
+          },
+        ],
+      });
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+    }
+  };
+
+  const UpdateChart = async () => {
+    console.log(selectedOption);
+    await fetchChartData(selectedOption);
+  };
 
   return (
     <div>
+      <div className="login-form-wrapper">
+        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+          <option value="" disabled>Select an option</option>
+          {DomainCourses.map((option, index) => (
+            <option key={index} value={JSON.stringify(option)}>
+              {option.course_name}
+            </option>
+          ))}
+        </select>
+        <button type="button" onClick={UpdateChart}>Get Details</button>
+      </div>
       <h3>Progress</h3>
-      <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
+      <div style={{ width: "400px", height: "400px", marginBottom: "20px" }}>
         <Pie data={MainChartData} />
       </div>
     </div>

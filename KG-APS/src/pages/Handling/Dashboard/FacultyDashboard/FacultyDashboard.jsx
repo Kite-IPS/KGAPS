@@ -1,5 +1,5 @@
 import React, { useState,useEffect } from 'react';
-import './HandlingFacultyDashboard.css';
+import './FacultyDashboard.css';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
