@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import './HandlingSidebar.css';
+import { useLocation } from 'react-router-dom';
 
 function HandlingSidebar() {
+  const temp = useLocation().pathname.split('/')[1];
   const data = JSON.parse(sessionStorage.getItem('userData'));
   function role(role) {
     switch (role) {
@@ -51,8 +53,8 @@ function HandlingSidebar() {
           <div className="handling-sidebar-content">
             <h3>KG-APS</h3>
             <ul>
-              <li><a href={`/handling/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a></li>
-              <li><a href={`/handling/${roleMapping[facultyDetails.role_id]}/table`}>Table</a></li>
+              <li><a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a></li>
+              <li><a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/table`}>Table</a></li>
               <li><a href="/">Logout</a></li>
             </ul>
             <div className="handling-sidebar-info" onClick={() => setIsDropupOpen(!isDropupOpen)}>

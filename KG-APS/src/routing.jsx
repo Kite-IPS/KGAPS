@@ -20,6 +20,7 @@ import CreationSupervisorTable from "./pages/Creation/Table/SupervisorTable";
 import CreationCCTable from "./pages/Creation/Table/CCTable";
 import CreationDMTable from "./pages/Creation/Table/DMTable";
 import CreationHODTable from "./pages/Creation/Table/HODTable";
+import CreationFacultyTable from "./pages/Creation/Table/FacultyTable";
 
 function Routing() {
   return (
@@ -39,7 +40,7 @@ function Routing() {
         <Route path="/handling/supervisor/table" element={ < HandlingSupervisorTable />} />
 
         <Route path="/creation/faculty/dashboard" element={ < CreationFacultyDashboard />} />
-        <Route path="/creation/faculty/table" element={ < HandlingFacultyTable />} />
+        <Route path="/creation/faculty/table" element={ < CreationFacultyTable />} />
         <Route path="/creation/course-coordinator/dashboard" element={ < CreationCCDashboard />} />
         <Route path="/creation/course-coordinator/table" element={ < CreationCCTable />} />
         <Route path="/creation/domain-mentor/dashboard" element={ < CreationDMDashboard />} />

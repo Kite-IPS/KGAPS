@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationFacultyDashboard = () => {
@@ -82,18 +83,21 @@ const CreationFacultyDashboard = () => {
   }, []); // Run only once when the component mounts
 
   return (
-    <div>
-      <h3>Overall Progress</h3>
-      <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
-        <Pie data={MainChartData} />
-      </div>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
-        {ChartData.map((chartData, index) => (
-          <div key={index} style={{ width: '200px', height: '200px' }}>
-            <h3>{chartData.datasets[0].label}</h3>
-            <Pie data={chartData} />
-          </div>
-        ))}
+    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+      <HandlingSidebar />
+      <div>
+        <h3>Overall Progress</h3>
+        <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
+          <Pie data={MainChartData} />
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
+          {ChartData.map((chartData, index) => (
+            <div key={index} style={{ width: '200px', height: '200px' }}>
+              <h3>{chartData.datasets[0].label}</h3>
+              <Pie data={chartData} />
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
