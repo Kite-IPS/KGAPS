@@ -116,7 +116,7 @@ const CreationFacultyTable = () => {
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
           To upload
         </button>
-        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+         <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
         {FacultyCourses.map((option, index) => (
           <option key={index} value={JSON.stringify(option)}>

@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationCCDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem('userData'));
-  const [ChartData, setChartsData] = useState([]);
+  const [course, setCourse] = useState({});
   const [MainChartData, setMainChartData] = useState({
     labels: ["Category A", "Category B", "Category C"],
     datasets: [
@@ -18,7 +19,22 @@ const CreationCCDashboard = () => {
     ],
   });
   console.log(data);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const courseResponse = await axios.post("http://localhost:8000/api/coordinator_courses", {
+          uid: data.uid,
+        });
+        if (courseResponse.data) {
+          setCourse(courseResponse.data);
+        }
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      }
+    };
 
+    fetchCourses();
+  }, []);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -55,35 +71,7 @@ const CreationCCDashboard = () => {
             },
           ],
         });
-
-        // Map each course in `otherCharts` to a chart configuration
-        const chartConfigs = Object.keys(otherCharts).map((courseKey) => {
-          const courseData = otherCharts[courseKey];
-          const labels = [];
-          const dataValues = [];
-          const backgroundColors = [];
-
-          Object.keys(courseData).forEach((statusKey) => {
-            const [statusCount, statusColor] = courseData[statusKey];
-            dataValues.push(statusCount);
-            backgroundColors.push(statusColor);
-          });
-
-          return {
-            labels,
-            datasets: [
-              {
-                label: `Progress for ${courseKey}`,
-                data: dataValues,
-                backgroundColor: backgroundColors,
-              },
-            ],
-          };
-        });
       }
-        console.log(chartConfigs);
-        setChartsData(chartConfigs);
-
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -93,11 +81,14 @@ const CreationCCDashboard = () => {
   }, []); // Run only once when the component mounts
 
   return (
-    <div>
+    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+      <HandlingSidebar />
+    <div style={{width:'80vw'}}>
       <h3>Progress</h3>
       <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
         <Pie data={MainChartData} />
       </div>
+    </div>
     </div>
   );
 };

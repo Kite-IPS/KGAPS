@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import "../../Table.css";
+import axios from 'axios';
+import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
 
 
 const CreationCCTable = () => {
@@ -8,6 +10,7 @@ const CreationCCTable = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
+  const [course, setCourse] = useState({});
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -42,30 +45,14 @@ const CreationCCTable = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const courseResponse = await axios.post("http://localhost:8000/api/coordinator_courses", {
-          uid: data.uid,
-        });
-        if (courseResponse.data) {
-          setFacultyCourses(courseResponse.data);
-        }
-      } catch (error) {
-        console.error("Error fetching courses:", error);
-      }
-    };
 
-    fetchCourses();
-  }, []);
 
   const fetchTableData = async () => {
-    if (!selectedOption) return;
     try {
       const res = await axios.post("http://localhost:8000/api/course_mentor", {
         uid: data.uid,
-        course_code: selectedOption.course_code,
       });
+      setCourse(res.data[0]);
       if (res.data && !('response' in res.data)) {
         console.log(res.data);
         setTableData(res.data);
@@ -84,10 +71,6 @@ const CreationCCTable = () => {
   };
 
   useEffect(() => {
-    fetchTableData();
-  }, [selectedOption]);
-
-  useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
         if (viewMode === "upload") return !item.url;
@@ -95,10 +78,16 @@ const CreationCCTable = () => {
       })
     );
   }, [viewMode, tableData]);
+  
+  useEffect(() => {
+    fetchTableData();
+  }, []);
 
   return (
+    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+      <HandlingSidebar />
     <div className="HFTtable-container">
-     
+     <h1>{course.course_code+" - "+course.course_name}</h1>
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents
@@ -156,12 +145,13 @@ const CreationCCTable = () => {
             ))
           ) : (
             <tr>
-              <td colSpan={4} style={{ textAlign: "center" }}>No topics assigned yet.</td>
+              <td colSpan={4} style={{ textAlign: "center" }}>All topics uploaded.</td>
             </tr>
           )}
         </tbody>
       </table>
     </div>
+  </div>
   );
 };
 
