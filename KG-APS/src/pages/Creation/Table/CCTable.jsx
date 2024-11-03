@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import CreationTopicAddForm from './CCAddTopicForm';
 
 
 const CreationCCTable = () => {
@@ -54,7 +55,6 @@ const CreationCCTable = () => {
       });
       setCourse(res.data[0]);
       if (res.data && !('response' in res.data)) {
-        console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
           if (viewMode === "upload") return !item.url;
@@ -86,6 +86,7 @@ const CreationCCTable = () => {
   return (
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
+      <CreationTopicAddForm/>
     <div className="HFTtable-container">
      <h1>{course.course_code+" - "+course.course_name}</h1>
       <div className="HFTbutton-group">
@@ -124,7 +125,7 @@ const CreationCCTable = () => {
                   ></span>
                 </td>
                 <td>
-                  {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
+                  {viewMode === "upload" && !item.url ? (
                     <div className="link-input">
                       <input
                         type="text"

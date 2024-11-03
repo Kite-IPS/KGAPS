@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../Table.css";
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
 
 const CreationFacultyTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -107,8 +108,9 @@ const CreationFacultyTable = () => {
   }, [viewMode, tableData]);
 
   return (
+    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+      <HandlingSidebar />
     <div className="HFTtable-container">
-     
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents
@@ -179,6 +181,7 @@ const CreationFacultyTable = () => {
           )}
         </tbody>
       </table>
+    </div>
     </div>
   );
 };

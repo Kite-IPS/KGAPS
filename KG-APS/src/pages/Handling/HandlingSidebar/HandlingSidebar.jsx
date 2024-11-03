@@ -42,7 +42,6 @@ function HandlingSidebar() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
   const [facultyDetails, setFacultyDetails] = useState(data);
-  console.log(facultyDetails);
   return (
     <div className="handling-sidebar-container">
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
