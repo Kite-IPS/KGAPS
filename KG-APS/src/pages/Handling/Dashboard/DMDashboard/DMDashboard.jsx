@@ -3,13 +3,14 @@ import './DMDashboard.css';
 import axios from 'axios';
 
 function HandlingDMDashboard() {
+  const data = JSON.parse(sessionStorage.getItem('userData'));
+
   const value = (current,total) => {
     if (total===0 || current === 0 || current>total){
       return 100;
     }
     return (current/total)*100;
   }
-  const data = JSON.parse(sessionStorage.getItem('userData'));
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
   console.log(facultyDetails);
@@ -44,13 +45,21 @@ function HandlingDMDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        const course = await axios({
+          url: "http://localhost:8000/api/coordinator_courses",
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          data: data,
+        });
         const res = await axios({
-          url: "http://localhost:8000/api/faculty_progress",
+          url: "http://localhost:8000/api/course_progress",
           method: "POST",
           headers: {
             'Content-Type': 'application/json'
           },
-          data: data,
+          data: course.data[0],
         });
         if(res){
           setCourseDataCurrent(res.data.course_data_current);
@@ -72,14 +81,20 @@ function HandlingDMDashboard() {
             <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
           </div>
         </div>
+        <h1>Course {courseDataOverall[0].course_code}</h1>
+
         <div className="handlingfaculty-dashboard-card-container">
           {courseDataCurrent.map((item, i) => (
             <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header">Course {courseDataOverall[i].course_code}</div>
+              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}</div>
               <div className="handlingfaculty-dashboard-card-content">
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">
                   <div style={{ width: `${value(item.completed_hours,item.total_hours)}%`, backgroundColor: item.bar_color }} />
+                </div>
+                <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
+                <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                  <div style={{ width: `${(courseDataOverall[i].count/courseDataOverall[i].total_count)*100}%`, backgroundColor: 'green' }} />
                 </div>
                 {/* Color comment section */}
                 <div className="handlingfaculty-dashboard-colorcomment">

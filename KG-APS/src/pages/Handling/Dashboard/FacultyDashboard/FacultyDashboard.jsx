@@ -103,6 +103,10 @@ function HandlingFacultyDashboard() {
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">
                   <div style={{ width: `${value(item.completed_hours,item.total_hours)}%`, backgroundColor: item.bar_color }} />
                 </div>
+                <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
+                <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                  <div style={{ width: `${(courseDataOverall[i].count/courseDataOverall[i].total_count)*100}%`, backgroundColor: 'green' }} />
+                </div>
                 {/* Color comment section */}
                 <div className="handlingfaculty-dashboard-colorcomment">
                   {renderColorComment(item.bar_color)}
