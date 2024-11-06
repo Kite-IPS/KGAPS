@@ -1,0 +1,116 @@
+/* Container */
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    padding: 20px;
+    max-width: 900px;
+    margin: auto;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Box for form sections */
+  .boxforboxforforms {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Form section titles */
+  .admintitle, .title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #343a40;
+  }
+  
+  /* Individual form boxes */
+  .boxforforms {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f1f3f5;
+    border-radius: 8px;
+  }
+  
+  /* Labels and form fields */
+  .username label {
+    font-weight: bold;
+    color: #495057;
+  }
+  
+  .username {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .username select,
+  .username input {
+    padding: 8px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #495057;
+  }
+  
+  /* Submit buttons */
+  button[type="submit"],
+  button[type="button"] {
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  button[type="submit"]:hover,
+  button[type="button"]:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  table, th, td {
+    border: 1px solid #dee2e6;
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: left;
+    font-size: 0.9rem;
+  }
+  
+  th {
+    background-color: #f8f9fa;
+    color: #495057;
+  }
+  
+  /* Message styling */
+  p {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  p.admintitle {
+    font-size: 1.5rem;
+    color: #212529;
+    margin-bottom: 15px;
+  }
+  

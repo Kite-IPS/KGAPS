@@ -21,6 +21,7 @@ import CreationCCTable from "./pages/Creation/Table/CCTable";
 import CreationDMTable from "./pages/Creation/Table/DMTable";
 import CreationHODTable from "./pages/Creation/Table/HODTable";
 import CreationFacultyTable from "./pages/Creation/Table/FacultyTable";
+import AdminComponent from "./pages/Admin/IQAC/IQAC";
 
 function Routing() {
   return (
@@ -49,7 +50,7 @@ function Routing() {
         <Route path="/creation/hod/table" element={ < CreationHODTable />} />
         <Route path="/creation/supervisor/dashboard" element={ < CreationSupervisorDashboard />} />
         <Route path="/creation/supervisor/table" element={ < CreationSupervisorTable />} />
-        <Route path="/admin-entry" element={ < HandlingFacultyTable />} />
+        <Route path="/admin-entry" element={ < AdminComponent />} />
         <Route path="/admin" element={ < HandlingFacultyTable />} />
       </Routes>
     </BrowserRouter>
