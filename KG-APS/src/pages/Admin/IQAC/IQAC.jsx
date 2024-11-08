@@ -7,6 +7,9 @@ import "./Admin-entry.css";
 const AdminComponent = () => {
   const data = localStorage.getItem('userData');
   const [courses, setCourses] = useState([]);
+  const [facultyCourse,setFacultyCourse] = useState([]);
+  const [domainCourse,setDomainCourse] = useState([]);
+  const [coordinatorCourse,setCoordinatorCourse] = useState([]);
   const [response, setResponse] = useState("failed");
   const [mentorList, setMentorList] = useState([]);
   const [topics, setTopics] = useState([]);
@@ -47,71 +50,84 @@ const AdminComponent = () => {
       }
   };
 
-//   const getTopic = (data) => {
-//     ApiService.getTopicData(data).then((res) => {
-//       setTopics(res);
-//       console.log(res);
-//     });
-//   };
+  const getTopic = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/topics",data=data);
+      if (res) {
+        setResponse(res.data);
+        setTopics(res.data);
+      }
+    } catch (error) {
+      console.error("Error adding course:", error);
+    }
+  };
 
-//   const registerUserInfo = (data) => {
-//     ApiService.registerUser(data).then((res) => setResponse(res));
-//   };
+  const registerUserInfo = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/register",data=data);
+      if (res) {
+        setResponse(res.status);
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  };
 
-//   const assignCourseDetails = (data) => {
-//     ApiService.assignCourseUser(data).then((res) => setResponse(res));
-//   };
+  const onDepartmentChangeFaculty = async (deptId) => {
+    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
+    setFacultyCourse(courseResponse.data);
+  };
+  const onDepartmentChangeDomain = async (deptId) => {
+    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
+    setDomainCourse(courseResponse.data);
+  };
+  const onDepartmentChangeCoordinator = async (deptId) => {
+    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
+    setCoordinatorCourse(courseResponse.data);
+  };
+  
+  const getMentorListDetails = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/mentor_list",data=data);
+      if (res) {
+        setResponse(res.status);
+        setMentorList(res.data);
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  };
 
-//   const getMentorListDetails = (data) => {
-//     ApiService.getMentorList(data).then((res) => {
-//       setMentorList(res);
-//       setResponse(res);
-//     });
-//   };
+  const assignCourseMentorDetails = async (data) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/assign_mentor",data=data);
+      if (res) {
+        setResponse(res.status);
+        setMentorList(res.data);
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error adding user:", error);
+    }
+  };
 
-//   const assignCourseMentorDetails = (data) => {
-//     ApiService.assignCourseMentor(data).then((res) => setResponse(res));
-//   };
 
-//   const assignDomainMentorDetails = (data) => {
-//     ApiService.assignDomainMentor(data).then((res) => setResponse(res));
-//   };
 
-//   // Event handlers
-//   const onCourseOptionChange = (e) => {
-//     const selectedValue = e.target.value;
-//     ApiService.getCourseData({ department_id: selectedValue }).then((res) => setCourses(res));
-//   };
-
-//   const onDepartmentFacultyOptionChange = (e) => {
-//     const selectedValue = e.target.value;
-//     ApiService.getFacultyInDepartment({ department_id: selectedValue }).then((res) => setFaculty(res));
-//   };
-
-//   const onDepartmentCoordinatorOptionChange = (e) => {
-//     const selectedValue = e.target.value;
-//     ApiService.getCoordinatorsInDepartment({ department_id: selectedValue }).then((res) => setFaculty(res));
-//   };
-
-//   const onDepartmentDomainMentorOptionChange = (e) => {
-//     const selectedValue = e.target.value;
-//     ApiService.getDomainMentorsInDepartment({ department_id: selectedValue }).then((res) => setFaculty(res));
-//   };
-
-  return (
+  return (<>
     <div className="container">
       <p>{response !== 'failed' && 'Success!'}</p>
       
       <div className="boxforboxforforms">
         <p className="admintitle">Get details -</p>
 
-        {/* Get Courses Form */}
         <div className="boxforforms">
           <p>GET COURSES -</p>
-          <form onSubmit={handleSubmit(fetchCourses)}>
+          <form onSubmit={getCourseForm.handleSubmit(fetchCourses)}>
             <div className="username">
               <label>department_id</label>
-              <select {...register("department_id")}>
+              <select {...getCourseForm.register("department_id")}>
                 <option value="1">CSE</option>
                 <option value="2">AI&DS</option>
                 <option value="3">ECE</option>
@@ -124,16 +140,83 @@ const AdminComponent = () => {
           </form>
           <table>
             <tbody>
+            {courses[1] && <>
+            <tr>
+            <td>COURSE CODE</td>
+              <td>COURSE NAME</td>
+              </tr></>}
           {courses.map((item) => (
             <tr key={item.course_code}>
               <td>{item.course_code}</td>
-              <td>-</td>
               <td>{item.course_name}</td>
             </tr>
           ))}
           </tbody>
           </table>
         </div>
+        <div className="boxforforms">
+          <p>GET TOPICS -</p>
+          <form onSubmit={getTopicForm.handleSubmit(getTopic)}>
+            <div className="username">
+              <label>course_code</label>
+              <input type="text" {...getTopicForm.register("course_code")} />
+            </div>
+            <button type="submit">Get Topics</button>
+          </form>
+          <table>
+            <tbody>
+            {topics[1] && <>
+            <tr>
+            <td>TOPIC ID</td>
+              <td>TOPIC</td>
+              <td>OUTCOME</td>
+              </tr></>}
+          {topics.map((item) => (
+            <tr key={item.topic_id}>
+              <td>{item.topic_id}</td>
+              <td>{item.topic}</td>
+              <td>{item.outcome}</td>
+            </tr>
+          ))}
+          </tbody>
+          </table>
+        </div>
+        <div className="boxforforms">
+          <p>GET MENTOR LIST -</p>
+          <form onSubmit={getMentorListForm.handleSubmit(getMentorListDetails)}>
+            <div className="username">
+              <label>department_id</label>
+              <select {...getMentorListForm.register("department_id")}>
+                <option value="1">CSE</option>
+                <option value="2">AI&DS</option>
+                <option value="3">ECE</option>
+                <option value="4">CSBS</option>
+                <option value="5">IT</option>
+                <option value="6">S&H</option>
+              </select>
+            </div>
+            <button type="submit">Get Mentor List</button>
+          </form>
+          <table>
+            <tbody>
+            {mentorList[1] && <>
+            <tr>
+            <td>UID</td>
+              <td>NAME</td>
+              <td>COURSE CODE</td>
+              </tr></>}
+          {mentorList.map((item) => (
+            <tr key={item.uid}>
+              <td>{item.uid}</td>
+              <td>{item.name}</td>
+              <td>{item.course_code}</td>
+            </tr>
+          ))}
+          </tbody>
+          </table>
+        </div>
+      </div>
+      <div className="boxforboxforforms">
         <div className="boxforforms">
           <p className="title">REGISTER COURSES -</p>
           <form onSubmit={addCourseForm.handleSubmit(addCourse)}>
@@ -167,14 +250,12 @@ const AdminComponent = () => {
             <button type="submit">Add course</button>
           </form>
         </div>
-
-        {/* Get Mentor List Form
         <div className="boxforforms">
-          <p>GET MENTOR LIST -</p>
-          <form onSubmit={getMentorListForm.handleSubmit(getMentorListDetails)}>
+          <p className="title">REGISTER USER -</p>
+          <form onSubmit={userRegistrationForm.handleSubmit(registerUserInfo)}>
             <div className="username">
-              <label>department_id</label>
-              <select {...getMentorListForm.register("department_id")}>
+              <label>department</label>
+              <select {...userRegistrationForm.register("department_id")}>
                 <option value="1">CSE</option>
                 <option value="2">AI&DS</option>
                 <option value="3">ECE</option>
@@ -183,51 +264,67 @@ const AdminComponent = () => {
                 <option value="6">S&H</option>
               </select>
             </div>
-            <button type="submit">Get Mentor List</button>
-          </form>
-          {mentorList.map((item) => (
-            <tr key={item.uid}>
-              <td>{item.uid}</td>
-              <td>-</td>
-              <td>{item.name}</td>
-              <td>-</td>
-              <td>{item.course_code}</td>
-            </tr>
-          ))}
-        </div>
-
-
-        <div className="boxforforms">
-          <p>GET TOPICS -</p>
-          <form onSubmit={getTopicForm.handleSubmit(getTopic)}>
             <div className="username">
-              <label>course_code</label>
-              <input type="text" {...getTopicForm.register("course_code")} />
+              <label>UID</label>
+              <input type="text" {...userRegistrationForm.register("id")} />
             </div>
-            <button type="submit">Get Topics</button>
+            <div className="username">
+              <label>Name</label>
+              <input type="text" {...userRegistrationForm.register("name")} />
+            </div>
+            <div className="username">
+              <label>Password</label>
+              <input type="text" {...userRegistrationForm.register("password")} />
+            </div>
+            <div className="username">
+              <label>Role</label>
+              <select {...userRegistrationForm.register("role")}>
+                <option value="1">Faculty</option>
+                <option value="2">Course Coordinator</option>
+                <option value="3">ECE</option>
+                <option value="4">CSBS</option>
+                <option value="5">IT</option>
+                <option value="6">S&H</option>
+              </select>
+            </div>
+            <button type="submit">Register User</button>
           </form>
-          {topics.map((item) => (
-            <tr key={item.topic_id}>
-              <td>{item.topic_id}</td>
-              <td>-</td>
-              <td>{item.topic}</td>
-              <td>-</td>
-              <td>{item.outcome}</td>
-            </tr>
-          ))}
+        </div>
         </div>
       </div>
-      
-
-      <div className="boxforboxforforms">
-        <p className="admintitle">Register Stuff -</p>
-
-        
-
-        {/* Additional forms like Register User, Assign Course to Faculty, etc., follow a similar structure */}
-
-      </div> 
-    </div>
+      <div className="boxforforms">
+        <p>ASSIGN FACULTY TO COURSE -</p>
+        <form onSubmit={handleSubmit(fetchCourses)}>
+          <div className="username">
+            <label>department_id</label>
+            <select onChange={(e) => onDepartmentChangeFaculty(e.target.value)} required>
+              <option value="1">CSE</option>
+              <option value="2">AI&DS</option>
+              <option value="3">ECE</option>
+              <option value="4">CSBS</option>
+              <option value="5">IT</option>
+              <option value="6">S&H</option>
+            </select>
+          </div>
+          <button type="submit">Get courses</button>
+        </form>
+        <table>
+          <tbody>
+          {courses[1] && <>
+          <tr>
+          <td>COURSE CODE</td>
+            <td>COURSE NAME</td>
+            </tr></>}
+        {courses.map((item) => (
+          <tr key={item.course_code}>
+            <td>{item.course_code}</td>
+            <td>{item.course_name}</td>
+          </tr>
+        ))}
+        </tbody>
+        </table>
+      </div>
+      </>
   );
 };
 

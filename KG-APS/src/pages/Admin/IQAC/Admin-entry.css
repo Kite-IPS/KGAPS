@@ -75,11 +75,6 @@
     margin-top: 10px;
   }
   
-  button[type="submit"]:hover,
-  button[type="button"]:hover {
-    background-color: #0056b3;
-  }
-  
   /* Table styling */
   table {
     width: 100%;
