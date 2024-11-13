@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 function HandlingSidebar() {
   const temp = useLocation().pathname.split('/')[1];
   const data = JSON.parse(sessionStorage.getItem('userData'));
+  const facultyDetails=data;
   function role(role) {
     switch (role) {
       case 2:
@@ -41,7 +42,7 @@ function HandlingSidebar() {
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
-  const [facultyDetails, setFacultyDetails] = useState(data);
+
   return (
     <div className="handling-sidebar-container">
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
@@ -63,7 +64,7 @@ function HandlingSidebar() {
                   <img src="faculty-image-url.jpg" alt="Faculty" className="handling-sidebar-image" />
                   <p><strong>Role:</strong> {role(facultyDetails.role_id)}</p>
                   <p><strong>Name:</strong> {facultyDetails.name}</p>
-                  <p><strong>Department:</strong> {department(facultyDetails.department_id)}</p>
+                  <p><strong>Department:</strong> {facultyDetails.department_id}</p>
                   <p><strong>ID:</strong> {facultyDetails.uid}</p>
                 </div>
               )}
