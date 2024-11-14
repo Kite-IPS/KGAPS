@@ -1,12 +1,11 @@
 .handling-sidebar-container {
   display: flex;
-  position: relative;
   height: 100vh;
-  overflow: hidden;
+  transition: margin-left 0.3s ease;
 }
 
 .handling-sidebar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100%;
@@ -63,7 +62,7 @@
 }
 
 .handling-sidebar-info {
-  margin-top: 1vh; 
+  margin-top: 1vh;
   margin-bottom: 2px;
   text-align: center;
   padding: 10px;
@@ -72,7 +71,7 @@
   position: relative;
 }
 
-.handling-sidebar-name{
+.handling-sidebar-name {
   margin-bottom: 2vh;
 }
 
@@ -107,52 +106,21 @@
   color: #fe370f;
 }
 
+.handling-sidebar-container.sidebar-open {
+  margin-left: 250px; /* Shift content when sidebar is open */
+}
+
+.handling-sidebar-container.sidebar-closed {
+  margin-left: 0; /* Content is full-width when sidebar is closed */
+}
+
 /* Responsive Design */
-@media (min-width: 700px) {
-  .handling-sidebar-right-content {
-    transition: margin-left 0.3s ease, width 0.3s ease;
-  }
-
-  .handling-sidebar-right-content.sidebar-closed {
-    margin-left: 2vw;
-    width: calc(100% - 0);
-  }
-
-  .handling-sidebar-right-content.sidebar-open {
-    margin-left: 250px;
-    width: calc(100% - 250px);
-  }
-
-  .handling-sidebar-info{
-    margin-bottom: -10vh;
-    height: 3vh;
-  }
-}
-
-@media (max-width: 1024px) {
-  .handling-sidebar-card-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .handling-sidebar-info{
-    margin-bottom: -11vh;
-  }
-}
-
 @media (max-width: 768px) {
-  .handling-sidebar-card-container {
-    grid-template-columns: 1fr;
+  .handling-sidebar {
+    width: 200px;
   }
 
-  .handling-sidebar-right-content {
-    padding: 10px;
-  }
-
-  .handling-sidebar-info{
-    margin-bottom: -11vh;
-  }
-
-  .handling-sidebar-name{
-    margin-bottom: 1vh;
+  .handling-sidebar-container.sidebar-open {
+    margin-left: 200px;
   }
 }

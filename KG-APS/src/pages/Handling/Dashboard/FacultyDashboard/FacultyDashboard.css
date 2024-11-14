@@ -1,23 +1,42 @@
-.page-cover{
-  display: flex;
-}
-.handlingfaculty-dashboard-container {
-  width: 100%;
-  margin-left:3vw;
+/* Full page container */
+.page-cover {
   display: flex;
   height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
 }
 
-.handlingfaculty-dashboard-content {
+/* Sidebar container */
+.handlingSidebar {
+  flex-shrink: 0;
+  width: 250px;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main dashboard container */
+.handlingfaculty-dashboard-container {
   flex-grow: 1;
-  padding: 20px;
+  margin-left: 0;
   display: flex;
   flex-direction: column;
+  padding: 20px;
   height: 100vh;
-  overflow: hidden;
+  box-sizing: border-box;
 }
 
+/* Flex container to make sure the content stretches correctly */
+.handlingfaculty-dashboard-content {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ensure no margins or padding on this specific content */
 .handlingfaculty-dashboard-nametext {
   text-align: right;
   margin-bottom: 20px;
@@ -36,7 +55,6 @@
   margin-top: 2vh;
   width: fit-content;
   max-width: 90%;
-  overflow: hidden;
 }
 
 .handlingfaculty-dashboard-card-container {
@@ -59,10 +77,6 @@
   margin-bottom: 10px;
 }
 
-.handlingfaculty-dashboard-card-content {
-  flex-grow: 1;
-}
-
 .handlingfaculty-dashboard-progressbar-horizontal {
   width: 100%;
   background-color: #e0e0e0;
@@ -82,25 +96,21 @@
 /* Responsive Design */
 @media (max-width: 1024px) {
   .handlingfaculty-dashboard-card-container {
-      grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .handlingfaculty-dashboard-card-container {
-      grid-template-columns: 1fr;
+    grid-template-columns: 1fr;
   }
 
-  .handlingfaculty-dashboard-greeting {
-      font-size: 1.2rem;
+  /* Stack content on smaller screens */
+  .page-cover {
+    flex-direction: column;
   }
 
-  .handlingfaculty-dashboard-welcome-box {
-      margin-top: 6vh;
-      width: auto;
-  }
-
-  .handlingfaculty-dashboard-content {
-      padding: 10px;
+  .handlingfaculty-dashboard-container {
+    margin-left: 0;
   }
 }

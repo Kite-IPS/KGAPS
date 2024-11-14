@@ -1,25 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './HandlingSidebar.css';
 import { useLocation } from 'react-router-dom';
 
 function HandlingSidebar() {
   const temp = useLocation().pathname.split('/')[1];
   const data = JSON.parse(sessionStorage.getItem('userData'));
-  const facultyDetails=data;
+  const facultyDetails = data;
+
   function role(role) {
     switch (role) {
       case 2:
-      return 'Course Coordinator';
+        return 'Course Coordinator';
       case 3:
-      return 'Department Mentor';
+        return 'Department Mentor';
       case 4:
-      return 'HOD';
+        return 'HOD';
       case 5:
-      return 'Supervisor';
+        return 'Supervisor';
       default:
-      return 'Faculty';
+        return 'Faculty';
     }
   }
+
   function department(department) {
     switch (department) {
       case 1:
@@ -36,36 +38,64 @@ function HandlingSidebar() {
         return 'MECH';
       default:
         return 'Dept not added yet';
+    }
   }
-  }
-  const roleMapping = {1:'faculty',2:'course-coordinator',3:'domain-mentor',4:'hod',5:'supervisor'}
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const roleMapping = {
+    1: 'faculty',
+    2: 'course-coordinator',
+    3: 'domain-mentor',
+    4: 'hod',
+    5: 'supervisor'
+  };
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isDropupOpen, setIsDropupOpen] = useState(false);
 
   return (
-    <div className="handling-sidebar-container">
+    <div className={`handling-sidebar-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <button className="handling-sidebar-toggle-button" onClick={() => setIsSidebarOpen(!isSidebarOpen)}>
+        <button
+          className="handling-sidebar-toggle-button"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
           {isSidebarOpen ? '<' : '☰'}
         </button>
         {isSidebarOpen && (
           <div className="handling-sidebar-content">
             <h3>KG-APS</h3>
             <ul>
-              <li><a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a></li>
-              <li><a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/table`}>Table</a></li>
-              <li><a href="/">Logout</a></li>
+              <li>
+                <a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a>
+              </li>
+              <li>
+                <a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/table`}>Table</a>
+              </li>
+              <li>
+                <a href="/">Logout</a>
+              </li>
             </ul>
             <div className="handling-sidebar-info" onClick={() => setIsDropupOpen(!isDropupOpen)}>
               <div className="handling-sidebar-name">{facultyDetails.name}</div>
               {isDropupOpen && (
                 <div className="handling-sidebar-dropup-content">
-                  <img src="faculty-image-url.jpg" alt="Faculty" className="handling-sidebar-image" />
-                  <p><strong>Role:</strong> {role(facultyDetails.role_id)}</p>
-                  <p><strong>Name:</strong> {facultyDetails.name}</p>
-                  <p><strong>Department:</strong> {facultyDetails.department_id}</p>
-                  <p><strong>ID:</strong> {facultyDetails.uid}</p>
+                  <img
+                    src="faculty-image-url.jpg"
+                    alt="Faculty"
+                    className="handling-sidebar-image"
+                  />
+                  <p>
+                    <strong>Role:</strong> {role(facultyDetails.role_id)}
+                  </p>
+                  <p>
+                    <strong>Name:</strong> {facultyDetails.name}
+                  </p>
+                  <p>
+                    <strong>Department:</strong> {department(facultyDetails.department_id)}
+                  </p>
+                  <p>
+                    <strong>ID:</strong> {facultyDetails.uid}
+                  </p>
                 </div>
               )}
             </div>
