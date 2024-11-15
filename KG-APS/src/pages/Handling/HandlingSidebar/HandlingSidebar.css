@@ -1,6 +1,4 @@
 .handling-sidebar-container {
-  display: flex;
-  height: 100vh;
   transition: margin-left 0.3s ease;
 }
 
@@ -63,7 +61,8 @@
 
 .handling-sidebar-info {
   margin-top: 1vh;
-  margin-bottom: 2px;
+  margin-bottom: -10vh;
+  height: 5vh;
   text-align: center;
   padding: 10px;
   background-color: #2e2e4f;
@@ -81,9 +80,9 @@
 
 .handling-sidebar-dropup-content {
   position: absolute;
-  bottom: 7vh;
+  bottom: 8vh;
   left: 0;
-  width: 100%;
+  width: 98%;
   background-color: #1e1e2f;
   padding: 10px;
   text-align: left;
@@ -122,5 +121,11 @@
 
   .handling-sidebar-container.sidebar-open {
     margin-left: 200px;
+  }
+
+  .handling-sidebar-info{
+    margin-bottom: -10vh;
+    height: 3vh;
+    width: 23vh;
   }
 }

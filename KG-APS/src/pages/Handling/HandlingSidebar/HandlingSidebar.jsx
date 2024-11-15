@@ -53,7 +53,7 @@ function HandlingSidebar() {
   const [isDropupOpen, setIsDropupOpen] = useState(false);
 
   return (
-    <div className={`handling-sidebar-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
+      <div className={`handling-sidebar-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
         <button
           className="handling-sidebar-toggle-button"
@@ -102,7 +102,7 @@ function HandlingSidebar() {
           </div>
         )}
       </div>
-    </div>
+      </div>
   );
 }
 
