@@ -14,12 +14,12 @@ const CreationTopicAddForm = () => {
             
             const fetchStaffList = async () => {
             try {
-                const res = await axios.post("http://localhost:8000/api/course_mentor", {
+                const res = await axios.post("http://localhost:8000/api/coordinator_courses", {
                     uid: data.uid,
                   });
                   const courseData = res.data[0];
                   setCourse(courseData);
-
+                console.log(res.data);
                 const response = await axios({
                 url: 'http://localhost:8000/api/faculty_course_info',
                 method: 'POST',

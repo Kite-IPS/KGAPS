@@ -39,6 +39,8 @@ const CreationFacultyTable = () => {
       });
       if (res) {
         fetchTableData();
+        alert("Link updated successfully");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error updating link:", error);
@@ -76,7 +78,7 @@ const CreationFacultyTable = () => {
         console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return !item.url && item.can_upload === 1;
+          if (viewMode === "upload") return item.status_code<3 && item.can_upload === 1;
           return true;
         });
         setFilteredData(filtered); 
@@ -101,7 +103,7 @@ const CreationFacultyTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return !item.url && item.can_upload === 1;
+        if (viewMode === "upload") return item.status_code<3 && item.can_upload === 1;
         return true;
       })
     );
@@ -116,7 +118,7 @@ const CreationFacultyTable = () => {
           All contents
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          To upload
+          Upload/Edit
         </button>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
@@ -135,7 +137,8 @@ const CreationFacultyTable = () => {
             <th>Outcome</th>
             <th>Status Code</th>
             <th>Link</th>
-          </tr>
+           {viewMode=== "upload" && <th>Link Upload</th>
+          }</tr>
         </thead>
         <tbody>
           {filteredData && filteredData.length > 0 ? (
@@ -154,8 +157,16 @@ const CreationFacultyTable = () => {
                     }}
                   ></span>
                 </td>
-                <td>
-                  {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
+                <td> {item.url ? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  ) : (
+                    <span>View</span>
+                  )}</td>
+                
+                  {viewMode === "upload" && item.can_upload === 1 && (
+                    <td>
                     <div className="link-input">
                       <input
                         type="text"
@@ -164,14 +175,9 @@ const CreationFacultyTable = () => {
                       />
                       <button onClick={() => updateLink(item.topic_id)}>Upload</button>
                     </div>
-                  ) : item.url ? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>No Link Available</span>
+                    </td>
                   )}
-                </td>
+                
               </tr>
             ))
           ) : (

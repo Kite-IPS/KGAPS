@@ -12,6 +12,7 @@ const CreationCCTable = () => {
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
   const [course, setCourse] = useState({});
+  const [editedIndex,setEditedIndex] = useState(null);
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -33,6 +34,8 @@ const CreationCCTable = () => {
   };
 
   const updateLink = async (key) => {
+    const isValid = await checkLinkStructure(updatedLink);
+    if(isValid){
     try {
       const res = await axios.post("http://localhost:8000/api/editlink", {
         topic_id: key,
@@ -40,24 +43,43 @@ const CreationCCTable = () => {
       });
       if (res) {
         fetchTableData();
+        alert("Link updated successfully");
+        setUpdatedLink("");
+        window.location.reload();
       }
     } catch (error) {
       console.error("Error updating link:", error);
     }
+  }else{
+    alert("Invalid URL");
+    setUpdatedLink("");
+
+  }
   };
 
-
+  const checkLinkStructure = async (link) => {
+    try {
+      new URL(link); // Throws an error if the URL is invalid
+      return(true);
+    } catch (error) {
+      return(false);
+    }
+  };
 
   const fetchTableData = async () => {
     try {
       const res = await axios.post("http://localhost:8000/api/course_mentor", {
         uid: data.uid,
       });
-      setCourse(res.data[0]);
+      const res2 = await axios.post("http://localhost:8000/api/coordinator_courses", {
+        uid: data.uid,
+      });
+      const courseData = res2.data[0];
+      setCourse(courseData);
       if (res.data && !('response' in res.data)) {
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return !item.url;
+          if (viewMode === "upload") return item.status_code===0 || item.status_code===1;
           return true;
         });
         setFilteredData(filtered); 
@@ -73,7 +95,7 @@ const CreationCCTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return !item.url;
+        if (viewMode === "upload") return item.status_code===0 || item.status_code===1;
         return true;
       })
     );
@@ -88,13 +110,14 @@ const CreationCCTable = () => {
       <HandlingSidebar />
       <CreationTopicAddForm/>
     <div className="HFTtable-container">
+
      <h1>{course.course_code+" - "+course.course_name}</h1>
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          To upload
+          Upload/Edit
         </button>
       </div>
 
@@ -105,6 +128,7 @@ const CreationCCTable = () => {
             <th>Outcome</th>
             <th>Status Code</th>
             <th>Link</th>
+           {viewMode=== "upload" && <th>Link Upload</th>}
           </tr>
         </thead>
         <tbody>
@@ -124,8 +148,17 @@ const CreationCCTable = () => {
                     }}
                   ></span>
                 </td>
-                <td>
-                  {viewMode === "upload" && !item.url ? (
+                <td>{
+                item.url? (
+                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  ) : (
+                    <span>View</span>
+                  )}
+                </td>
+                  {viewMode === "upload" && editedIndex === item.topic_id && (
+                    <td>
                     <div className="link-input">
                       <input
                         type="text"
@@ -133,20 +166,20 @@ const CreationCCTable = () => {
                         onChange={(e) => handleLinkInput(e, item)}
                       />
                       <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      <button onClick={() => setEditedIndex(null)}>Cancel</button>
                     </div>
-                  ) : item.url ? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>No Link Available</span>
+                  </td>
+                  )}{viewMode === "upload" && item.url && editedIndex !== item.topic_id && (
+                    <button onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
+                  )}{viewMode === "upload" && !item.url && editedIndex !== item.topic_id &&(
+                    <button onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                   )}
-                </td>
+                
               </tr>
             ))
           ) : (
-            <tr>
-              <td colSpan={4} style={{ textAlign: "center" }}>All topics uploaded.</td>
+            <tr key={1}>
+              <td colSpan={4} style={{ textAlign: "center" }}>No topics here!</td>
             </tr>
           )}
         </tbody>

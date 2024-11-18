@@ -8,6 +8,7 @@ Chart.register(ArcElement, Tooltip, Legend);
 const CreationCCDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem('userData'));
   const [course, setCourse] = useState({});
+  const [showStuff, setShowStuff] = useState(false);
   const [MainChartData, setMainChartData] = useState({
     labels: ["Category A", "Category B", "Category C"],
     datasets: [
@@ -56,7 +57,9 @@ const CreationCCDashboard = () => {
           },
           data: course.data[0],
         });
-
+        if (res.data.main.status_code.length > 0) {
+          setShowStuff(true);
+        }
         const response = res.data;
         const { status_code, count, color } = response.main;
 
@@ -85,9 +88,11 @@ const CreationCCDashboard = () => {
       <HandlingSidebar />
     <div style={{width:'80vw'}}>
       <h3>Progress</h3>
+      { showStuff? (
       <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
         <Pie data={MainChartData} />
       </div>
+  ):(<div>No topics assigned...</div>)}
     </div>
     </div>
   );

@@ -33,15 +33,16 @@ const HandlingFacultyTable = () => {
 
   const updateLink = async (key) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/editlink", {
+      const res = await axios.post("http://localhost:8000/api/edithourscompleted", {
         topic_id: key,
-        url: updatedLink,
+        handler_id: data.uid,
+        hours_completed: updatedLink,
       });
       if (res) {
         fetchTableData();
       }
     } catch (error) {
-      console.error("Error updating link:", error);
+      console.error("Error updating hours:", error);
     }
   };
 
