@@ -9,7 +9,7 @@ const CreationFacultyTable = () => {
   const [selectedOption, setSelectedOption] = useState(null);
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
+  const [filteredData, setFilteredData] = useState([]);
   const [viewMode, setViewMode] = useState("all");
 
   const getBoxColor = (status_code) => {
@@ -23,7 +23,7 @@ const CreationFacultyTable = () => {
       case 3:
         return "green";
       default:
-        return "green";
+        return "white";
     }
   };
 
@@ -44,6 +44,21 @@ const CreationFacultyTable = () => {
       }
     } catch (error) {
       console.error("Error updating link:", error);
+    }
+  };
+
+  const handleApproval = async (key, action) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/approval", {
+        topic_id: key,
+        status: action,
+      });
+      if (res) {
+        fetchTableData();
+        alert(`Topic ${action === "approve" ? "approved" : "disapproved"}`);
+      }
+    } catch (error) {
+      console.error(`Error in ${action} action:`, error);
     }
   };
 
@@ -74,17 +89,17 @@ const CreationFacultyTable = () => {
         uid: data.uid,
         course_code: selectedOption.course_code,
       });
-      if (res.data && !('response' in res.data)) {
+      if (res.data && !("response" in res.data)) {
         console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code<3 && item.can_upload === 1;
+          if (viewMode === "upload") return item.status_code < 3 && item.can_upload === 1;
           return true;
         });
-        setFilteredData(filtered); 
+        setFilteredData(filtered);
       } else {
         setTableData([]);
-        setFilteredData([]); // Set to empty array if no data
+        setFilteredData([]);
       }
     } catch (error) {
       console.error("Error fetching table data:", error);
@@ -103,94 +118,118 @@ const CreationFacultyTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return item.status_code<3 && item.can_upload === 1;
+        if (viewMode === "upload") return item.status_code < 3 && item.can_upload === 1;
         return true;
       })
     );
   }, [viewMode, tableData]);
 
   return (
-    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+    <div className="page-cover" style={{ display: "flex", gap: "5vw" }}>
       <HandlingSidebar />
-    <div className="HFTtable-container">
-      <div className="HFTbutton-group">
-        <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
-          All contents
-        </button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          Upload/Edit
-        </button>
-         <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-        <option value="" disabled>Select an option</option>
-        {FacultyCourses.map((option, index) => (
-          <option key={index} value={JSON.stringify(option)}>
-            {option.course_code + " - " + option.course_name}
-          </option>
-        ))}
-      </select>
-      </div>
+      <div className="HFTtable-container">
+        <div className="HFTbutton-group">
+          <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+            All contents
+          </button>
+          <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
+            Upload/Edit
+          </button>
+          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+            <option value="" disabled>
+              Select an option
+            </option>
+            {FacultyCourses.map((option, index) => (
+              <option key={index} value={JSON.stringify(option)}>
+                {option.course_code + " - " + option.course_name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Topic</th>
-            <th>Outcome</th>
-            <th>Status Code</th>
-            <th>Link</th>
-           {viewMode=== "upload" && <th>Link Upload</th>
-          }</tr>
-        </thead>
-        <tbody>
-          {filteredData && filteredData.length > 0 ? (
-            filteredData.map((item) => (
-              <tr key={item.topic_id}>
-                <td>{item.topic}</td>
-                <td>{item.outcome}</td>
-                <td style={{ justifyContent: "center", alignItems: "center" }}>
-                  <span
-                    className="HFTbox"
-                    style={{
-                      display: "inline-block",
-                      width: "20px",
-                      height: "20px",
-                      backgroundColor: getBoxColor(item.status_code),
-                    }}
-                  ></span>
-                </td>
-                <td> {item.url ? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>View</span>
-                  )}</td>
-                
+        <table>
+          <thead>
+            <tr>
+              <th>Topic</th>
+              <th>Outcome</th>
+              <th>Status Code</th>
+              <th>Link</th>
+              {viewMode === "upload" && <th>Link Upload</th>}
+              <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
+              <th>Disapproval Message</th>
+            </tr>
+          </thead>
+          <tbody>
+            {filteredData && filteredData.length > 0 ? (
+              filteredData.map((item) => (
+                <tr key={item.topic_id}>
+                  <td>{item.topic}</td>
+                  <td>{item.outcome}</td>
+                  <td style={{ justifyContent: "center", alignItems: "center" }}>
+                    <span
+                      className="HFTbox"
+                      style={{
+                        display: "inline-block",
+                        width: "20px",
+                        height: "20px",
+                        backgroundColor: getBoxColor(item.status_code),
+                      }}
+                    ></span>
+                  </td>
+                  <td>
+                    {item.url ? (
+                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        View
+                      </a>
+                    ) : (
+                      <span>View</span>
+                    )}
+                  </td>
                   {viewMode === "upload" && item.can_upload === 1 && (
                     <td>
-                    <div className="link-input">
-                      <input
-                        type="text"
-                        placeholder="Upload link"
-                        onChange={(e) => handleLinkInput(e, item)}
-                      />
-                      <button onClick={() => updateLink(item.topic_id)}>Upload</button>
-                    </div>
+                      <div className="link-input">
+                        <input
+                          type="text"
+                          placeholder="Upload link"
+                          onChange={(e) => handleLinkInput(e, item)}
+                        />
+                        <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      </div>
                     </td>
                   )}
-                
+                  <td style={{ justifyContent: "center", alignItems: "center" }}>
+                    {item.status_code === 3 && (
+                      <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
+                    )}
+                    {item.status_code === 2 && (
+                      <span style={{ color: "red", fontWeight: "bold" }}>Disapproved</span>
+                    )}
+                    {(
+                      <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
+                    )}
+                  </td>
+
+                  <td>
+                    {item.disapproval_message ? (
+                      <span>{item.disapproval_message}</span>
+                    ) : (
+                      <span>No message</span>
+                    )}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center" }}>
+                  No topics assigned yet.
+                </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} style={{ textAlign: "center" }}>No topics assigned yet.</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
 
 export default CreationFacultyTable;
-
