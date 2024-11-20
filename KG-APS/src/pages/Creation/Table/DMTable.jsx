@@ -15,7 +15,7 @@ const CreationDMTable = () => {
 
   const handleApproval = async (topic_id) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/approve", {
+      const res = await axios.post("http://localhost:8000/api/editcomment/1", {
         topic_id,
         status: "approved",
       });
@@ -32,7 +32,7 @@ const CreationDMTable = () => {
     const message = prompt("Please enter a reason for disapproval:");
     if (message) {
       try {
-        const res = await axios.post("http://localhost:8000/api/disapprove", {
+        const res = await axios.post("http://localhost:8000/api/editcomment/0", {
           topic_id,
           status: "disapproved",
           comment: message,
@@ -65,23 +65,7 @@ const CreationDMTable = () => {
     }
   };
 
-  const handleLinkInput = (e, item) => {
-    
-  };
 
-  const updateLink = async (key) => {
-    try {
-      const res = await axios.post("http://localhost:8000/api/editcomment", {
-        topic_id: key,
-        url: updatedLink,
-      });
-      if (res) {
-        fetchTableData();
-      }
-    } catch (error) {
-      console.error("Error updating link:", error);
-    }
-  };
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -114,10 +98,11 @@ const CreationDMTable = () => {
         console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return !item.url && item.can_upload === 1;
+          if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
           return true;
         });
-        setFilteredData(filtered); 
+        setFilteredData(filtered);
+        console.log(filtered); 
       } else {
         setTableData([]);
         setFilteredData([]); // Set to empty array if no data
@@ -139,7 +124,7 @@ const CreationDMTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return !item.url && item.can_upload === 1;
+        if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
         return true;
       })
     );
@@ -154,7 +139,7 @@ const CreationDMTable = () => {
           All contents
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          To upload
+          Approve/Disapprove
         </button>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
@@ -194,16 +179,7 @@ const CreationDMTable = () => {
                 ></span>
               </td>
               <td>
-                {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
-                  <div className="link-input">
-                    <input
-                      type="text"
-                      placeholder="Upload link"
-                      onChange={(e) => handleLinkInput(e, item)}
-                    />
-                    <button onClick={() => updateLink(item.topic_id)}>Upload</button>
-                  </div>
-                ) : item.url ? (
+                {viewMode === "upload" && item.url ? (
                   <a href={item.url} target="_blank" rel="noopener noreferrer">
                     View
                   </a>
