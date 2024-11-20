@@ -179,7 +179,7 @@ const CreationDMTable = () => {
                 ></span>
               </td>
               <td>
-                {viewMode === "upload" && item.url ? (
+                {item.url ? (
                   <a href={item.url} target="_blank" rel="noopener noreferrer">
                     View
                   </a>
@@ -193,12 +193,14 @@ const CreationDMTable = () => {
                     <button
                       className="approve-button"
                       onClick={() => handleApproval(item.topic_id)}
+                      disabled={item.status_code === 3} // Disable if approved
                     >
                       Approve
                     </button>
                     <button
                       className="disapprove-button"
                       onClick={() => handleDisapproval(item.topic_id)}
+                      disabled={item.status_code === 3} // Disable if approved
                     >
                       Disapprove
                     </button>
@@ -222,6 +224,7 @@ const CreationDMTable = () => {
           </tr>
         )}
       </tbody>
+
       </table>
     </div>
     </div>
