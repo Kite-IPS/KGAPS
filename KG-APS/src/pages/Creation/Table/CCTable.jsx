@@ -190,8 +190,8 @@ const CreationCCTable = () => {
                   </td>
 
                   <td>
-                    {item.disapproval_message ? (
-                      <span>{item.disapproval_message}</span>
+                    {item.comment ? (
+                      <span>{item.comment}</span>
                     ) : (
                       <span>No message</span>
                     )}
