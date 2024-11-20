@@ -129,6 +129,8 @@ const CreationCCTable = () => {
             <th>Status Code</th>
             <th>Link</th>
            {viewMode=== "upload" && <th>Link Upload</th>}
+           <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
+           <th>Disapproval Message</th>
           </tr>
         </thead>
         <tbody>
@@ -157,7 +159,7 @@ const CreationCCTable = () => {
                     <span>View</span>
                   )}
                 </td>
-                  {viewMode === "upload" && editedIndex === item.topic_id && (
+                {viewMode === "upload" && editedIndex === item.topic_id && (
                     <td>
                     <div className="link-input">
                       <input
@@ -174,6 +176,26 @@ const CreationCCTable = () => {
                   )}{viewMode === "upload" && !item.url && editedIndex !== item.topic_id &&(
                     <button onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                   )}
+                  
+                <td style={{ justifyContent: "center", alignItems: "center" }}>
+                    {item.status_code === 3 && (
+                      <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
+                    )}
+                    {item.status_code === 2 && (
+                      <span style={{ color: "red", fontWeight: "bold" }}>Disapproved</span>
+                    )}
+                    {(
+                      <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
+                    )}
+                  </td>
+
+                  <td>
+                    {item.disapproval_message ? (
+                      <span>{item.disapproval_message}</span>
+                    ) : (
+                      <span>No message</span>
+                    )}
+                  </td>
                 
               </tr>
             ))

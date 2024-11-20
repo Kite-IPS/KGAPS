@@ -1,0 +1,51 @@
+/* Form container styling */
+.form-container {
+    width: 30%; /* Reduced width */
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+
+/* Form title styling */
+.form-container h1, 
+.form-container h2 {
+    text-align: center;
+    color: #333;
+}
+
+/* Form styling */
+.topic-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Form group styling */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Input styling */
+input, select {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+
+/* Button styling */
+.submit-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius:2px;
+}
