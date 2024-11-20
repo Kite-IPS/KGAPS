@@ -21,6 +21,8 @@ const AssigningRoleToCoursesComponent = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedDomain, setSelectedDomain] = useState(0);
 
+  const [viewMode, setViewMode] = useState(1);
+  
   const onDepartmentFacultyOptionChange = async (event) => {
     const value = parseInt(event.target.value);
     setFacultyDepartment(value);
@@ -134,7 +136,12 @@ const AssigningRoleToCoursesComponent = () => {
 
   return (
     <div>
-    <div className="boxforforms">
+    <div className="AssignOption">
+      <button className='button' onClick={() => setViewMode(1)}>Assign Course to Faculty</button>
+      <button className='button' onClick={() => setViewMode(2)}>Assign Course-Coodinator</button>
+      <button className='button' onClick={() => setViewMode(3)}>Assign Domain Mentor</button>
+    </div>
+    {viewMode === 1 && <div className="boxforforms">
       <p>ASSIGN COURSE TO FACULTY - </p>
       <form onSubmit={assignCourseDetails}>
         <div className="username">
@@ -207,8 +214,8 @@ const AssigningRoleToCoursesComponent = () => {
           Assign Course
         </button>
       </form>
-    </div>
-    <div className="boxforforms">
+    </div>}
+    {viewMode === 2 && <div className="boxforforms">
     <p>ASSIGN COORDINATOR - </p>
     <form onSubmit={assignCourseCoordinator}>
       <div className="username">
@@ -281,8 +288,8 @@ const AssigningRoleToCoursesComponent = () => {
         Assign Coordinator
       </button>
     </form>
-  </div>
-  <div className="boxforforms">
+  </div>}
+{ viewMode===3 && <div className="boxforforms">
     <p>ASSIGN DOMAIN MENTOR - </p>
     <form onSubmit={assignDomainMentor}>
       <div className="username">
@@ -336,7 +343,7 @@ const AssigningRoleToCoursesComponent = () => {
         Assign Domain Mentor
       </button>
     </form>
-  </div>
+  </div>}
   </div>
   );
 };
