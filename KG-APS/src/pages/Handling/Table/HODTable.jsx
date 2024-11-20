@@ -7,9 +7,13 @@ import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
 
 const HandlingHODTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
-  const [comment, setComment] = useState("");
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedFaculty,setSelectedFaculty] = useState("");
+
+
   const [FacultyCourses, setFacultyCourses] = useState([]);
+  const [faculty,setFaculty] =  useState([]);
+
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
@@ -50,17 +54,28 @@ const HandlingHODTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/courses", {
+        const facultyResponse = await axios.post("http://localhost:8000/api/faculty_info", {
           department_id: data.department_id,
         });
-        if (courseResponse.data) {
-          setFacultyCourses(courseResponse.data);
-          if (courseResponse.data.length > 0) {
-            setSelectedOption(courseResponse.data[0]);
+        console.log(facultyResponse.data[0].uid);
+
+        if (facultyResponse.data) {
+          setFaculty(facultyResponse.data);
+          if (facultyResponse.data.length > 0) {
+            setSelectedFaculty(facultyResponse.data[0].uid);
+            const courseResponse = await axios.post("http://localhost:8000/api/faculty_courses", {
+              uid: facultyResponse.data[0].uid,
+            });
+            if (courseResponse.data) {
+              setFacultyCourses(courseResponse.data);
+              if (courseResponse.data.length > 0) {
+                setSelectedOption(courseResponse.data[0]);
+              }
+            }
           }
         }
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error("Error fetching faculty:", error);
       }
     };
 
@@ -71,7 +86,7 @@ const HandlingHODTable = () => {
     if (!selectedOption) return;
     try {
       const res = await axios.post("http://localhost:8000/api/head_of_department", {
-        handler_id:1,
+        handler_id:selectedFaculty,
         course_code: selectedOption.course_code,
       });
       if (res.data && !('response' in res.data)) {
@@ -118,7 +133,7 @@ const HandlingHODTable = () => {
           All contents
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          To upload
+          Verify
         </button>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
