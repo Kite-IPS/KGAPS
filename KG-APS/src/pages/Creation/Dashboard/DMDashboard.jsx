@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -74,6 +75,8 @@ const CreationDMDashboard = () => {
   };
 
   return (
+    <>
+    <HandlingSidebar />
     <div>
       <div className="login-form-wrapper">
         <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
@@ -91,6 +94,7 @@ const CreationDMDashboard = () => {
         <Pie data={MainChartData} />
       </div>
     </div>
+    </>
   );
 };
 
