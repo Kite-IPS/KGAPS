@@ -13,6 +13,43 @@ const CreationDMTable = () => {
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
 
+  const handleApproval = async (topic_id) => {
+    try {
+      const res = await axios.post("http://localhost:8000/api/approve", {
+        topic_id,
+        status: "approved",
+      });
+      if (res.status === 200) {
+        alert("Topic approved successfully.");
+        fetchTableData(); // Refresh table
+      }
+    } catch (error) {
+      console.error("Error approving topic:", error);
+    }
+  };
+  
+  const handleDisapproval = async (topic_id) => {
+    const message = prompt("Please enter a reason for disapproval:");
+    if (message) {
+      try {
+        const res = await axios.post("http://localhost:8000/api/disapprove", {
+          topic_id,
+          status: "disapproved",
+          comment: message,
+        });
+        if (res.status === 200) {
+          alert("Topic disapproved with comment.");
+          fetchTableData(); // Refresh table
+        }
+      } catch (error) {
+        console.error("Error disapproving topic:", error);
+      }
+    } else {
+      alert("Disapproval cancelled.");
+    }
+  };
+  
+
   const getBoxColor = (status_code) => {
     switch (status_code) {
       case 0:
@@ -136,51 +173,79 @@ const CreationDMTable = () => {
             <th>Outcome</th>
             <th>Status Code</th>
             <th>Link</th>
+            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {filteredData && filteredData.length > 0 ? (
-            filteredData.map((item) => (
-              <tr key={item.topic_id}>
-                <td>{item.topic}</td>
-                <td>{item.outcome}</td>
-                <td style={{ justifyContent: "center", alignItems: "center" }}>
-                  <span
-                    className="HFTbox"
-                    style={{
-                      display: "inline-block",
-                      width: "20px",
-                      height: "20px",
-                      backgroundColor: getBoxColor(item.status_code),
-                    }}
-                  ></span>
-                </td>
-                <td>
-                  {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
-                    <div className="link-input">
-                      <input
-                        type="text"
-                        placeholder="Upload link"
-                        onChange={(e) => handleLinkInput(e, item)}
-                      />
-                      <button onClick={() => updateLink(item.topic_id)}>Upload</button>
-                    </div>
-                  ) : item.url ? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>No Link Available</span>
-                  )}
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} style={{ textAlign: "center" }}>No topics assigned yet.</td>
+        {filteredData && filteredData.length > 0 ? (
+          filteredData.map((item) => (
+            <tr key={item.topic_id}>
+              <td>{item.topic}</td>
+              <td>{item.outcome}</td>
+              <td style={{ justifyContent: "center", alignItems: "center" }}>
+                <span
+                  className="HFTbox"
+                  style={{
+                    display: "inline-block",
+                    width: "20px",
+                    height: "20px",
+                    backgroundColor: getBoxColor(item.status_code),
+                  }}
+                ></span>
+              </td>
+              <td>
+                {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
+                  <div className="link-input">
+                    <input
+                      type="text"
+                      placeholder="Upload link"
+                      onChange={(e) => handleLinkInput(e, item)}
+                    />
+                    <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                  </div>
+                ) : item.url ? (
+                  <a href={item.url} target="_blank" rel="noopener noreferrer">
+                    View
+                  </a>
+                ) : (
+                  <span>No Link Available</span>
+                )}
+              </td>
+              <td>
+                {item.url ? (
+                  <div className="button-group">
+                    <button
+                      className="approve-button"
+                      onClick={() => handleApproval(item.topic_id)}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      className="disapprove-button"
+                      onClick={() => handleDisapproval(item.topic_id)}
+                    >
+                      Disapprove
+                    </button>
+                  </div>
+                ) : (
+                  <div className="button-group">
+                    <button className="approve-button" disabled>
+                      Approve
+                    </button>
+                    <button className="disapprove-button" disabled>
+                      Disapprove
+                    </button>
+                  </div>
+                )}
+              </td>
             </tr>
-          )}
-        </tbody>
+          ))
+        ) : (
+          <tr>
+            <td colSpan={5} style={{ textAlign: "center" }}>No topics assigned yet.</td>
+          </tr>
+        )}
+      </tbody>
       </table>
     </div>
     </div>
