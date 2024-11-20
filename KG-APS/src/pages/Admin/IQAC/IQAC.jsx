@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import "./Admin-entry.css";
+import AssigningRoleToCoursesComponent from './RoleAssignment';
 
 
 const AdminComponent = () => {
@@ -140,7 +141,7 @@ const AdminComponent = () => {
           </form>
           <table>
             <tbody>
-            {courses[1] && <>
+            {courses.length>0 && <>
             <tr>
             <td>COURSE CODE</td>
               <td>COURSE NAME</td>
@@ -292,37 +293,8 @@ const AdminComponent = () => {
         </div>
         </div>
       </div>
-      <div className="boxforforms">
-        <p>ASSIGN FACULTY TO COURSE -</p>
-        <form onSubmit={handleSubmit(fetchCourses)}>
-          <div className="username">
-            <label>department_id</label>
-            <select onChange={(e) => onDepartmentChangeFaculty(e.target.value)} required>
-              <option value="1">CSE</option>
-              <option value="2">AI&DS</option>
-              <option value="3">ECE</option>
-              <option value="4">CSBS</option>
-              <option value="5">IT</option>
-              <option value="6">S&H</option>
-            </select>
-          </div>
-          <button type="submit">Get courses</button>
-        </form>
-        <table>
-          <tbody>
-          {courses[1] && <>
-          <tr>
-          <td>COURSE CODE</td>
-            <td>COURSE NAME</td>
-            </tr></>}
-        {courses.map((item) => (
-          <tr key={item.course_code}>
-            <td>{item.course_code}</td>
-            <td>{item.course_name}</td>
-          </tr>
-        ))}
-        </tbody>
-        </table>
+      <div className="boxforboxforforms">
+      <AssigningRoleToCoursesComponent/>
       </div>
       </>
   );
