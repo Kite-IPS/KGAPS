@@ -178,25 +178,23 @@ const CreationCCTable = () => {
                   )}
                   
                 <td style={{ justifyContent: "center", alignItems: "center" }}>
-                    {item.status_code === 3 && (
-                      <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
-                    )}
-                    {item.status_code === 2 && (
-                      <span style={{ color: "red", fontWeight: "bold" }}>Disapproved</span>
-                    )}
-                    {(
-                      <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
-                    )}
-                  </td>
-
-                  <td>
+                  {item.status_code === 3 && (
+                    <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
+                  )}
+                  {item.status_code === 2 && (
+                    <span style={{ color: "red", fontWeight: "bold" }}>Disapproved</span>
+                  )}
+                  {item.status_code !== 2 && item.status_code !== 3 && (
+                    <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
+                  )}
+                </td>
+                <td>
                     {item.comment ? (
                       <span>{item.comment}</span>
                     ) : (
                       <span>No message</span>
                     )}
-                  </td>
-                
+                </td>
               </tr>
             ))
           ) : (
