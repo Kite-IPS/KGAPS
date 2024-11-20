@@ -4,6 +4,7 @@ import "./Admin-entry.css";
 
 
 const AssigningRoleToCoursesComponent = () => {
+  const [selectedButton, setSelectedButton] = useState(1);
   const [facultyDepartment, setFacultyDepartment] = useState(0);
   const [CoordinatorDepartment, setCoordinatorDepartment] = useState(0);
   const [DomainMentorDepartment, setDomainMentorDepartment] = useState(0);
@@ -137,9 +138,24 @@ const AssigningRoleToCoursesComponent = () => {
   return (
     <div>
     <div className="AssignOption">
-      <button className='button' onClick={() => setViewMode(1)}>Assign Course to Faculty</button>
-      <button className='button' onClick={() => setViewMode(2)}>Assign Course-Coodinator</button>
-      <button className='button' onClick={() => setViewMode(3)}>Assign Domain Mentor</button>
+    <button
+        className={`button ${selectedButton === 1 ? 'selected' : ''}`}
+        onClick={() => setSelectedButton(1)}
+      >
+        Assign Course to Faculty
+      </button>
+      <button
+        className={`button ${selectedButton === 2 ? 'selected' : ''}`}
+        onClick={() => setSelectedButton(2)}
+      >
+        Assign Course-Coordinator
+      </button>
+      <button
+        className={`button ${selectedButton === 3 ? 'selected' : ''}`}
+        onClick={() => setSelectedButton(3)}
+      >
+        Assign Domain Mentor
+      </button>
     </div>
     {viewMode === 1 && <div className="boxforforms">
       <p>ASSIGN COURSE TO FACULTY - </p>
