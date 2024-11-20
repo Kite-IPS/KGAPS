@@ -109,3 +109,33 @@
     margin-bottom: 15px;
   }
   
+/* Base button style */
+.button {
+  background-color: #f0f8ff;
+  color: #0056b3;
+  border: 2px solid #0056b3;
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect */
+.button:hover {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+/* Selected state mimicking hover */
+.button.selected {
+  background-color: #0056b3;
+  color: #ffffff;
+}
+
+/* Add active state for clicked buttons */
+.button:active {
+  background-color: #003d80;
+  color: #ffffff;
+  transform: scale(0.98);
+}

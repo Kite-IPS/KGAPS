@@ -1,10 +1,11 @@
 import React, { useState,useEffect } from 'react';
 import './CCDashboard.css';
 import axios from 'axios';
+import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 
 function HandlingCCDashboard() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
-
+  console.log(data);
   const value = (current,total) => {
     if (total===0 || current === 0 || current>total){
       return 100;
@@ -13,7 +14,7 @@ function HandlingCCDashboard() {
   }
 
   const [facultyDetails,setFacultyDetails] = useState(data); 
-  console.log(facultyDetails);
+   console.log(facultyDetails);
   // Course data
   const [courseDataCurrent,setCourseDataCurrent] = useState([
     { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
@@ -23,9 +24,7 @@ function HandlingCCDashboard() {
   const [courseDataOverall,setCourseDataOverall] = useState([
     { course_code: 'CSE101', count: 20, total_count: 40 },
     { course_code: 'CSE102', count: 10, total_count: 40 },
-  ]);
-
-  
+  ]); 
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -53,7 +52,7 @@ function HandlingCCDashboard() {
           },
           data: data,
         });
-        const res = await axios({
+        if (course.status === "OK"){const res = await axios({
           url: "http://localhost:8000/api/course_progress",
           method: "POST",
           headers: {
@@ -64,7 +63,7 @@ function HandlingCCDashboard() {
         if(res){
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
-        }
+        }}
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -74,6 +73,8 @@ function HandlingCCDashboard() {
   }, []); // Run only once when the component mounts
 
   return (
+    <>
+    <HandlingSidebar />
     <div className="handlingfaculty-dashboard-container">
       <div className="handlingfaculty-dashboard-content">
         <div className="handlingfaculty-dashboard-nametext">
@@ -105,7 +106,7 @@ function HandlingCCDashboard() {
           ))}
         </div>
       </div>
-    </div>
+    </div></>
   );
 }
 
