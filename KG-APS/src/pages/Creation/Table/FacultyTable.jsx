@@ -23,7 +23,7 @@ const CreationFacultyTable = () => {
       case 3:
         return "green";
       default:
-        return "white";
+        return "green";
     }
   };
 
