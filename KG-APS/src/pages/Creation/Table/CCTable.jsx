@@ -124,22 +124,22 @@ const CreationCCTable = () => {
       <table>
         <thead>
           <tr>
-            <th>Topic</th>
-            <th>Outcome</th>
-            <th>Status Code</th>
-            <th>Link</th>
+            <th style={{ textAlign: "center", verticalAlign: "middle" }} >Topic</th>
+            <th style={{ textAlign: "center", verticalAlign: "middle" }} >Outcome</th>
+            <th style={{ textAlign: "center", verticalAlign: "middle" }} >Status Code</th>
+            <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>
            {viewMode=== "upload" && <th>Link Upload</th>}
            <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
-           <th>Disapproval Message</th>
+           <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>
           </tr>
         </thead>
         <tbody>
           {filteredData && filteredData.length > 0 ? (
             filteredData.map((item) => (
               <tr key={item.topic_id}>
-                <td>{item.topic}</td>
-                <td>{item.outcome}</td>
-                <td style={{ justifyContent: "center", alignItems: "center" }}>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.topic}</td>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.outcome}</td>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                   <span
                     className="HFTbox"
                     style={{
@@ -150,17 +150,17 @@ const CreationCCTable = () => {
                     }}
                   ></span>
                 </td>
-                <td>{
-                item.url? (
-                    <a href={item.url} target="_blank" rel="noopener noreferrer">
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  {item.url ? (
+                    <a href={item.url} style={{ textDecoration:'none'}} target="_blank" rel="noopener noreferrer">
                       View
                     </a>
                   ) : (
-                    <span>View</span>
+                    <span>No link</span>
                   )}
                 </td>
                 {viewMode === "upload" && editedIndex === item.topic_id && (
-                    <td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <div className="link-input">
                       <input
                         type="text"
@@ -171,13 +171,18 @@ const CreationCCTable = () => {
                       <button onClick={() => setEditedIndex(null)}>Cancel</button>
                     </div>
                   </td>
-                  )}{viewMode === "upload" && item.url && editedIndex !== item.topic_id && (
+                )}
+                {viewMode === "upload" && item.url && editedIndex !== item.topic_id && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <button onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
-                  )}{viewMode === "upload" && !item.url && editedIndex !== item.topic_id &&(
+                  </td>
+                )}
+                {viewMode === "upload" && !item.url && editedIndex !== item.topic_id && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <button onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
-                  )}
-                  
-                <td style={{ justifyContent: "center", alignItems: "center" }}>
+                  </td>
+                )}
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                   {item.status_code === 3 && (
                     <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
                   )}
@@ -188,21 +193,24 @@ const CreationCCTable = () => {
                     <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
                   )}
                 </td>
-                <td>
-                    {item.comment ? (
-                      <span>{item.comment}</span>
-                    ) : (
-                      <span>No message</span>
-                    )}
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  {item.comment ? (
+                    <span>{item.comment}</span>
+                  ) : (
+                    <span>No message</span>
+                  )}
                 </td>
               </tr>
             ))
           ) : (
             <tr key={1}>
-              <td colSpan={4} style={{ textAlign: "center" }}>No topics here!</td>
+              <td colSpan={7} style={{ textAlign: "center", verticalAlign: "middle" }}>
+                No topics here!
+              </td>
             </tr>
           )}
         </tbody>
+
       </table>
     </div>
   </div>

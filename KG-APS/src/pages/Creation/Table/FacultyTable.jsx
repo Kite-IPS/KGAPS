@@ -150,22 +150,22 @@ const CreationFacultyTable = () => {
         <table>
           <thead>
             <tr>
-              <th>Topic</th>
-              <th>Outcome</th>
-              <th>Status Code</th>
-              <th>Link</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Topic</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Outcome</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Status Code</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>
               {viewMode === "upload" && <th>Link Upload</th>}
-              <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
-              <th>Disapproval Message</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Approval</th>
+              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>
             </tr>
           </thead>
           <tbody>
             {filteredData && filteredData.length > 0 ? (
               filteredData.map((item) => (
                 <tr key={item.topic_id}>
-                  <td>{item.topic}</td>
-                  <td>{item.outcome}</td>
-                  <td style={{ justifyContent: "center", alignItems: "center" }}>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.topic}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.outcome}</td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <span
                       className="HFTbox"
                       style={{
@@ -176,13 +176,13 @@ const CreationFacultyTable = () => {
                       }}
                     ></span>
                   </td>
-                  <td>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.url ? (
-                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                      <a href={item.url} style={{ textDecoration:'none'}} target="_blank" rel="noopener noreferrer">
                         View
                       </a>
                     ) : (
-                      <span>View</span>
+                      <span>No link</span>
                     )}
                   </td>
                   {viewMode === "upload" && item.can_upload === 1 && (
@@ -197,23 +197,24 @@ const CreationFacultyTable = () => {
                       </div>
                     </td>
                   )}
-                  <td style={{ justifyContent: "center", alignItems: "center" }}>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.status_code === 3 && (
-                      <span style={{ color: "green", fontWeight: "bold" }}>Approved</span>
+                      <span style={{ color: "green", fontWeight: "bold", display: "block" }}>Approved</span>
                     )}
                     {item.status_code === 2 && (
-                      <span style={{ color: "red", fontWeight: "bold" }}>Disapproved</span>
+                      <span style={{ color: "red", fontWeight: "bold", display: "block" }}>Disapproved</span>
                     )}
-                    {(
-                      <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
+                    {item.status_code !== 2 && item.status_code !== 3 && (
+                      <span style={{ color: "orange", fontWeight: "bold", display: "block" }}>Awaiting Verification</span>
                     )}
                   </td>
 
-                  <td>
+
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.disapproval_message ? (
-                      <span>{item.disapproval_message}</span>
+                      <span style={{ display: "block" }}>{item.disapproval_message}</span>
                     ) : (
-                      <span>No message</span>
+                      <span style={{ display: "block" }} >No message</span>
                     )}
                   </td>
                 </tr>

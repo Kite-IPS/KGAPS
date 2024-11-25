@@ -151,80 +151,79 @@ const CreationDMTable = () => {
       </select>
       </div>
 
-      <table>
+      <table style={{ width: '100%', textAlign: 'center' }}>
         <thead>
           <tr>
-            <th>Topic</th>
-            <th>Outcome</th>
-            <th>Status Code</th>
-            <th>Link</th>
-            <th>Actions</th>
+            <th style={{ textAlign: 'center' }}>Topic</th>
+            <th style={{ textAlign: 'center' }}>Outcome</th>
+            <th style={{ textAlign: 'center' }}>Status Code</th>
+            <th style={{ textAlign: 'center' }}>Link</th>
+            <th style={{ textAlign: 'center' }}>Actions</th>
           </tr>
         </thead>
         <tbody>
-        {filteredData && filteredData.length > 0 ? (
-          filteredData.map((item) => (
-            <tr key={item.topic_id}>
-              <td>{item.topic}</td>
-              <td>{item.outcome}</td>
-              <td style={{ justifyContent: "center", alignItems: "center" }}>
-                <span
-                  className="HFTbox"
-                  style={{
-                    display: "inline-block",
-                    width: "20px",
-                    height: "20px",
-                    backgroundColor: getBoxColor(item.status_code),
-                  }}
-                ></span>
-              </td>
-              <td>
-                {item.url ? (
-                  <a href={item.url} target="_blank" rel="noopener noreferrer">
-                    View
-                  </a>
-                ) : (
-                  <span>No Link Available</span>
-                )}
-              </td>
-              <td>
-                {item.url ? (
-                  <div className="button-group">
-                    <button
-                      className="approve-button"
-                      onClick={() => handleApproval(item.topic_id)}
-                      disabled={item.status_code === 3} // Disable if approved
-                    >
-                      Approve
-                    </button>
-                    <button
-                      className="disapprove-button"
-                      onClick={() => handleDisapproval(item.topic_id)}
-                      disabled={item.status_code === 3} // Disable if approved
-                    >
-                      Disapprove
-                    </button>
-                  </div>
-                ) : (
-                  <div className="button-group">
-                    <button className="approve-button" disabled>
-                      Approve
-                    </button>
-                    <button className="disapprove-button" disabled>
-                      Disapprove
-                    </button>
-                  </div>
-                )}
-              </td>
+          {filteredData && filteredData.length > 0 ? (
+            filteredData.map((item) => (
+              <tr key={item.topic_id}>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.topic}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.outcome}</td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                  <span
+                    className="HFTbox"
+                    style={{
+                      display: "inline-block",
+                      width: "20px",
+                      height: "20px",
+                      backgroundColor: getBoxColor(item.status_code),
+                    }}
+                  ></span>
+                </td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                  {item.url ? (
+                    <a href={item.url} style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  ) : (
+                    <span>No Link Available</span>
+                  )}
+                </td>
+                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                  {item.url ? (
+                    <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                      <button
+                        className="approve-button"
+                        onClick={() => handleApproval(item.topic_id)}
+                        disabled={item.status_code === 3} // Disable if approved
+                      >
+                        Approve
+                      </button>
+                      <button
+                        className="disapprove-button"
+                        onClick={() => handleDisapproval(item.topic_id)}
+                        disabled={item.status_code === 3} // Disable if approved
+                      >
+                        Disapprove
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                      <button className="approve-button" disabled>
+                        Approve
+                      </button>
+                      <button className="disapprove-button" disabled>
+                        Disapprove
+                      </button>
+                    </div>
+                  )}
+                </td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={5} style={{ textAlign: 'center', verticalAlign: 'middle' }}>No topics assigned yet.</td>
             </tr>
-          ))
-        ) : (
-          <tr>
-            <td colSpan={5} style={{ textAlign: "center" }}>No topics assigned yet.</td>
-          </tr>
-        )}
-      </tbody>
-
+          )}
+        </tbody>
       </table>
     </div>
     </div>
