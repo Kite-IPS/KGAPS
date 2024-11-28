@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "../../Table.css";
-
+import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
 
 const HandlingCCTable = () => {
   const data = JSON.parse(sessionStorage.getItem('userData'));
@@ -50,6 +50,7 @@ const HandlingCCTable = () => {
     <div className="HFTtable-container">
       {isUid1 ? (
         <>
+        <HandlingSidebar />
           <div className="HFTbutton-group">
             <button className="HFTbutton-1" onClick={() => setViewMode('all')}>All contents</button>
             <button className="HFTbutton-2" onClick={() => setViewMode('upload')}>To upload</button>

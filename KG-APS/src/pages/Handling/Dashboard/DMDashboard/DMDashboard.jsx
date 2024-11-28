@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import './DMDashboard.css';
 import axios from 'axios';
+import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 
 function HandlingDMDashboard() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
@@ -74,6 +75,8 @@ function HandlingDMDashboard() {
   }, []); // Run only once when the component mounts
 
   return (
+    <>
+    <HandlingSidebar />
     <div className="handlingfaculty-dashboard-container">
       <div className="handlingfaculty-dashboard-content">
         <div className="handlingfaculty-dashboard-nametext">
@@ -106,6 +109,7 @@ function HandlingDMDashboard() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 
