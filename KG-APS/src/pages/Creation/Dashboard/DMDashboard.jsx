@@ -3,6 +3,7 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import "./Dashboard.css";
 
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -31,7 +32,7 @@ const CreationDMDashboard = () => {
         setDomainCourses(course.data);
         if (course.data.length > 0) {
           setSelectedOption(course.data[0]);
-          await fetchChartData(course.data[0]); // Initial chart load
+          await fetchChartData(course.data[0]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -76,24 +77,31 @@ const CreationDMDashboard = () => {
 
   return (
     <>
-    <HandlingSidebar />
-    <div>
-      <div className="login-form-wrapper">
-        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-          <option value="" disabled>Select an option</option>
-          {DomainCourses.map((option, index) => (
-            <option key={index} value={JSON.stringify(option)}>
-              {option.course_name}
-            </option>
-          ))}
-        </select>
-        <button type="button" onClick={UpdateChart}>Get Details</button>
+      <HandlingSidebar />
+      <div className="dashboard-container">
+        <div className="dashboard-content">
+          <div className="login-form-wrapper">
+            <label htmlFor="course-select" className="dropdown-label">
+              Select a course to view progress:
+            </label>
+            <select id="course-select" value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+              <option value="" disabled>Select an option</option>
+              {DomainCourses.map((option, index) => (
+                <option key={index} value={JSON.stringify(option)}>
+                  {option.course_name}
+                </option>
+              ))}
+            </select>
+            <button type="button" onClick={UpdateChart}>Get Details</button>
+          </div>
+          <h3>Progress</h3>
+          <div className="chart-grid">
+            <div className="chart-container">
+              <Pie data={MainChartData} />
+            </div>
+          </div>
+        </div>
       </div>
-      <h3>Progress</h3>
-      <div style={{ width: "400px", height: "400px", marginBottom: "20px" }}>
-        <Pie data={MainChartData} />
-      </div>
-    </div>
     </>
   );
 };
