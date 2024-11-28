@@ -3,6 +3,7 @@ import { Pie } from 'react-chartjs-2';
 import axios from "axios";
 import { useLocation } from 'react-router-dom';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationHodDashboard = () => {
@@ -75,6 +76,7 @@ const CreationHodDashboard = () => {
 
   return (
     <div>
+      <HandlingSidebar/>
       <div className="login-form-wrapper">
         <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
           <option value="" disabled>Select an option</option>

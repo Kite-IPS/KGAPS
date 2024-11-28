@@ -8,6 +8,7 @@ const AssigningRoleToCoursesComponent = () => {
   const [facultyDepartment, setFacultyDepartment] = useState(0);
   const [CoordinatorDepartment, setCoordinatorDepartment] = useState(0);
   const [DomainMentorDepartment, setDomainMentorDepartment] = useState(0);
+  const [facultyClass,setFacultyClass] = useState(0);
 
   const [faculty, setFaculty] = useState([]); // Placeholder for faculty list
   const [coordinators, setCoordinators] = useState([]); // Placeholder for faculty list
@@ -19,11 +20,10 @@ const AssigningRoleToCoursesComponent = () => {
   
   const [courseDepartment, setCourseDepartment] = useState(0);
   const [courses, setCourses] = useState([]);
+  const [classes, setClasses] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedDomain, setSelectedDomain] = useState(0);
 
-  const [viewMode, setViewMode] = useState(1);
-  
   const onDepartmentFacultyOptionChange = async (event) => {
     const value = parseInt(event.target.value);
     setFacultyDepartment(value);
@@ -67,7 +67,6 @@ const AssigningRoleToCoursesComponent = () => {
   };
 
 
-
   const onCourseOptionChange = async (event) => {
     const value = parseInt(event.target.value);
     setCourseDepartment(value);
@@ -82,13 +81,26 @@ const AssigningRoleToCoursesComponent = () => {
     }
   };
 
+  const facultyClassChange = async (event) => {
+    const value = event.target.value;
+    try {
+      const res = await axios.post("http://localhost:8000/api/course_classes",{course_code:value});
+      if (res) {
+        setClasses(res.data);
+        console.log(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching classes:", error);
+    }
+  };
+
   const assignCourseDetails = async (event) => {
     event.preventDefault();
-    if(facultyDepartment === 0 || selectedFaculty === 0 || courseDepartment === 0 || selectedCourse === ""){
+    if(facultyDepartment === 0 || selectedFaculty === 0 || courseDepartment === 0 || selectedCourse === "" || facultyClass === 0){
       console.log("Please select all the fields");
    }else{
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_course",{course_code:selectedCourse,uid:selectedFaculty});
+      const res = await axios.post("http://localhost:8000/api/assign_course",{course_code:selectedCourse,uid:selectedFaculty,class_id:facultyClass});
       if (res) {
         setSelectedCourse("");
         setCourseDepartment(0);
@@ -135,6 +147,32 @@ const AssigningRoleToCoursesComponent = () => {
     }
   };
 
+    const departmentMap = {
+      1: "CSE",
+      2: "AI & DS",
+      3: "ECE",
+      4: "CSBS",
+      5: "IT",
+      6: "S&H",
+      7: "MECH",
+      8: "CYS",
+      9: "AI & ML",
+    };
+  
+    const parseClassId = (classId) => {
+      const idStr = classId.toString();
+      if (idStr.length !== 3) return "Invalid Class ID";
+  
+      const department = departmentMap[idStr[0]];
+      const year = idStr[1];
+      const section = idStr[2] === "1" ? "A" : "B";
+  
+      return department
+        ? `${year} Year - ${department}  ${section}`
+        : "Invalid Department";
+    };
+  
+
   return (
     <div>
     <div className="AssignOption">
@@ -157,7 +195,7 @@ const AssigningRoleToCoursesComponent = () => {
         Assign Domain Mentor
       </button>
     </div>
-    {viewMode === 1 && <div className="boxforforms">
+    {selectedButton === 1 && <div className="boxforforms">
       <p>ASSIGN COURSE TO FACULTY - </p>
       <form onSubmit={assignCourseDetails}>
         <div className="username">
@@ -215,7 +253,10 @@ const AssigningRoleToCoursesComponent = () => {
           <select
             id="course-code"
             value={selectedCourse}
-            onChange={(e) => setSelectedCourse(e.target.value)}
+            onChange={(e) => {
+              setSelectedCourse(e.target.value);
+              facultyClassChange(e);
+            }}
           >
             <option value={""}>-</option>
             {courses.map((option) => (
@@ -225,13 +266,27 @@ const AssigningRoleToCoursesComponent = () => {
             ))}
           </select>
         </div>
-
+        <div className="username">
+          <label htmlFor="faculty">Class</label>
+          <select
+            id="faculty"
+            value={facultyClass}
+            onChange={(e) => setFacultyClass(parseInt(e.target.value))}
+          >
+            <option value={0}>-</option>
+            {classes.map((option) => (
+              <option key={option.class_id} value={option.class_id}>
+                {parseClassId(option.class_id)}
+              </option>
+            ))}
+          </select>
+        </div>
         <button className="button" type="submit">
           Assign Course
         </button>
       </form>
     </div>}
-    {viewMode === 2 && <div className="boxforforms">
+    {selectedButton === 2 && <div className="boxforforms">
     <p>ASSIGN COORDINATOR - </p>
     <form onSubmit={assignCourseCoordinator}>
       <div className="username">
@@ -305,7 +360,7 @@ const AssigningRoleToCoursesComponent = () => {
       </button>
     </form>
   </div>}
-{ viewMode===3 && <div className="boxforforms">
+{ selectedButton===3 && <div className="boxforforms">
     <p>ASSIGN DOMAIN MENTOR - </p>
     <form onSubmit={assignDomainMentor}>
       <div className="username">
