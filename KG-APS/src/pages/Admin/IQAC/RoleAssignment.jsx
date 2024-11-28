@@ -22,8 +22,6 @@ const AssigningRoleToCoursesComponent = () => {
   const [selectedCourse, setSelectedCourse] = useState("");
   const [selectedDomain, setSelectedDomain] = useState(0);
 
-  const [viewMode, setViewMode] = useState(1);
-  
   const onDepartmentFacultyOptionChange = async (event) => {
     const value = parseInt(event.target.value);
     setFacultyDepartment(value);
@@ -157,7 +155,7 @@ const AssigningRoleToCoursesComponent = () => {
         Assign Domain Mentor
       </button>
     </div>
-    {viewMode === 1 && <div className="boxforforms">
+    {selectedButton === 1 && <div className="boxforforms">
       <p>ASSIGN COURSE TO FACULTY - </p>
       <form onSubmit={assignCourseDetails}>
         <div className="username">
@@ -231,7 +229,7 @@ const AssigningRoleToCoursesComponent = () => {
         </button>
       </form>
     </div>}
-    {viewMode === 2 && <div className="boxforforms">
+    {selectedButton === 2 && <div className="boxforforms">
     <p>ASSIGN COORDINATOR - </p>
     <form onSubmit={assignCourseCoordinator}>
       <div className="username">
@@ -305,7 +303,7 @@ const AssigningRoleToCoursesComponent = () => {
       </button>
     </form>
   </div>}
-{ viewMode===3 && <div className="boxforforms">
+{ selectedButton===3 && <div className="boxforforms">
     <p>ASSIGN DOMAIN MENTOR - </p>
     <form onSubmit={assignDomainMentor}>
       <div className="username">

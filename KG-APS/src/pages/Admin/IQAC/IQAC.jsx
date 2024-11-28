@@ -6,25 +6,19 @@ import AssigningRoleToCoursesComponent from './RoleAssignment';
 
 
 const AdminComponent = () => {
-  const data = localStorage.getItem('userData');
+
   const [courses, setCourses] = useState([]);
-  const [facultyCourse,setFacultyCourse] = useState([]);
-  const [domainCourse,setDomainCourse] = useState([]);
-  const [coordinatorCourse,setCoordinatorCourse] = useState([]);
   const [response, setResponse] = useState("failed");
   const [mentorList, setMentorList] = useState([]);
   const [topics, setTopics] = useState([]);
-  const [faculty, setFaculty] = useState([]);
 
   const { register, handleSubmit, setValue } = useForm();
   const getCourseForm = useForm({ defaultValues: { department_id: 0 } });
-  const addCourseForm = useForm({ defaultValues: { department_id: 0, course_code: 0, course_name: 0, domain_id: 0 } });
+  const addCourseForm = useForm({ defaultValues: { department_id: 0, course_code: 0, course_name: 0, domain_id: 0,year:0 } });
   const getMentorListForm = useForm({ defaultValues: { department_id: 0 } });
   const getTopicForm = useForm({ defaultValues: { course_code: 0 } });
   const userRegistrationForm = useForm({ defaultValues: { id: 0, name: "", password: "", role: 0, department_id: 0 } });
-  const assignCourseForm = useForm({ defaultValues: { uid: 0, course_code: "" } });
-  const assignMentorForm = useForm({ defaultValues: { uid: 0, course_code: "" } });
-  const assignDomainMentorForm = useForm({ defaultValues: { mentor_id: 0, domain_id: 0 } });
+
 
 
   const fetchCourses = async (data) => {
@@ -75,19 +69,7 @@ const AdminComponent = () => {
     }
   };
 
-  const onDepartmentChangeFaculty = async (deptId) => {
-    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
-    setFacultyCourse(courseResponse.data);
-  };
-  const onDepartmentChangeDomain = async (deptId) => {
-    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
-    setDomainCourse(courseResponse.data);
-  };
-  const onDepartmentChangeCoordinator = async (deptId) => {
-    const courseResponse = await axios.post('/api/courses', { department_id: deptId });
-    setCoordinatorCourse(courseResponse.data);
-  };
-  
+
   const getMentorListDetails = async (data) => {
     try {
       const res = await axios.post("http://localhost:8000/api/mentor_list",data=data);
@@ -101,18 +83,6 @@ const AdminComponent = () => {
     }
   };
 
-  const assignCourseMentorDetails = async (data) => {
-    try {
-      const res = await axios.post("http://localhost:8000/api/assign_mentor",data=data);
-      if (res) {
-        setResponse(res.status);
-        setMentorList(res.data);
-        console.log(response);
-      }
-    } catch (error) {
-      console.error("Error adding user:", error);
-    }
-  };
 
 
 
@@ -238,6 +208,15 @@ const AdminComponent = () => {
                 <option value="1">PROGRAMMING</option>
                 <option value="2">NETWORKS & OPERATING SYSTEMS</option>
                 <option value="3">ALGORITHMS</option>
+              </select>
+            </div>
+            <div className="username">
+              <label>Year</label>
+              <select {...addCourseForm.register("year")}>
+                <option value="1">Freshman-1st</option>
+                <option value="2">Sophomore-2nd</option>
+                <option value="3">Junior-3rd</option>
+                <option value="3">Senior-4th</option>
               </select>
             </div>
             <div className="username">

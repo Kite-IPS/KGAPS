@@ -33,18 +33,16 @@ const HandlingHODTable = () => {
     }
   };
 
-  const handleLinkInput = (e, item) => {
-    
-  };
 
-  const updateLink = async (key) => {
+  const verifyTopic = async (key) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/editcomment", {
+      const res = await axios.post("http://localhost:8000/api/verify_hours", {
         topic_id: key,
-        url: updatedLink,
+        handler_id:selectedFaculty,
       });
       if (res) {
         fetchTableData();
+        alert("Topic verified successfully");
       }
     } catch (error) {
       console.error("Error updating link:", error);
@@ -93,7 +91,7 @@ const HandlingHODTable = () => {
         console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return !item.url && item.can_upload === 1;
+          if (viewMode === "upload") return item.status_code === 4;
           return true;
         });
         setFilteredData(filtered); 
@@ -118,7 +116,7 @@ const HandlingHODTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return !item.url && item.can_upload === 1;
+        if (viewMode === "upload") return item.status_code===4;
         return true;
       })
     );
@@ -151,7 +149,7 @@ const HandlingHODTable = () => {
             <th>Topic</th>
             <th>Outcome</th>
             <th>Status Code</th>
-            <th>Link</th>
+            <th>Verify</th>
           </tr>
         </thead>
         <tbody>
@@ -172,14 +170,9 @@ const HandlingHODTable = () => {
                   ></span>
                 </td>
                 <td>
-                  {viewMode === "upload" && !item.url && item.can_upload === 1 ? (
+                  {viewMode === "upload" ? (
                     <div className="link-input">
-                      <input
-                        type="text"
-                        placeholder="Upload link"
-                        onChange={(e) => handleLinkInput(e, item)}
-                      />
-                      <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      <button onClick={() => verifyTopic(item.topic_id)}>Verify</button>
                     </div>
                   ) : item.url ? (
                     <a href={item.url} target="_blank" rel="noopener noreferrer">
