@@ -1,8 +1,8 @@
-/* Main Dashboard Container with Sidebar Adjustment */
+
 .dashboard-container {
     display: flex;
     overflow: hidden;
-    background-color: #f0f4f8; /* Soft background color */
+    background-color: #f0f4f8; 
     margin-left: -15vw;
   }
   
@@ -12,35 +12,19 @@
     display: flex;
     flex-direction: column;
     background-color: #ffffff;
-    margin-left: 300px; /* Ensure space for the sidebar */
+    margin-left: 300px; 
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
   
-  /* Dropdown Wrapper */
-  .login-form-wrapper {
-    background-color: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    width: 50%;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .login-form-wrapper:hover {
-    transform: scale(1.02); /* Slight scale-up on hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  }
-  
-  /* Label Styling */
+
   .dropdown-label {
     font-size: 1rem;
     margin-bottom: 5px;
     color: #333;
   }
   
-  /* Select Dropdown Styling */
+ 
   select {
     width: 100%;
     padding: 10px;
@@ -56,7 +40,7 @@
     border-color: #007bff;
   }
   
-  /* Button Styling with Hover Effect */
+
   button {
     padding: 10px 20px;
     background-color: #007bff;
@@ -71,11 +55,11 @@
   
   button:hover {
     background-color: #0056b3;
-    transform: translateY(-2px); /* Slight upward movement on hover */
+    transform: translateY(-2px); 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  /* Chart Grid Layout */
+ 
   .chart-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -83,7 +67,7 @@
     margin-top: 20px;
   }
   
-  /* Individual Chart Container Styling */
+
   .chart-container {
     background-color: white;
     padding: 20px;
@@ -98,7 +82,7 @@
   }
   
   .chart-container:hover {
-    transform: scale(1.03); /* Slight scale-up on hover */
+    transform: scale(1.03); 
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
   }
   
@@ -107,15 +91,11 @@
     max-height: 100%;
   }
   
-  /* Responsive Adjustments */
+
   @media (max-width: 768px) {
     .dashboard-content {
       padding: 20px;
       margin-left: 0;
-    }
-  
-    .login-form-wrapper {
-      width: 100%;
     }
   }
   
