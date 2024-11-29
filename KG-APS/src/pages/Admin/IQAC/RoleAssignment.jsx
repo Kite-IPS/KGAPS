@@ -96,14 +96,16 @@ const AssigningRoleToCoursesComponent = () => {
 
   const assignCourseDetails = async (event) => {
     event.preventDefault();
-    if(facultyDepartment === 0 || selectedFaculty === 0 || courseDepartment === 0 || selectedCourse === "" || facultyClass === 0){
-      console.log("Please select all the fields");
+    if(facultyDepartment === 0 || selectedFaculty === 0 || courseDepartment === 0 || selectedCourse === "" || facultyClass === 0 || facultyClass === '-' ){
+      alert("Please select all the fields");
    }else{
+    console.log(facultyClass);
     try {
       const res = await axios.post("http://localhost:8000/api/assign_course",{course_code:selectedCourse,uid:selectedFaculty,class_id:facultyClass});
       if (res) {
         setSelectedCourse("");
         setCourseDepartment(0);
+        setFacultyClass(0);
         alert(res.data.response);
       }
     } catch (error) {
@@ -136,7 +138,7 @@ const AssigningRoleToCoursesComponent = () => {
       console.log("Please select all the fields");
    }else{
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_domain_mentor",{domain_id:selectedDomain,mentor_id:selectedCoordinator});
+      const res = await axios.post("http://localhost:8000/api/assign_domain_mentor",{domain_id:selectedDomain,mentor_id:selectedDomainMentor});
       if (res) {
         setSelectedDomain("");
         alert(res.data.response);

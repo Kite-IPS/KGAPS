@@ -261,10 +261,9 @@ const AdminComponent = () => {
               <select {...userRegistrationForm.register("role")}>
                 <option value="1">Faculty</option>
                 <option value="2">Course Coordinator</option>
-                <option value="3">ECE</option>
-                <option value="4">CSBS</option>
-                <option value="5">IT</option>
-                <option value="6">S&H</option>
+                <option value="3">Domain Mentor</option>
+                <option value="4">Head Of Department</option>
+                <option value="5">Supervisor</option>
               </select>
             </div>
             <button type="submit">Register User</button>

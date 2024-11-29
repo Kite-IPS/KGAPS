@@ -106,11 +106,14 @@ const CreationCCTable = () => {
   }, []);
 
   return (
+
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
+    {course && (<>
+      
       <CreationTopicAddForm/>
     <div className="HFTtable-container">
-
+    
      <h1>{course.course_code+" - "+course.course_name}</h1>
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
@@ -212,7 +215,10 @@ const CreationCCTable = () => {
         </tbody>
 
       </table>
+     
     </div>
+    </>)}
+    {!course && <h1>No course assigned!</h1>}
   </div>
   );
 };

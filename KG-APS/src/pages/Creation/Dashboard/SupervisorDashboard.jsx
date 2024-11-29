@@ -23,7 +23,7 @@ const CreationSupervisorDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post("http://localhost:8000/api/domain_courses", data, {
+        const course = await axios.post("http://localhost:8000/api/courses", data, {
           headers: { "Content-Type": "application/json" },
         });
 

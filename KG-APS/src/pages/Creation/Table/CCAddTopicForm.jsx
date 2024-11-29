@@ -19,13 +19,16 @@ const CreationTopicAddForm = () => {
                 });
                 const courseData = res.data[0];
                 setCourse(courseData);
-
+                if(courseData){
                 const response = await axios({
                     url: 'http://localhost:8000/api/faculty_course_info',
                     method: 'POST',
                     data: { 'course_code': courseData.course_code }
                 });
-                setStaffList(response.data);
+                setStaffList(response.data);}
+                else{
+                    console.log("No course data found");
+                }
             } catch (error) {
                 console.error('There was an error fetching the staff list!', error);
             }
@@ -56,7 +59,9 @@ const CreationTopicAddForm = () => {
 
     return (
         <div className="form-container">
-            <h1>Add Topic</h1>
+            {Course && (
+                <>
+                <h1>Add Topic</h1>
             <h2>{Course.course_code} - {Course.course_name}</h2>
             <form className="topic-form" onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -101,7 +106,7 @@ const CreationTopicAddForm = () => {
                     </select>
                 </div>
                 <button className="submit-button" type="submit">Submit</button>
-            </form>
+            </form></>)}
         </div>
     );
 };
