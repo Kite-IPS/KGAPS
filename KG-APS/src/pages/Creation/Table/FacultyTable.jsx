@@ -135,7 +135,13 @@ const CreationFacultyTable = () => {
           <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
             Upload/Edit
           </button>
-          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+          <select
+            value={JSON.stringify(selectedOption)}
+            onChange={handleSelectChange}
+            style={{
+              height: "8vh", // Adjust the width as needed
+              padding: "5%", // Adjust padding for a compact look
+            }}>
             <option value="" disabled>
               Select an option
             </option>
@@ -146,87 +152,106 @@ const CreationFacultyTable = () => {
             ))}
           </select>
         </div>
-
         <table>
           <thead>
             <tr>
               <th style={{ textAlign: "center", verticalAlign: "middle" }} >Topic</th>
               <th style={{ textAlign: "center", verticalAlign: "middle" }} >Outcome</th>
               <th style={{ textAlign: "center", verticalAlign: "middle" }} >Status Code</th>
-              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>
+              {viewMode !== "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>}
               {viewMode === "upload" && <th>Link Upload</th>}
               <th style={{ textAlign: "center", verticalAlign: "middle" }} >Approval</th>
-              <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>
+              {viewMode === "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>}
             </tr>
           </thead>
           <tbody>
-            {filteredData && filteredData.length > 0 ? (
-              filteredData.map((item) => (
-                <tr key={item.topic_id}>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.topic}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }} >{item.outcome}</td>
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    <span
-                      className="HFTbox"
-                      style={{
-                        display: "inline-block",
-                        width: "20px",
-                        height: "20px",
-                        backgroundColor: getBoxColor(item.status_code),
-                      }}
-                    ></span>
-                  </td>
+          {filteredData && filteredData.length > 0 ? (
+            filteredData.map((item) => (
+              <tr key={item.topic_id}>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.topic}</td>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>{item.outcome}</td>
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  <span
+                    className="HFTbox"
+                    style={{
+                      display: "inline-block",
+                      width: "20px",
+                      height: "20px",
+                      backgroundColor: getBoxColor(item.status_code),
+                    }}
+                  ></span>
+                </td>
+                  
+                {/* Link Column - Visible only in 'all' mode */}
+                {viewMode !== "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.url ? (
-                      <a href={item.url} style={{ textDecoration:'none'}} target="_blank" rel="noopener noreferrer">
+                      <a
+                        href={item.url}
+                        style={{ textDecoration: "none" }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
                         View
                       </a>
                     ) : (
                       <span>No link</span>
                     )}
                   </td>
-                  {viewMode === "upload" && item.can_upload === 1 && (
-                    <td>
-                      <div className="link-input">
-                        <input
-                          type="text"
-                          placeholder="Upload link"
-                          onChange={(e) => handleLinkInput(e, item)}
-                        />
-                        <button onClick={() => updateLink(item.topic_id)}>Upload</button>
-                      </div>
-                    </td>
-                  )}
-                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    {item.status_code === 3 && (
-                      <span style={{ color: "green", fontWeight: "bold", display: "block" }}>Approved</span>
-                    )}
-                    {item.status_code === 2 && (
-                      <span style={{ color: "red", fontWeight: "bold", display: "block" }}>Disapproved</span>
-                    )}
-                    {item.status_code !== 2 && item.status_code !== 3 && (
-                      <span style={{ color: "orange", fontWeight: "bold", display: "block" }}>Awaiting Verification</span>
-                    )}
+                )}
+              
+                {/* Link Upload Column - Visible only in 'upload' mode */}
+                {viewMode === "upload" && item.can_upload === 1 && (
+                  <td>
+                    <div className="link-input">
+                      <input
+                        type="text"
+                        placeholder="Upload link"
+                        onChange={(e) => handleLinkInput(e, item)}
+                      />
+                      <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                    </div>
                   </td>
-
-
+                )}
+              
+                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                  {item.status_code === 3 && (
+                    <span style={{ color: "green", fontWeight: "bold", display: "block" }}>
+                      Approved
+                    </span>
+                  )}
+                  {item.status_code === 2 && (
+                    <span style={{ color: "red", fontWeight: "bold", display: "block" }}>
+                      Disapproved
+                    </span>
+                  )}
+                  {item.status_code !== 2 && item.status_code !== 3 && (
+                    <span style={{ color: "orange", fontWeight: "bold", display: "block" }}>
+                      Awaiting Verification
+                    </span>
+                  )}
+                </td>
+                
+                {/* Disapproval Message Column - Visible only in 'upload' mode */}
+                {viewMode === "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.disapproval_message ? (
                       <span style={{ display: "block" }}>{item.disapproval_message}</span>
                     ) : (
-                      <span style={{ display: "block" }} >No message</span>
+                      <span style={{ display: "block" }}>No message</span>
                     )}
                   </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>
-                  No topics assigned yet.
-                </td>
+                )}
               </tr>
-            )}
-          </tbody>
+            ))
+          ) : (
+            <tr>
+              <td colSpan={viewMode === "upload" ? 6 : 5} style={{ textAlign: "center" }}>
+                No topics assigned yet.
+              </td>
+            </tr>
+          )}
+        </tbody>
         </table>
       </div>
     </div>
