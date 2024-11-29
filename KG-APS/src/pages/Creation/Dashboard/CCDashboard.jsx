@@ -19,7 +19,9 @@ const CreationCCDashboard = () => {
       },
     ],
   });
+  
   console.log(data);
+
   useEffect(() => {
     const fetchCourses = async () => {
       try {
@@ -36,6 +38,7 @@ const CreationCCDashboard = () => {
 
     fetchCourses();
   }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,52 +51,68 @@ const CreationCCDashboard = () => {
           data: data,
         });
         console.log(course.data[0]);
-        if(course){
-        const res = await axios({
-          url: "http://localhost:8000/api/course_progress",
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          data: course.data[0],
-        });
-        if (res.data.main.status_code.length > 0) {
-          setShowStuff(true);
-        }
-        const response = res.data;
-        const { status_code, count, color } = response.main;
-
-        // Set main chart data
-        setMainChartData({
-          labels: status_code,
-          datasets: [
-            {
-              label: "Overall Progress",
-              data: count,
-              backgroundColor: color,
+        if (course) {
+          const res = await axios({
+            url: "http://localhost:8000/api/course_progress",
+            method: "POST",
+            headers: {
+              'Content-Type': 'application/json',
             },
-          ],
-        });
-      }
+            data: course.data[0],
+          });
+          if (res.data.main.status_code.length > 0) {
+            setShowStuff(true);
+          }
+          const response = res.data;
+          const { status_code, count, color } = response.main;
+
+          // Set main chart data
+          setMainChartData({
+            labels: status_code,
+            datasets: [
+              {
+                label: "Overall Progress",
+                data: count,
+                backgroundColor: color,
+              },
+            ],
+          });
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-    
+
     fetchData();
   }, []); // Run only once when the component mounts
 
   return (
-    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
       <HandlingSidebar />
-    <div style={{width:'80vw'}}>
-      <h3>Progress</h3>
-      { showStuff? (
-      <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
-        <Pie data={MainChartData} />
+      <div style={{ width: '80vw' }}>
+      
+        {showStuff ? (
+          <>
+          <h3>Progress</h3>
+          <div style={{ width: '400px', height: '400px', marginBottom: '20px' }}>
+            <Pie data={MainChartData} />
+          </div>
+          </>
+        ) : (
+          <div
+            style={{
+              fontSize: '26px', 
+              fontWeight: 'bold',
+              color: '#FF6347', 
+              textAlign: 'left', 
+              marginTop: '50px',
+              
+            }}
+          >
+            No topics assigned...
+          </div>
+        )}
       </div>
-  ):(<div>No topics assigned...</div>)}
-    </div>
     </div>
   );
 };
