@@ -182,7 +182,6 @@ const CreationFacultyTable = () => {
                   ></span>
                 </td>
                   
-                {/* Link Column - Visible only in 'all' mode */}
                 {viewMode !== "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.url ? (
@@ -200,7 +199,6 @@ const CreationFacultyTable = () => {
                   </td>
                 )}
               
-                {/* Link Upload Column - Visible only in 'upload' mode */}
                 {viewMode === "upload" && item.can_upload === 1 && (
                   <td>
                     <div className="link-input">
@@ -232,7 +230,6 @@ const CreationFacultyTable = () => {
                   )}
                 </td>
                 
-                {/* Disapproval Message Column - Visible only in 'upload' mode */}
                 {viewMode === "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.disapproval_message ? (

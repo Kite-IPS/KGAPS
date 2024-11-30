@@ -136,7 +136,7 @@ const AssigningRoleToCoursesComponent = () => {
       console.log("Please select all the fields");
    }else{
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_domain_mentor",{domain_id:selectedDomain,mentor_id:selectedCoordinator});
+      const res = await axios.post("http://localhost:8000/api/assign_domain_mentor",{domain_id:selectedDomain,mentor_id:selectedDomainMentor});
       if (res) {
         setSelectedDomain("");
         alert(res.data.response);

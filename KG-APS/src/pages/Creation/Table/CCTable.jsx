@@ -127,10 +127,10 @@ const CreationCCTable = () => {
             <th style={{ textAlign: "center", verticalAlign: "middle" }} >Topic</th>
             <th style={{ textAlign: "center", verticalAlign: "middle" }} >Outcome</th>
             <th style={{ textAlign: "center", verticalAlign: "middle" }} >Status Code</th>
-            <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>
-           {viewMode=== "upload" && <th>Link Upload</th>}
-           <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
-           <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>
+            {viewMode !== "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }} >Link</th>}
+            {viewMode=== "upload" && <th>Link Upload</th>}
+            <th style={{ textAlign: "center", verticalAlign: "middle" }}>Approval</th>
+            {viewMode === "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }} >Disapproval Message</th>}
           </tr>
         </thead>
         <tbody>
@@ -150,15 +150,22 @@ const CreationCCTable = () => {
                     }}
                   ></span>
                 </td>
-                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                  {item.url ? (
-                    <a href={item.url} style={{ textDecoration:'none'}} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>No link</span>
-                  )}
-                </td>
+                {viewMode !== "upload" && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    {item.url ? (
+                      <a
+                        href={item.url}
+                        style={{ textDecoration: "none" }}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View
+                      </a>
+                    ) : (
+                      <span>No link</span>
+                    )}
+                  </td>
+                )}
                 {viewMode === "upload" && editedIndex === item.topic_id && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <div className="link-input">
@@ -193,13 +200,15 @@ const CreationCCTable = () => {
                     <span style={{ color: "orange", fontWeight: "bold" }}>Awaiting Verification</span>
                   )}
                 </td>
-                <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                  {item.comment ? (
-                    <span>{item.comment}</span>
-                  ) : (
-                    <span>No message</span>
-                  )}
-                </td>
+                {viewMode === "upload" && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    {item.comment ? (
+                      <span style={{ display: "block" }}>{item.comment}</span>
+                    ) : (
+                      <span style={{ display: "block" }}>No message</span>
+                    )}
+                  </td>
+                )}
               </tr>
             ))
           ) : (
