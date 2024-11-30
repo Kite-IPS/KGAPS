@@ -41,7 +41,19 @@
   }
   
 
-  button {
+  .DMDashbutton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  }
+
+  .HODDashbutton {
     padding: 10px 20px;
     background-color: #007bff;
     color: white;
@@ -53,7 +65,31 @@
     transition: background-color 0.3s ease, transform 0.2s ease-in-out;
   }
   
-  button:hover {
+  .superDashbutton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 10px;
+    transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+  }
+  
+  .DMDashbutton:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .HODDashbutton:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  .superDashbutton:hover {
     background-color: #0056b3;
     transform: translateY(-2px); 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

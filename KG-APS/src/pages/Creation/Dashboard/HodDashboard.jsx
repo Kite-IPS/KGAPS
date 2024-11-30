@@ -86,7 +86,7 @@ const CreationHodDashboard = () => {
             </option>
           ))}
         </select>
-        <button type="button" onClick={UpdateChart}>Get Details</button>
+        <button className="HODDashbutton" type="button" onClick={UpdateChart}>Get Details</button>
       </div>
       <h3>Progress</h3>
       <div style={{ width: "400px", height: "400px", marginBottom: "20px" }}>
