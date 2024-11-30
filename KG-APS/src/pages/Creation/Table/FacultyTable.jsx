@@ -232,8 +232,8 @@ const CreationFacultyTable = () => {
                 
                 {viewMode === "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    {item.disapproval_message ? (
-                      <span style={{ display: "block" }}>{item.disapproval_message}</span>
+                    {item.comment ? (
+                      <span style={{ display: "block" }}>{item.comment}</span>
                     ) : (
                       <span style={{ display: "block" }}>No message</span>
                     )}
