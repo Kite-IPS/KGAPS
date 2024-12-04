@@ -92,7 +92,7 @@ const CreationDMDashboard = () => {
                 </option>
               ))}
             </select>
-            <button type="button" onClick={UpdateChart}>Get Details</button>
+            <button className="DMDashbutton" type="button" onClick={UpdateChart}>Get Details</button>
           </div>
           <h3>Progress</h3>
           <div className="chart-grid">
