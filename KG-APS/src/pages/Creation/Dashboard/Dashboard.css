@@ -173,4 +173,19 @@
     font-size: 14px;
     color: #555;
   }
+
+  .department-section {
+    margin-bottom: 30px;
+  }
   
+  .department-section h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    color: #444;
+  }
+  
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }

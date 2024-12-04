@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import { Pie } from 'react-chartjs-2';
+import React, { useState, useEffect } from "react";
+import { Pie } from "react-chartjs-2";
 import axios from "axios";
-import { useLocation } from 'react-router-dom';
-import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
+import { useLocation } from "react-router-dom";
+import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationSupervisorDashboard = () => {
-  const data = JSON.parse(sessionStorage.getItem('userData'));
-  const [selectedOption, setSelectedOption] = useState({ course_code: 0, course_name: "CS1" });
+  const data = JSON.parse(sessionStorage.getItem("userData"));
+  const [departments, setDepartments] = useState([]);
+  const [selectedOption, setSelectedOption] = useState();
   const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({
     labels: ["Category A", "Category B", "Category C"],
@@ -23,14 +25,20 @@ const CreationSupervisorDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post("http://localhost:8000/api/courses", data, {
-          headers: { "Content-Type": "application/json" },
-        });
-
+        const course = await axios.post(
+          "http://localhost:8000/api/supervisor_courses",
+          data,
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(course.data);
         setDomainCourses(course.data);
         if (course.data.length > 0) {
           setSelectedOption(course.data[0]);
-          await fetchChartData(course.data[0]); // Initial chart load
+          setDepartments(course.data);
+          console.log(course.data[0].courses[0]);
+          await fetchChartData(course.data[0].courses[0]); // Initial chart load
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -40,16 +48,17 @@ const CreationSupervisorDashboard = () => {
     fetchData();
   }, []);
 
-  const handleSelectChange = (event) => {
-    const selected = JSON.parse(event.target.value);
-    setSelectedOption(selected);
-  };
+
 
   const fetchChartData = async (selectedCourse) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/course_progress", selectedCourse, {
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await axios.post(
+        "http://localhost:8000/api/course_progress",
+        selectedCourse,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       const { status_code, count, color } = res.data.main;
 
@@ -68,28 +77,47 @@ const CreationSupervisorDashboard = () => {
     }
   };
 
-  const UpdateChart = async () => {
-    console.log(selectedOption);
-    await fetchChartData(selectedOption);
-  };
 
   return (
     <div>
-      <div className="login-form-wrapper">
-        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-          <option value="" disabled>Select an option</option>
-          {DomainCourses.map((option, index) => (
-            <option key={index} value={JSON.stringify(option)}>
-              {option.course_name}
-            </option>
-          ))}
-        </select>
-        <button className="superDashbutton" type="button" onClick={UpdateChart}>Get Details</button>
+      <HandlingSidebar />
+      <div>
+        {departments.map((department) => (
+          <div key={department.department_id} className="department-section">
+            <h2>{department.department_name}</h2>
+            <div className="cards-container">
+              {department.courses.map((course, index) => (
+                <div
+                  key={index}
+                  className={`course-card ${
+                    selectedOption?.course_code === course.course_code
+                      ? "expanded"
+                      : ""
+                  }`}
+                  onClick={async () => {
+                    setSelectedOption(course);
+                    await fetchChartData(course); // Update chart on card click
+                  }}
+                >
+                  <h3>{course.course_name}</h3>
+                  {selectedOption?.course_code === course.course_code && (
+                    <div className="card-details">
+                      <p>Course Code: {course.course_code}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
-      <h3>Progress</h3>
-      <div style={{ width: "400px", height: "400px", marginBottom: "20px" }}>
-        <Pie data={MainChartData} />
-      </div>
+
+      <h3>Progress</h3>{MainChartData.labels.length > 0?
+          (<div className="chart-grid">
+            <div className="chart-container">
+              <Pie data={MainChartData} />
+            </div>
+          </div>):(<h1>No progress yet</h1>)}
     </div>
   );
 };

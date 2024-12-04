@@ -14,7 +14,7 @@ const CreationDMDashboard = () => {
     course_name: "CS1",
   });
   const [DomainCourses, setDomainCourses] = useState([]);
-  const [selectedCard,setSelectedCard] = useState(-1);
+  const [selectedCard,setSelectedCard] = useState(0);
   const [MainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
@@ -50,10 +50,6 @@ const CreationDMDashboard = () => {
     fetchData();
   }, []);
 
-  const handleSelectChange = (event) => {
-    const selected = JSON.parse(event.target.value);
-    setSelectedOption(selected);
-  };
 
   const fetchChartData = async (selectedCourse) => {
     try {
@@ -64,7 +60,7 @@ const CreationDMDashboard = () => {
           headers: { "Content-Type": "application/json" },
         }
       );
-
+      console.log(res.data);
       const { status_code, count, color } = res.data.main;
 
       setMainChartData({
@@ -108,21 +104,21 @@ const CreationDMDashboard = () => {
                   >
                     <h3>{option.course_name}</h3>
                     {selectedCard === index && (
-                      <div className="card-details">
-                        <p>{option.description}</p>
-                      </div>
+                       <div className="card-details">
+                       <p>Course Code: {option.course_code}</p>
+                     </div>
                     )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-          <h3>Progress</h3>
-          <div className="chart-grid">
+          <h3>Progress</h3>{MainChartData.labels.length > 0?
+          (<div className="chart-grid">
             <div className="chart-container">
               <Pie data={MainChartData} />
             </div>
-          </div>
+          </div>):(<h1>No progress yet</h1>)}
         </div>
       </div>
     </>

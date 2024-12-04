@@ -8,15 +8,16 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationHodDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem('userData'));
-  const [selectedOption, setSelectedOption] = useState({ course_code: 0, course_name: "CS1" });
+  const [selectedCard, setSelectedCard]  = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({
-    labels: ["Category A", "Category B", "Category C"],
+    labels: [],
     datasets: [
       {
-        label: "Sample Pie Chart",
-        data: [30, 50, 20],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        label: "",
+        data: [],
+        backgroundColor: [],
       },
     ],
   });
@@ -69,29 +70,56 @@ const CreationHodDashboard = () => {
     }
   };
 
-  const UpdateChart = async () => {
-    console.log(selectedOption);
-    await fetchChartData(selectedOption);
+  const UpdateChart = async (option) => {
+    console.log(option);
+    await fetchChartData(option);
+  };
+
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
   };
 
   return (
     <div>
       <HandlingSidebar/>
-      <div className="login-form-wrapper">
-        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-          <option value="" disabled>Select an option</option>
-          {DomainCourses.map((option, index) => (
-            <option key={index} value={JSON.stringify(option)}>
-              {option.course_name}
-            </option>
-          ))}
-        </select>
-        <button className="HODDashbutton" type="button" onClick={UpdateChart}>Get Details</button>
-      </div>
-      <h3>Progress</h3>
-      <div style={{ width: "400px", height: "400px", marginBottom: "20px" }}>
-        <Pie data={MainChartData} />
-      </div>
+      <div className="course-selector">
+          <h1>Courses in department {departmentMap[data.department_id]}</h1>
+              <label className="dropdown-label">
+                Select a course to view progress:
+              </label>
+              <div className="cards-container">
+                {DomainCourses.map((option, index) => (
+                  <div
+                    key={index}
+                    className={`course-card ${
+                      selectedCard === index ? "expanded" : ""
+                    }`}
+                    onClick={async () => {setSelectedCard(index);UpdateChart(option);}}
+                  >
+                    <h3>{option.course_name}</h3>
+                    {selectedCard === index && (
+                       <div className="card-details">
+                       <p>Course Code: {option.course_code}</p>
+                     </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            <h3>Progress</h3>{MainChartData.labels.length > 0?
+          (<div className="chart-grid">
+            <div className="chart-container">
+              <Pie data={MainChartData} />
+            </div>
+          </div>):(<h1>No progress yet</h1>)}
     </div>
   );
 };
