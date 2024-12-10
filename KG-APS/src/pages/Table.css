@@ -100,3 +100,36 @@ tr:hover {
         font-size: 12px; 
     }
 }
+
+/* Styles for Edit, Upload, and Cancel buttons */
+.HFTbutton-edit, .HFTbutton-upload, .HFTbutton-cancel {
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition */
+    font-size: 14px; /* Font size */
+    margin: 0 5px; /* Margin between buttons */
+}
+
+.HFTbutton-edit:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+.HFTbutton-upload {
+    background-color: #28a745; /* Green background */
+}
+
+.HFTbutton-upload:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+.HFTbutton-cancel {
+    background-color: #dc3545; /* Red background */
+}
+
+.HFTbutton-cancel:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
