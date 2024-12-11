@@ -11,6 +11,7 @@ const CreationFacultyTable = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [viewMode, setViewMode] = useState("all");
+  const [editedIndex,setEditedIndex] = useState(null);
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -32,6 +33,8 @@ const CreationFacultyTable = () => {
   };
 
   const updateLink = async (key) => {
+    const isValid = await checkLinkStructure(updatedLink);
+    if(isValid){
     try {
       const res = await axios.post("http://localhost:8000/api/editlink", {
         topic_id: key,
@@ -40,11 +43,17 @@ const CreationFacultyTable = () => {
       if (res) {
         fetchTableData();
         alert("Link updated successfully");
+        setUpdatedLink("");
         window.location.reload();
       }
     } catch (error) {
       console.error("Error updating link:", error);
     }
+  }else{
+    alert("Invalid URL");
+    setUpdatedLink("");
+
+  }
   };
 
   const handleApproval = async (key, action) => {
@@ -199,16 +208,27 @@ const CreationFacultyTable = () => {
                   </td>
                 )}
               
-                {viewMode === "upload" && item.can_upload === 1 && (
-                  <td>
+                {viewMode === "upload" && editedIndex === item.topic_id && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <div className="link-input">
                       <input
                         type="text"
                         placeholder="Upload link"
                         onChange={(e) => handleLinkInput(e, item)}
                       />
-                      <button onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      <button className="HFTbutton-1" onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      <button className="HFTbutton-1" onClick={() => setEditedIndex(null)}>Cancel</button>
                     </div>
+                  </td>
+                )}
+                {viewMode === "upload" && item.url && editedIndex !== item.topic_id && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
+                  </td>
+                )}
+                {viewMode === "upload" && !item.url && editedIndex !== item.topic_id && (
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                   </td>
                 )}
               
