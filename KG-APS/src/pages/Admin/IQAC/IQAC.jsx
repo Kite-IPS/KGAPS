@@ -216,7 +216,7 @@ const AdminComponent = () => {
                 <option value="1">Freshman-1st</option>
                 <option value="2">Sophomore-2nd</option>
                 <option value="3">Junior-3rd</option>
-                <option value="3">Senior-4th</option>
+                <option value="4">Senior-4th</option>
               </select>
             </div>
             <div className="username">

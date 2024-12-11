@@ -10,12 +10,12 @@ const CreationCCDashboard = () => {
   const [course, setCourse] = useState({});
   const [showStuff, setShowStuff] = useState(false);
   const [MainChartData, setMainChartData] = useState({
-    labels: ["Category A", "Category B", "Category C"],
+    labels: [],
     datasets: [
       {
-        label: 'Sample Pie Chart',
-        data: [30, 50, 20],
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        label: '',
+        data: [],
+        backgroundColor: [],
       },
     ],
   });

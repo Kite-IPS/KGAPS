@@ -134,58 +134,69 @@
       margin-left: 0;
     }
   }
-  
   .cards-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .year-section {
+    margin-bottom: 16px;
+  }
+  
+  .year-card {
+    background-color: #f0f0f0;
+    padding: 12px 16px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .year-card.expanded {
+    background-color: #e0e0ff;
+  }
+  
+  .courses-container {
+    display: none;
+    margin-left: 20px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .year-card.expanded + .courses-container {
+    display: flex;
   }
   
   .course-card {
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 20px;
-    width: 250px;
-    background-color: #f9f9f9;
+    background-color: #fff;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .course-card h3 {
-    margin: 0 0 10px;
-    font-size: 18px;
-    color: #333;
-  }
-  
-  .course-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
   .course-card.expanded {
-    background-color: #eaf4ff;
-    border: 2px solid #007bff;
-    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: #f9f9ff;
+  }
+  
+  .course-card h3 {
+    font-size: 16px;
+    margin: 0;
   }
   
   .card-details {
-    margin-top: 10px;
+    margin-top: 8px;
     font-size: 14px;
     color: #555;
   }
-
-  .department-section {
-    margin-bottom: 30px;
-  }
   
-  .department-section h2 {
-    font-size: 22px;
-    margin-bottom: 15px;
-    color: #444;
-  }
-  
-  .cards-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+  .course-selector{
+    width:50%;
   }

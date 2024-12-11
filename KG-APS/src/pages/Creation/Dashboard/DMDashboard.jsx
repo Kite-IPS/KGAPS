@@ -9,12 +9,10 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationDMDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
-  const [selectedOption, setSelectedOption] = useState({
-    course_code: 0,
-    course_name: "CS1",
-  });
+  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedOption, setSelectedOption] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
-  const [selectedCard,setSelectedCard] = useState(0);
+  const [selectedCard, setSelectedCard] = useState(0);
   const [MainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
@@ -36,11 +34,11 @@ const CreationDMDashboard = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
-
+        console.log(course.data[0].courses);
         setDomainCourses(course.data);
         if (course.data.length > 0) {
-          setSelectedOption(course.data[0]);
-          await fetchChartData(course.data[0]);
+          setSelectedOption(course.data[0].courses[0]);
+          await fetchChartData(course.data[0].courses[0]);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -49,7 +47,6 @@ const CreationDMDashboard = () => {
 
     fetchData();
   }, []);
-
 
   const fetchChartData = async (selectedCourse) => {
     try {
@@ -82,43 +79,72 @@ const CreationDMDashboard = () => {
     console.log(option);
     await fetchChartData(option);
   };
+  const yearMap = {
+    1: "Freshman (1st Year)",
+    2: "Sophomore (2nd Year)",
+    3: "Junior (3rd Year)",
+    4: "Senior (4th Year)",
+    };
 
   return (
     <>
       <HandlingSidebar />
       <div className="dashboard-container">
         <div className="dashboard-content">
-          <div className="login-form-wrapper">
+          <div className="">
             <div className="course-selector">
               <label className="dropdown-label">
                 Select a course to view progress:
               </label>
               <div className="cards-container">
-                {DomainCourses.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`course-card ${
-                      selectedCard === index ? "expanded" : ""
-                    }`}
-                    onClick={async () => {setSelectedCard(index);UpdateChart(option);}}
-                  >
-                    <h3>{option.course_name}</h3>
-                    {selectedCard === index && (
-                       <div className="card-details">
-                       <p>Course Code: {option.course_code}</p>
-                     </div>
+                {DomainCourses.map((yearOption, yearIndex) => (
+                  <div key={yearIndex} className="year-section">
+                    <div
+                      className={`year-card ${
+                        selectedYear === yearIndex ? "expanded" : ""
+                      }`}
+                      onClick={async () => {setSelectedYear(yearIndex);setSelectedCard(0);}}
+                    >
+                      <h3>{yearMap[yearOption.year]}</h3>
+                    </div>
+                    {selectedYear === yearIndex && (
+                      <div className="courses-container">
+                        {yearOption.courses.map((courseOption, courseIndex) => (
+                          <div
+                            key={courseIndex}
+                            className={`course-card ${
+                              selectedCard === courseIndex ? "expanded" : ""
+                            }`}
+                            onClick={async () => {
+                              setSelectedCard(courseIndex);
+                              UpdateChart(courseOption);
+                            }}
+                          >
+                            <h3>{courseOption.course_name}</h3>
+                            {selectedCard === courseIndex && (
+                              <div className="card-details">
+                                <p>Course Code: {courseOption.course_code}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}
               </div>
             </div>
           </div>
-          <h3>Progress</h3>{MainChartData.labels.length > 0?
-          (<div className="chart-grid">
-            <div className="chart-container">
-              <Pie data={MainChartData} />
+          <h3>Progress for {selectedOption.course_code} - {selectedOption.course_name}</h3>
+          {MainChartData.labels.length > 0 ? (
+            <div className="chart-grid">
+              <div className="chart-container">
+                <Pie data={MainChartData} />
+              </div>
             </div>
-          </div>):(<h1>No progress yet</h1>)}
+          ) : (
+            <h1>No progress yet</h1>
+          )}
         </div>
       </div>
     </>
