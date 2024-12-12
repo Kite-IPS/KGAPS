@@ -83,7 +83,6 @@ const CreationSupervisorTable = () => {
         if(item.year==parseInt(year)+1) return item;
       });
     };
-    console.log(filteredCourse,year);
     setSelectedYear(year);
     setFacultyCourses(filteredCourse[0].courses);
     setSelectedOption(filteredCourse[0].courses[0]);}
