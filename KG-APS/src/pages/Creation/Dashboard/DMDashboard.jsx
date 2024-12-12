@@ -86,6 +86,11 @@ const CreationDMDashboard = () => {
     4: "Senior (4th Year)",
     };
 
+  const domainMap = {
+    1:"PROGRAMMING",
+    2:"DATA SCIENCE",
+    3:"ELECTRONICS",
+  };
   return (
     <>
       <HandlingSidebar />
@@ -93,6 +98,7 @@ const CreationDMDashboard = () => {
         <div className="dashboard-content">
           <div className="">
             <div className="course-selector">
+              <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               <label className="dropdown-label">
                 Select a course to view progress:
               </label>

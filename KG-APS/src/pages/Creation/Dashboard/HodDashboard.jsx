@@ -9,7 +9,7 @@ Chart.register(ArcElement, Tooltip, Legend);
 const CreationHodDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem('userData'));
   const [selectedCard, setSelectedCard]  = useState(0);
-  const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(0);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({
     labels: [],
@@ -28,11 +28,10 @@ const CreationHodDashboard = () => {
         const course = await axios.post("http://localhost:8000/api/department_courses", data, {
           headers: { "Content-Type": "application/json" },
         });
-
+        console.log(course.data);
         setDomainCourses(course.data);
         if (course.data.length > 0) {
-          setSelectedOption(course.data[0]);
-          await fetchChartData(course.data[0]); // Initial chart load
+          await fetchChartData(course.data[0].courses[0]); // Initial chart load
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -42,10 +41,7 @@ const CreationHodDashboard = () => {
     fetchData();
   }, []);
 
-  const handleSelectChange = (event) => {
-    const selected = JSON.parse(event.target.value);
-    setSelectedOption(selected);
-  };
+
 
   const fetchChartData = async (selectedCourse) => {
     try {
@@ -86,29 +82,53 @@ const CreationHodDashboard = () => {
     8: "CYS",
     9: "AI & ML",
   };
-
+  const yearMap = {
+    1: "Freshman (1st Year)",
+    2: "Sophomore (2nd Year)",
+    3: "Junior (3rd Year)",
+    4: "Senior (4th Year)",
+    };
   return (
     <div>
       <HandlingSidebar/>
       <div className="course-selector">
-          <h1>Courses in department {departmentMap[data.department_id]}</h1>
+              <h1>Department of {departmentMap[data.department_id]}</h1>
               <label className="dropdown-label">
                 Select a course to view progress:
               </label>
               <div className="cards-container">
-                {DomainCourses.map((option, index) => (
-                  <div
-                    key={index}
-                    className={`course-card ${
-                      selectedCard === index ? "expanded" : ""
-                    }`}
-                    onClick={async () => {setSelectedCard(index);UpdateChart(option);}}
-                  >
-                    <h3>{option.course_name}</h3>
-                    {selectedCard === index && (
-                       <div className="card-details">
-                       <p>Course Code: {option.course_code}</p>
-                     </div>
+                {DomainCourses.map((yearOption, yearIndex) => (
+                  <div key={yearIndex} className="year-section">
+                    <div
+                      className={`year-card ${
+                        selectedYear === yearIndex ? "expanded" : ""
+                      }`}
+                      onClick={async () => {setSelectedYear(yearIndex);setSelectedCard(0);}}
+                    >
+                      <h3>{yearMap[yearOption.year]}</h3>
+                    </div>
+                    {selectedYear === yearIndex && (
+                      <div className="courses-container">
+                        {yearOption.courses.map((courseOption, courseIndex) => (
+                          <div
+                            key={courseIndex}
+                            className={`course-card ${
+                              selectedCard === courseIndex ? "expanded" : ""
+                            }`}
+                            onClick={async () => {
+                              setSelectedCard(courseIndex);
+                              UpdateChart(courseOption);
+                            }}
+                          >
+                            <h3>{courseOption.course_name}</h3>
+                            {selectedCard === courseIndex && (
+                              <div className="card-details">
+                                <p>Course Code: {courseOption.course_code}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
                 ))}

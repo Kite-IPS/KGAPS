@@ -8,8 +8,9 @@ Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationSupervisorDashboard = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
-  const [departments, setDepartments] = useState([]);
-  const [selectedOption, setSelectedOption] = useState();
+  const [selectedCard, setSelectedCard] = useState(0);
+  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [MainChartData, setMainChartData] = useState({
     labels: [],
@@ -26,8 +27,8 @@ const CreationSupervisorDashboard = () => {
     const fetchData = async () => {
       try {
         const course = await axios.post(
-          "http://localhost:8000/api/supervisor_courses",
-          data,
+          "http://localhost:8000/api/department_courses",
+          { department_id: selectedDepartment },
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -35,9 +36,6 @@ const CreationSupervisorDashboard = () => {
         console.log(course.data);
         setDomainCourses(course.data);
         if (course.data.length > 0) {
-          setSelectedOption(course.data[0]);
-          setDepartments(course.data);
-          console.log(course.data[0].courses[0]);
           await fetchChartData(course.data[0].courses[0]); // Initial chart load
         }
       } catch (error) {
@@ -46,9 +44,7 @@ const CreationSupervisorDashboard = () => {
     };
 
     fetchData();
-  }, []);
-
-
+  }, [selectedDepartment]);
 
   const fetchChartData = async (selectedCourse) => {
     try {
@@ -77,47 +73,103 @@ const CreationSupervisorDashboard = () => {
     }
   };
 
+  const UpdateChart = async (option) => {
+    console.log(option);
+    await fetchChartData(option);
+  };
 
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
+  };
+  const yearMap = {
+    1: "Freshman (1st Year)",
+    2: "Sophomore (2nd Year)",
+    3: "Junior (3rd Year)",
+    4: "Senior (4th Year)",
+  };
   return (
     <div>
       <HandlingSidebar />
-      <div>
-        {departments.map((department) => (
-          <div key={department.department_id} className="department-section">
-            <h2>{department.department_name}</h2>
-            <div className="cards-container">
-              {department.courses.map((course, index) => (
+      <div className="course-selector">
+        <div className="department-selector">
+          <label className="dropdown-label">Select a department:</label>
+          <select onChange={(e) => setSelectedDepartment(e.target.value)}>
+            {Object.keys(departmentMap).map((departmentKey) => (
+              <option key={departmentKey} value={departmentKey}>
+                {departmentMap[departmentKey]}
+              </option>
+            ))}
+          </select>
+        </div>
+        <label className="dropdown-label">
+          Select a course to view progress:
+        </label>
+        <div className="cards-container">
+          {DomainCourses.length > 0 ? (
+            DomainCourses.map((yearOption, yearIndex) => (
+              <div key={yearIndex} className="year-section">
                 <div
-                  key={index}
-                  className={`course-card ${
-                    selectedOption?.course_code === course.course_code
-                      ? "expanded"
-                      : ""
+                  className={`year-card ${
+                    selectedYear === yearIndex ? "expanded" : ""
                   }`}
                   onClick={async () => {
-                    setSelectedOption(course);
-                    await fetchChartData(course); // Update chart on card click
+                    setSelectedYear(yearIndex);
+                    setSelectedCard(0);
                   }}
                 >
-                  <h3>{course.course_name}</h3>
-                  {selectedOption?.course_code === course.course_code && (
-                    <div className="card-details">
-                      <p>Course Code: {course.course_code}</p>
-                    </div>
-                  )}
+                  <h3>{yearMap[yearOption.year]}</h3>
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+                {selectedYear === yearIndex && (
+                  <div className="courses-container">
+                    {yearOption.courses.map((courseOption, courseIndex) => (
+                      <div
+                        key={courseIndex}
+                        className={`course-card ${
+                          selectedCard === courseIndex ? "expanded" : ""
+                        }`}
+                        onClick={async () => {
+                          setSelectedCard(courseIndex);
+                          UpdateChart(courseOption);
+                        }}
+                      >
+                        <h3>{courseOption.course_name}</h3>
+                        {selectedCard === courseIndex && (
+                          <div className="card-details">
+                            <p>Course Code: {courseOption.course_code}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          ) : (
+            <h1>No courses yet</h1>
+          )}
+        </div>
 
-      <h3>Progress</h3>{MainChartData.labels.length > 0?
-          (<div className="chart-grid">
+        {DomainCourses.length>0?(MainChartData.labels.length > 0 ? (
+        <>
+        <h3>Progress</h3>
+          <div className="chart-grid">
             <div className="chart-container">
               <Pie data={MainChartData} />
             </div>
-          </div>):(<h1>No progress yet</h1>)}
+          </div>
+          </>
+        ) : (
+          <h1>No progress yet</h1>
+        )):(null)}
+      </div>
     </div>
   );
 };
