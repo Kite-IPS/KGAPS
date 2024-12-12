@@ -83,7 +83,7 @@ const HandlingHODTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/head_of_department", {
+      const res = await axios.post("http://localhost:8000/api/faculty", {
         handler_id:selectedFaculty,
         course_code: selectedOption.course_code,
       });
