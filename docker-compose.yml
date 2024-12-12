@@ -1,0 +1,56 @@
+services:
+  angular:
+    container_name: angualr-server
+    build:
+      context: frontend
+    ports:
+      - "4200:4200"
+    networks:
+      - mynetwork
+  server: 
+    container_name: flask-server
+    build: 
+      context: server
+    env_file:
+      - ./server/sqls/db.env
+    ports:
+      - '5001:5001'
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+  db:
+    container_name: postgres-server
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - ./server/sqls/db.env
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+      - ./server/sqls/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    networks:
+      - mynetwork
+    
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    restart: always
+    ports:
+      - "8888:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    environment:
+     PGADMIN_DEFAULT_EMAIL: admin@admin.com
+     PGADMIN_DEFAULT_PASSWORD: admin
+    networks:
+      - mynetwork
+    
+    
+volumes:
+  local_pgdata:
+  pgadmin-data:
+
+networks:
+    mynetwork:
