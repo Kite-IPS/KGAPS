@@ -14,13 +14,11 @@ const HandlingFacultyTable = () => {
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
-      case 0:
-        return "white";
-      case 1:
-        return "orange";
-      case 2:
-        return "red";
       case 3:
+        return "white";
+      case 4:
+        return "orange";
+      case 5:
         return "green";
       default:
         return "white";
@@ -118,7 +116,7 @@ const HandlingFacultyTable = () => {
           All contents
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          To upload
+          Declare
         </button>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
@@ -167,10 +165,10 @@ const HandlingFacultyTable = () => {
                       <button onClick={() => updateLink(item.topic_id)}>Submit</button>
                     </div>
                   ) : item.status_code === 4 ? (
-                    <p>{item.hours_completed+"/"+item.total_hours}</p>
-                  ) : (
+                    <p>{"declared :"+item.hours_completed+" alloted :"+item.total_hours}</p>
+                  ) : item.status_code <4?(
                     <span>Not declared yet</span>
-                  )}
+                  ):(<span>Completed</span>)}
                 </td>
               </tr>
             ))

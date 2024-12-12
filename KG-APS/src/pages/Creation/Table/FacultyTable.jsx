@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../../Table.css";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
+import StatusLegend from "../legend";
 
 const CreationFacultyTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -262,6 +263,7 @@ const CreationFacultyTable = () => {
         </tbody>
         </table>
       </div>
+      <StatusLegend />
     </div>
   );
 };
