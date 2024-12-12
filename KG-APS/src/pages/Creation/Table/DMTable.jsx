@@ -8,6 +8,8 @@ const CreationDMTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [comment, setComment] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+  const [selectedYear, setSelectedYear] = useState(0);
+  const [courseList,setCourseList] = useState([]);
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
@@ -65,7 +67,12 @@ const CreationDMTable = () => {
     }
   };
 
-
+  const yearMap = {
+    0: "Freshman (1st Year)",
+    1: "Sophomore (2nd Year)",
+    2: "Junior (3rd Year)",
+    3: "Senior (4th Year)",
+  };
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -74,9 +81,9 @@ const CreationDMTable = () => {
           domain_id: data.domain_id,
         });
         if (courseResponse.data) {
-          setFacultyCourses(courseResponse.data);
+          setCourseList(courseResponse.data); 
           if (courseResponse.data.length > 0) {
-            setSelectedOption(courseResponse.data[0]);
+            setSelectedOption(courseResponse.data[0].courses[0]);
           }
         }
       } catch (error) {
@@ -87,22 +94,31 @@ const CreationDMTable = () => {
     fetchCourses();
   }, []);
 
+  useEffect(() => {
+    if(!courseList.length>0) return;
+    console.log(selectedYear);
+    const filteredCourse = courseList.filter((item)=>{
+      if(item.year==parseInt(selectedYear)+1) return item;
+    });
+    setFacultyCourses(filteredCourse[0].courses);
+    setSelectedOption(filteredCourse[0].courses[0]);
+  }
+    ,[courseList,selectedYear]);
+
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
       const res = await axios.post("http://localhost:8000/api/domain_mentor", {
         domain_id: data.domain_id,
         course_code: selectedOption.course_code,
-      });
+      }); 
       if (res.data && !('response' in res.data)) {
-        console.log(res.data);
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
           if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
           return true;
         });
-        setFilteredData(filtered);
-        console.log(filtered); 
+        setFilteredData(filtered); 
       } else {
         setTableData([]);
         setFilteredData([]); // Set to empty array if no data
@@ -141,6 +157,12 @@ const CreationDMTable = () => {
         <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
           Approve/Disapprove
         </button>
+        <select value={selectedYear} onChange={((e)=> {setSelectedYear(e.target.value);})}>
+          <option value="" disabled>Select An option</option>
+          {Object.keys(courseList).map((year,index)=>(
+            <option key={index} value={year}>{yearMap[year]}</option>
+          ))}
+        </select>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
         <option value="" disabled>Select an option</option>
         {FacultyCourses.map((option, index) => (
@@ -158,7 +180,7 @@ const CreationDMTable = () => {
             <th style={{ textAlign: 'center' }}>Outcome</th>
             <th style={{ textAlign: 'center' }}>Status Code</th>
             <th style={{ textAlign: 'center' }}>Link</th>
-            <th style={{ textAlign: 'center' }}>Actions</th>
+            {viewMode==="upload" && <th style={{ textAlign: 'center' }}>Actions</th>}
           </tr>
         </thead>
         <tbody>
@@ -188,7 +210,7 @@ const CreationDMTable = () => {
                   )}
                 </td>
                 <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                  {item.url ? (
+                  {item.url? (
                     <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                       <button
                         className="approve-button"

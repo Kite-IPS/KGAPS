@@ -77,7 +77,7 @@ const CreationCCTable = () => {
       if (res.data && !('response' in res.data)) {
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code === 0 || item.status_code === 1;
+          if (viewMode === "upload") return item.status_code <3;
           return true;
         });
         setFilteredData(filtered);
@@ -95,11 +95,12 @@ const CreationCCTable = () => {
       tableData.filter((item) => {
         if (viewMode === "upload") {
           // Include topics that are either disapproved (status_code === 2) or can be uploaded (status_code < 3 and can_upload === 1)
-          return (item.status_code < 3 && item.can_upload === 1) || item.status_code === 2;
+          return item.status_code < 3;
         }
         return true; // For "all" view mode, include all items
       })
     );
+    console.log(filteredData);
   }, [viewMode, tableData]);
 
   useEffect(() => {
@@ -181,12 +182,12 @@ const CreationCCTable = () => {
                           </div>
                         </td>
                       )}
-                      {viewMode === "upload" && item.url && editedIndex !== item.topic_id && (
+                      {viewMode === "upload" && item.status_code>0 && editedIndex !== item.topic_id && (
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
                         </td>
                       )}
-                      {viewMode === "upload" && !item.url && editedIndex !== item.topic_id && (
+                      {viewMode === "upload" && item.status_code===0 && editedIndex !== item.topic_id && (
                         <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                           <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                         </td>

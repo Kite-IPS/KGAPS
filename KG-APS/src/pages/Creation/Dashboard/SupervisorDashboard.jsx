@@ -89,12 +89,7 @@ const CreationSupervisorDashboard = () => {
     8: "CYS",
     9: "AI & ML",
   };
-  const yearMap = {
-    1: "Freshman (1st Year)",
-    2: "Sophomore (2nd Year)",
-    3: "Junior (3rd Year)",
-    4: "Senior (4th Year)",
-  };
+http://localhost:5173/creation/faculty/table
   return (
     <div>
       <HandlingSidebar />
