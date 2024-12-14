@@ -1,10 +1,10 @@
 services:
-  angular:
-    container_name: angualr-server
+  react:
+    container_name: react-frontend
     build:
-      context: frontend
+      context: KG-APS
     ports:
-      - "4200:4200"
+      - "3000:3000"
     networks:
       - mynetwork
   server: 

@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-import requests
+from flask import Flask, request, jsonify , send_from_directory
 import sqlalchemy
 import os
 import json
@@ -27,6 +26,7 @@ def progress_color(comp,total):
     else:
         print(value)
         return 'red'
+ 
 
 @app.route('/api/', methods=['POST', 'GET'])
 def index():
