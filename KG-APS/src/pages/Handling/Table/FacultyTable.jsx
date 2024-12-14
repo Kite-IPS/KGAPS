@@ -7,6 +7,7 @@ const HandlingFacultyTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [updatedLink, setUpdatedLink] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
+  const [editedIndex, setEditedIndex] = useState(null);
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
@@ -155,16 +156,20 @@ const HandlingFacultyTable = () => {
                   ></span>
                 </td>
                 <td>
-                  {viewMode === "upload" && item.status_code === 3 ? (
+                  {viewMode === "upload" && item.status_code === 3 && editedIndex===item.topic_id? (
                     <div className="link-input">
                       <input
                         type="text"
                         placeholder="Enter hours"
                         onChange={(e) => handleLinkInput(e, item)}
                       />
-                      <button onClick={() => updateLink(item.topic_id)}>Submit</button>
+                      <button className="HFTbutton-1" onClick={() => updateLink(item.topic_id)}>Submit</button>
+                      <button className="HFTbutton-1" onClick={() => setEditedIndex(null)}>Cancel</button>
+
                     </div>
-                  ) : item.status_code === 4 ? (
+                  ) :viewMode=== "upload" && item.status_code === 3 ?(
+                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
+                   ) : item.status_code === 4 ? (
                     <p>{"declared :"+item.hours_completed+" alloted :"+item.total_hours}</p>
                   ) : item.status_code <4?(
                     <span>Not declared yet</span>

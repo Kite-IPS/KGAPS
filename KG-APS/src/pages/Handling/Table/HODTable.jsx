@@ -178,7 +178,7 @@ const HandlingHODTable = () => {
               <th>Topic</th>
               <th>Outcome</th>
               <th>Status Code</th>
-              <th>Verify</th>
+              {viewMode==="upload"?(<th>Verify</th>):(<th>Link</th>)}
             </tr>
           </thead>
           <tbody>

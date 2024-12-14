@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify , send_from_directory
+from flask import Flask, request, jsonify
 import sqlalchemy
 import os
 import json
@@ -475,17 +475,17 @@ def facultyprogress():
     for course_id, status_code, count in r:
         data[course_id][status[status_code]] = count,color_status[status_code]
     json_output = json.dumps(data)
-    q = sqlalchemy.text(f"SELECT COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, all_courses.course_code FROM (SELECT DISTINCT course_code FROM faculty_table WHERE uid = '{handler_id}') AS all_courses LEFT JOIN (SELECT course_code, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours FROM faculty_table WHERE status_code = 5 AND uid = '{handler_id}' GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code;")
+    q = sqlalchemy.text(f"SELECT COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, all_courses.course_code,cd.course_name FROM (SELECT DISTINCT course_code FROM faculty_table WHERE uid = '{handler_id}') AS all_courses LEFT JOIN (SELECT course_code, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours FROM faculty_table WHERE status_code = 5 AND uid = '{handler_id}' GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code JOIN t_course_details cd ON all_courses.course_code = cd.course_code;")
     r = conn.execute(q).fetchall()
     course_data_current = []
     for i in r:
-        temp={'completed_hours':i[0],'total_hours':i[1],'bar_color':progress_color(i[0],i[1]),'course_code':i[2]}
+        temp={'completed_hours':i[0],'total_hours':i[1],'bar_color':progress_color(i[0],i[1]),'course_code':i[2],'course_name':i[3]}
         course_data_current.append(temp)
-    q = sqlalchemy.text(f"SELECT all_courses.course_code,COALESCE(active_courses.active_course_count, 0),all_courses.total_course_count AS active_course_count FROM (SELECT course_code, COUNT(*) AS total_course_count FROM faculty_table WHERE uid = '{handler_id}' GROUP BY course_code, uid) AS all_courses LEFT JOIN (SELECT course_code, COUNT(*) AS active_course_count FROM faculty_table WHERE uid = '{handler_id}' AND status_code = 5 GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code;")
+    q = sqlalchemy.text(f"SELECT all_courses.course_code,cd.course_name,COALESCE(active_courses.active_course_count, 0),all_courses.total_course_count AS active_course_count FROM (SELECT course_code, COUNT(*) AS total_course_count FROM faculty_table WHERE uid = '{handler_id}' GROUP BY course_code, uid) AS all_courses LEFT JOIN (SELECT course_code, COUNT(*) AS active_course_count FROM faculty_table WHERE uid = '{handler_id}' AND status_code = 5 GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code JOIN t_course_details cd ON all_courses.course_code = cd.course_code;")
     r = conn.execute(q).fetchall()
     course_data_overall = []
     for i in r:
-        temp={'course_code':i[0],'count':i[1],'total_count':i[2]}
+        temp={'course_code':i[0],'course_name':i[1],'count':i[2],'total_count':i[3]}
         course_data_overall.append(temp)
     print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall})
     return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall}) 
@@ -500,17 +500,17 @@ def course_progress():
     status = {0:"Not uploaded",1:"Uploaded",2:"Disapproved",3:"Approved"}
     color_status = {0:'lightgrey',1:'orange',2:'red',3:'green'}
     codes,mdata,mcolor = [status[i[0]] for i in r],[i[1] for i in r],[color_status[i[0]] for i in r]
-    q = sqlalchemy.text(f"SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours FROM (SELECT DISTINCT course_code, uid FROM faculty_table where course_code='{course_code}') AS all_courses LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours FROM faculty_table WHERE status_code = 5 and course_code='{course_code}' GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code AND all_courses.uid = active_courses.uid JOIN t_users t ON all_courses.uid = t.uid;")
+    q = sqlalchemy.text(f"SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, cd.course_name FROM (SELECT DISTINCT course_code, uid FROM faculty_table WHERE course_code = '{course_code}') AS all_courses LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours FROM faculty_table WHERE status_code = 5 AND course_code = '{course_code}' GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code AND all_courses.uid = active_courses.uid JOIN t_users t ON all_courses.uid = t.uid JOIN t_course_details cd ON all_courses.course_code = cd.course_code;")
     r = conn.execute(q).fetchall()
     course_data_current = []
     for i in r:
-        temp={'uid':i[0],'name':i[1],'course_code':i[2],'completed_hours':i[3],'total_hours':i[4],'bar_color':progress_color(i[3],i[4])}
+        temp={'uid':i[0],'name':i[1],'course_code':i[2],'completed_hours':i[3],'total_hours':i[4],'bar_color':progress_color(i[3],i[4]),'course_name':i[5]}
         course_data_current.append(temp)
-    q = sqlalchemy.text(f"SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed FROM faculty_table f JOIN t_users t ON t.uid = f.uid WHERE f.course_code = '{course_code}' GROUP BY f.uid, f.course_code, t.name;")
+    q = sqlalchemy.text(f"SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed, cd.course_name FROM faculty_table f JOIN t_users t ON t.uid = f.uid JOIN t_course_details cd ON f.course_code = cd.course_code WHERE f.course_code = '{course_code}' GROUP BY f.uid, f.course_code, t.name, cd.course_name;")
     r = conn.execute(q).fetchall()
     course_data_overall = []
     for i in r:
-        temp={'uid':i[0],'name':i[1],'course_code':i[2],'count':i[4],'total_count':i[3]}
+        temp={'uid':i[0],'name':i[1],'course_code':i[2],'count':i[4],'total_count':i[3],'course_name':i[5]}
         course_data_overall.append(temp)
     print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current})
     return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current}) 
