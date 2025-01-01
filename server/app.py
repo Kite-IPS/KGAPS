@@ -45,6 +45,7 @@ def login():
         uid = request.json['username']
         password = request.json['password']
         q = sqlalchemy.text(f"SELECT uid,name,role_id,department_id FROM user_details_check WHERE uid='{uid}' and password='{password}' and role_id={role};")
+        print(q)
         r = conn.execute(q).fetchall()
         if r:
             data = [dict(i._mapping) for i in r]
