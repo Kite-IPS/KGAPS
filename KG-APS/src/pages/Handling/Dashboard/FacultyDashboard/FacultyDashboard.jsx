@@ -17,15 +17,9 @@ function HandlingFacultyDashboard() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
 
   const [facultyDetails, setFacultyDetails] = useState(data); 
-  const [courseDataCurrent, setCourseDataCurrent] = useState([
-    { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
-    { course_code: 'CSE102', completed_hours: 10, total_hours: 40, bar_color: 'red' },
-  ]);
+  const [courseDataCurrent, setCourseDataCurrent] = useState([]);
 
-  const [courseDataOverall, setCourseDataOverall] = useState([
-    { course_code: 'CSE101', count: 20, total_count: 40 },
-    { course_code: 'CSE102', count: 10, total_count: 40 },
-  ]);
+  const [courseDataOverall, setCourseDataOverall] = useState([]);
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -85,8 +79,6 @@ function HandlingFacultyDashboard() {
     else { comment = "Not yet started";}
 
     aggrdata.push({ topic_count: topic_count, comment:comment });
-    
-    console.log(aggrdata);
     return aggrdata;
   }
   return (
@@ -101,7 +93,7 @@ function HandlingFacultyDashboard() {
           </div>
           {courseDataOverall.length>0?(
         <>  
-        <h1>Course {courseDataOverall[0].course_code+" - "+courseDataOverall[0].course_name}</h1>
+        
         <div className="handlingfaculty-dashboard-aggregate">
           <p>Aggregate Progress</p>
           <div className="handlingfaculty-dashboard-aggregate-content">
@@ -116,7 +108,7 @@ function HandlingFacultyDashboard() {
         <div className="handlingfaculty-dashboard-card-container">
           {courseDataCurrent.map((item, i) => (
             <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}</div>
+              <div className="handlingfaculty-dashboard-card-header">Course: {courseDataCurrent[i].course_code+" - "+courseDataCurrent[i].course_name}</div>
               <div className="handlingfaculty-dashboard-card-content">
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">

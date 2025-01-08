@@ -34,7 +34,6 @@ const CreationDMDashboard = () => {
             headers: { "Content-Type": "application/json" },
           }
         );
-        console.log(course.data[0].courses);
         setDomainCourses(course.data);
         if (course.data.length > 0) {
           setSelectedOption(course.data[0].courses[0]);
@@ -99,7 +98,9 @@ const CreationDMDashboard = () => {
           <div className="">
             <div className="course-selector">
               <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
-              <label className="dropdown-label">
+              {DomainCourses.length > 0 ?(
+                <>
+                <label className="dropdown-label">
                 Select a course to view progress:
               </label>
               <div className="cards-container">
@@ -138,18 +139,19 @@ const CreationDMDashboard = () => {
                     )}
                   </div>
                 ))}
-              </div>
+              </div></>):(<h1>No courses available</h1>)}
             </div>
           </div>
-          <h3>Progress for {selectedOption.course_code} - {selectedOption.course_name}</h3>
-          {MainChartData.labels.length > 0 ? (
+          
+          {MainChartData.labels.length > 0 ? (<>
+            <h3>Progress for {selectedOption.course_code} - {selectedOption.course_name}</h3>
             <div className="chart-grid">
               <div className="chart-container">
                 <Pie data={MainChartData} />
               </div>
-            </div>
+            </div></>
           ) : (
-            <h1>No progress yet</h1>
+            selectedOption.course_code && (<h1>No progress yet</h1>)
           )}
         </div>
       </div>
