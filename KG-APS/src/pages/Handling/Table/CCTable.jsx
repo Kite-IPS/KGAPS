@@ -47,68 +47,72 @@ const HandlingCCTable = () => {
   const isUid1 = uidData.some(user => user.uid === 1);
 
   return (
-    <div className="HFTtable-container">
+    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
       {isUid1 ? (
         <>
-        <HandlingSidebar />
-          <div className="HFTbutton-group">
-            <button className="HFTbutton-1" onClick={() => setViewMode('all')}>All contents</button>
-            <button className="HFTbutton-2" onClick={() => setViewMode('upload')}>To upload</button>
-            <button className="HFTbutton-3" onClick={() => setViewMode('handle')}>Handle</button>
-          </div>
+          <HandlingSidebar />
+          <div className="HFTtable-container">
+            <div className="HFTbutton-group">
+              <button className="HFTbutton-1" onClick={() => setViewMode('all')}>All contents</button>
+              <button className="HFTbutton-2" onClick={() => setViewMode('upload')}>To upload</button>
+              <button className="HFTbutton-3" onClick={() => setViewMode('handle')}>Handle</button>
+            </div>
 
-          <table>
-            <thead>
-              <tr>
-                <th>Topic</th>
-                <th>Outcome</th>
-                <th>Status Code</th>
-                <th>Link</th>
-                {viewMode === 'handle' && <th>Hours Taken</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredData.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.topic}</td>
-                  <td>{item.outcome}</td>
-                  <td style={{ justifyContent: 'center', alignItems: 'center' }}>
-                    <span
-                      className="HFTbox"
-                      style={{
-                        display: 'inline-block',
-                        width: '20px',
-                        height: '20px',
-                        backgroundColor: getBoxColor(item.status_code),
-                      }}
-                    ></span>
-                  </td>
-                  <td>
-                    {viewMode === 'upload' && !item.link ? (
-                      <input
-                        type="text"
-                        placeholder="Upload link"
-                        onChange={(e) => handleLinkInput(e, item)}
-                      />
-                    ) : item.link ? (
-                      <a href={item.link} target="_blank" rel="noopener noreferrer">View</a>
-                    ) : (
-                      <span>No Link Available</span>
-                    )}
-                  </td>
-                  {viewMode === 'handle' && item.link && (
-                    <td>
-                      <input
-                        type="text"
-                        placeholder="Hours taken"
-                        onChange={(e) => handleHoursInput(e, item)}
-                      />
-                    </td>
-                  )}
+            <table>
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Outcome</th>
+                  <th>Status Code</th>
+                  <th>Link</th>
+                  {viewMode === 'handle' && <th>Hours Taken</th>}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredData.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.topic}</td>
+                    <td>{item.outcome}</td>
+                    <td style={{ justifyContent: 'center', alignItems: 'center' }}>
+                      <span
+                        className="HFTbox"
+                        style={{
+                          display: 'inline-block',
+                          width: '20px',
+                          height: '20px',
+                          backgroundColor: getBoxColor(item.status_code),
+                        }}
+                      ></span>
+                    </td>
+                    <td>
+                      {viewMode === 'upload' && !item.link ? (
+                        <input
+                          type="text"
+                          placeholder="Upload link"
+                          value={item.link}
+                          onChange={(e) => handleLinkInput(e, item)}
+                        />
+                      ) : item.link ? (
+                        <a href={item.link} target="_blank" rel="noopener noreferrer">View</a>
+                      ) : (
+                        <span>No Link Available</span>
+                      )}
+                    </td>
+                    {viewMode === 'handle' && item.link && (
+                      <td>
+                        <input
+                          type="text"
+                          placeholder="Hours taken"
+                          value={item.hoursTaken || ''}
+                          onChange={(e) => handleHoursInput(e, item)}
+                        />
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </>
       ) : (
         <p>No data available for this UID.</p>
