@@ -1,15 +1,14 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
-
 
 const CreationDMTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [comment, setComment] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedYear, setSelectedYear] = useState(0);
-  const [courseList,setCourseList] = useState([]);
+  const [courseList, setCourseList] = useState([]);
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
@@ -29,7 +28,7 @@ const CreationDMTable = () => {
       console.error("Error approving topic:", error);
     }
   };
-  
+
   const handleDisapproval = async (topic_id) => {
     const message = prompt("Please enter a reason for disapproval:");
     if (message) {
@@ -50,7 +49,6 @@ const CreationDMTable = () => {
       alert("Disapproval cancelled.");
     }
   };
-  
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -81,7 +79,7 @@ const CreationDMTable = () => {
           domain_id: data.domain_id,
         });
         if (courseResponse.data) {
-          setCourseList(courseResponse.data); 
+          setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);
           }
@@ -95,15 +93,14 @@ const CreationDMTable = () => {
   }, []);
 
   useEffect(() => {
-    if(!courseList.length>0) return;
+    if (!courseList.length > 0) return;
     console.log(selectedYear);
-    const filteredCourse = courseList.filter((item)=>{
-      if(item.year==parseInt(selectedYear)+1) return item;
+    const filteredCourse = courseList.filter((item) => {
+      if (item.year == parseInt(selectedYear) + 1) return item;
     });
     setFacultyCourses(filteredCourse[0].courses);
     setSelectedOption(filteredCourse[0].courses[0]);
-  }
-    ,[courseList,selectedYear]);
+  }, [courseList, selectedYear]);
 
   const fetchTableData = async () => {
     if (!selectedOption) return;
@@ -111,14 +108,14 @@ const CreationDMTable = () => {
       const res = await axios.post("http://localhost:8000/api/domain_mentor", {
         domain_id: data.domain_id,
         course_code: selectedOption.course_code,
-      }); 
+      });
       if (res.data && !('response' in res.data)) {
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
+          if (viewMode === "upload") return item.status_code === 2 || item.status_code === 1;
           return true;
         });
-        setFilteredData(filtered); 
+        setFilteredData(filtered);
       } else {
         setTableData([]);
         setFilteredData([]); // Set to empty array if no data
@@ -140,114 +137,131 @@ const CreationDMTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
+        if (viewMode === "upload") return item.status_code === 2 || item.status_code === 1;
         return true;
       })
     );
   }, [viewMode, tableData]);
 
   return (
-    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
+    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
       <HandlingSidebar />
-    <div className="HFTtable-container">
-      <div className="HFTbutton-group">
-        <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
-          All contents
-        </button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
-          Approve/Disapprove
-        </button>
-        <select value={selectedYear} onChange={((e)=> {setSelectedYear(e.target.value);})}>
-          <option value="" disabled>Select An option</option>
-          {Object.keys(courseList).map((year,index)=>(
-            <option key={index} value={year}>{yearMap[year]}</option>
-          ))}
-        </select>
-         <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-        <option value="" disabled>Select an option</option>
-        {FacultyCourses.map((option, index) => (
-          <option key={index} value={JSON.stringify(option)}>
-            {option.course_code + " - " + option.course_name}
-          </option>
-        ))}
-      </select>
-      </div>
+      <div className="HFTtable-container">
+        <div className="HFTbutton-group">
+          <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+            All contents
+          </button>
+          <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
+            Approve/Disapprove
+          </button>
+          <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>
+            <option value="" disabled>Select An option</option>
+            {Object.keys(courseList).map((year, index) => (
+              <option key={index} value={year}>{yearMap[year]}</option>
+            ))}
+          </select>
+          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+            <option value="" disabled>Select an option</option>
+            {FacultyCourses.map((option, index) => (
+              <option key={index} value={JSON.stringify(option)}>
+                {option.course_code + " - " + option.course_name}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <table style={{ width: '100%', textAlign: 'center' }}>
-        <thead>
-          <tr>
-            <th style={{ textAlign: 'center' }}>Topic</th>
-            <th style={{ textAlign: 'center' }}>Outcome</th>
-            <th style={{ textAlign: 'center' }}>Status Code</th>
-            <th style={{ textAlign: 'center' }}>Link</th>
-            {viewMode==="upload" && <th style={{ textAlign: 'center' }}>Actions</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {filteredData && filteredData.length > 0 ? (
-            filteredData.map((item) => (
-              <tr key={item.topic_id}>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.topic}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.outcome}</td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                  <span
-                    className="HFTbox"
-                    style={{
-                      display: "inline-block",
-                      width: "20px",
-                      height: "20px",
-                      backgroundColor: getBoxColor(item.status_code),
-                    }}
-                  ></span>
-                </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                  {item.url ? (
-                    <a href={item.url} style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
-                      View
-                    </a>
-                  ) : (
-                    <span>No Link Available</span>
-                  )}
-                </td>
-                <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                  {item.url? (
-                    <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <button
-                        className="approve-button"
-                        onClick={() => handleApproval(item.topic_id)}
-                        disabled={item.status_code === 3} // Disable if approved
-                      >
-                        Approve
-                      </button>
-                      <button
-                        className="disapprove-button"
-                        onClick={() => handleDisapproval(item.topic_id)}
-                        disabled={item.status_code === 3} // Disable if approved
-                      >
-                        Disapprove
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      <button className="approve-button" disabled>
-                        Approve
-                      </button>
-                      <button className="disapprove-button" disabled>
-                        Disapprove
-                      </button>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))
-          ) : (
+        <table style={{ width: '100%', textAlign: 'center' }}>
+          <thead>
             <tr>
-              <td colSpan={5} style={{ textAlign: 'center', verticalAlign: 'middle' }}>No topics assigned yet.</td>
+              <th style={{ textAlign: 'center' }}>Topic</th>
+              <th style={{ textAlign: 'center' }}>Outcome</th>
+              <th style={{ textAlign: 'center' }}>Status Code</th>
+              <th style={{ textAlign: 'center' }}>Link</th>
+              <th style={{ textAlign: 'center' }}>Actions</th>
+              {viewMode === "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }}>Disapproval Message</th>}
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {filteredData && filteredData.length > 0 ? (
+              filteredData.map((item) => (
+                <tr key={item.topic_id}>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.topic}</td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>{item.outcome}</td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                    <span
+                      className="HFTbox"
+                      style={{
+                        display: "inline-block",
+                        width: "20px",
+                        height: "20px",
+                        backgroundColor: getBoxColor(item.status_code),
+                      }}
+                    ></span>
+                  </td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                    {item.url ? (
+                      <a href={item.url} style={{ textDecoration: 'none' }} target="_blank" rel="noopener noreferrer">
+                        View
+                      </a>
+                    ) : (
+                      <span>No Link Available</span>
+                    )}
+                  </td>
+                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                    {item.url && viewMode === "upload" ? (
+                      <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        <button
+                          className="dynamic-button"
+                          onClick={() => handleApproval(item.topic_id)}
+                          disabled={item.status_code === 3} // Disable if approved
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="dynamic-button"
+                          onClick={() => handleDisapproval(item.topic_id)}
+                          disabled={item.status_code === 3} // Disable if approved
+                        >
+                          Disapprove
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                        {item.status_code === 3 ? ("Approved") : (
+                          <>
+                            <button className="dynamic-button" disabled>
+                              Approve
+                            </button>
+                            <button className="dynamic-button" disabled>
+                              Disapprove
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </td>
+                  {viewMode === "upload" && (
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                      {item.comment && item.status_code !== 3 ? (
+                        <span style={{ display: "block" }}>{item.comment}</span>
+                      ) : (
+                        <span style={{ display: "block" }}>No message</span>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              ))
+            ) : (
+              <tr>{viewMode !== 'upload' ? (
+                <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>No topics assigned yet.</td>
+              ) : (
+                <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>Nothing to approve.</td>
+              )}
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

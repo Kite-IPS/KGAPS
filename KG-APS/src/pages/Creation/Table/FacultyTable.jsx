@@ -207,20 +207,21 @@ const CreationFacultyTable = () => {
                         type="text"
                         placeholder="Upload link"
                         onChange={(e) => handleLinkInput(e, item)}
+                        style={{ width: '250px', padding: '5px', boxSizing: 'border-box' }}
                       />
-                      <button className="HFTbutton-1" onClick={() => updateLink(item.topic_id)}>Upload</button>
-                      <button className="HFTbutton-1" onClick={() => setEditedIndex(null)}>Cancel</button>
+                      <button className="dynamic-button" onClick={() => updateLink(item.topic_id)}>Upload</button>
+                      <button className="dynamic-button" onClick={() => setEditedIndex(null)}>Cancel</button>
                     </div>
                   </td>
                 )}
                 {viewMode === "upload" && item.status_code>0 && editedIndex !== item.topic_id && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
+                    <button className="dynamic-button" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
                   </td>
                 )}
                 {viewMode === "upload" && item.status_code===0 && editedIndex !== item.topic_id && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
+                    <button className="dynamic-button" onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                   </td>
                 )}
               

@@ -47,7 +47,7 @@ thead, th {
     padding: 12px;
     border: 1px solid #ddd;
     color: white;
-    background-color: #3e3e5f;
+    /* background-color: #3e3e5f; */
     text-align: center;
 }
 
@@ -80,6 +80,33 @@ tr:hover {
     background-color: #f8f5e9; 
 }
 
+.dynamic-button {
+    background-color: #007bff;
+    color: white; 
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+
+.dynamic-button:hover {
+    background-color: #fe370f; 
+    transform: scale(1.05);*/
+}
+
+.dynamic-button:focus {
+    outline: none;
+    background-color: #5cb85c; 
+}
+
+.dynamic-button:disabled {
+    background-color: #cccccc; 
+    cursor: not-allowed; 
+}
+
 @media screen and (max-width: 768px) {
     .HFTtable-container {
         padding: 10px; 
@@ -102,34 +129,34 @@ tr:hover {
 }
 
 /* Styles for Edit, Upload, and Cancel buttons */
-.HFTbutton-edit, .HFTbutton-upload, .HFTbutton-cancel {
-    background-color: #007bff; /* Blue background */
+/* .HFTbutton-edit, .HFTbutton-upload, .HFTbutton-cancel {
+    background-color: #007bff; 
     color: white;
     border: none;
     padding: 8px 12px;
     cursor: pointer;
-    border-radius: 4px; /* Rounded corners */
-    transition: background-color 0.3s ease; /* Smooth transition */
-    font-size: 14px; /* Font size */
-    margin: 0 5px; /* Margin between buttons */
+    border-radius: 4px; 
+    transition: background-color 0.3s ease; 
+    font-size: 14px; 
+    margin: 0 5px; 
 }
 
 .HFTbutton-edit:hover {
-    background-color: #0056b3; /* Darker blue on hover */
+    background-color: #0056b3; 
 }
 
 .HFTbutton-upload {
-    background-color: #28a745; /* Green background */
+    background-color: #28a745; 
 }
 
 .HFTbutton-upload:hover {
-    background-color: #218838; /* Darker green on hover */
+    background-color: #218838;
 }
 
 .HFTbutton-cancel {
-    background-color: #dc3545; /* Red background */
+    background-color: #dc3545; 
 }
 
 .HFTbutton-cancel:hover {
-    background-color: #c82333; /* Darker red on hover */
-}
+    background-color: #c82333; 
+} */
