@@ -47,10 +47,11 @@ const HandlingDMTable = () => {
   const isUid1 = uidData.some(user => user.uid === 1);
 
   return (
-    <div className="HFTtable-container">
+    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
       {isUid1 ? (
         <>
           <HandlingSidebar />
+          <div className="HFTtable-container">
           <div className="HFTbutton-group">
             <button className="HFTbutton-1" onClick={() => setViewMode('all')}>All contents</button>
             <button className="HFTbutton-2" onClick={() => setViewMode('upload')}>To upload</button>
@@ -109,6 +110,7 @@ const HandlingDMTable = () => {
               ))}
             </tbody>
           </table>
+          </div>
         </>
       ) : (
         <p>No data available for this UID.</p>

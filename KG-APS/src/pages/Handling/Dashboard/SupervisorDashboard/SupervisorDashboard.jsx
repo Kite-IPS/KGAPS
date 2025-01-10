@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import './SupervisorDashboard.css';
 import axios from 'axios';
+import HandlingSidebar from '../../HandlingSidebar/HandlingSidebar';
 
 function HandlingSupervisorDashboard() {
   const value = (current,total) => {
@@ -66,10 +67,12 @@ function HandlingSupervisorDashboard() {
 
   return (
     <div className="handlingfaculty-dashboard-container">
+      <>
+      <HandlingSidebar></HandlingSidebar>
       <div className="handlingfaculty-dashboard-content">
         <div className="handlingfaculty-dashboard-nametext">
           <div className="handlingfaculty-dashboard-welcome-box">
-            <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
+            <p className="handlingfaculty-dashboard-greeting">Welcome hod - {facultyDetails.name}</p>
           </div>
         </div>
         <div className="handlingfaculty-dashboard-card-container">
@@ -90,6 +93,7 @@ function HandlingSupervisorDashboard() {
           ))}
         </div>
       </div>
+      </>
     </div>
   );
 }
