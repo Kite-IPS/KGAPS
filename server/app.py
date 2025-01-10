@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@192.168.0.247/kgaps")
+    "postgresql://admin:admin@172.24.96.1/kgaps")
 conn = engine.connect()
 
 
@@ -91,7 +91,7 @@ def register():
 def faculty_courses():
     uid = request.json['uid']
     q = sqlalchemy.text(
-        f"SELECT l.course_code,t.course_name FROM l_class_course l,t_course_details t WHERE l.faculty_id='{uid}' and l.course_code=t.course_code;")
+        f"SELECT l.course_code,t.course_name FROM l_class_course l,t_course_details t WHERE l.handler_id='{uid}' and l.course_code=t.course_code;")
     if conn.execute(q).fetchall() is not None:
         r = conn.execute(q).fetchall()
         print(r)
@@ -319,13 +319,41 @@ def add_topic():
         conn.execute(q)   
         q = sqlalchemy.text(f"INSERT INTO t_topic_comments values({topic_id}, {uid},'');")  
         conn.execute(q)
-        q = sqlalchemy.text(f"""
-            INSERT INTO t_complete_status (hours_completed, topic_id, handler_id, course_code, status_code)
-            SELECT 0,{topic_id}, handler_id, '{course_code}', 0
-            FROM  l_class_course
-            WHERE l_class_course.course_code = '{course_code}';
-        """)
-        conn.execute(q)
+        try:
+            q = sqlalchemy.text(f"""
+                INSERT INTO t_complete_status (hours_completed, topic_id, handler_id, course_code, status_code)
+                SELECT 0,{topic_id}, handler_id, '{course_code}', 0
+                FROM  l_class_course
+                WHERE l_class_course.course_code = '{course_code}';
+            """)
+            conn.execute(q)
+        except Exception as e:
+            print(e)
+            return json.dumps({'error': 'not all classes have faculty assigned to course'})
+        # logic to add a old topics to new staff but indirectly this case is handled as above query will throw error if each course code doesnt have an assigned staff
+        # q=sqlalchemy.text(f"""
+        #     INSERT INTO t_complete_status (hours_completed, topic_id, handler_id, course_code, status_code)
+        #     SELECT 
+        #         0, 
+        #         t.topic_id, 
+        #         l.handler_id, 
+        #         t.course_code, 
+        #         0
+        #     FROM 
+        #         t_course_topics t
+        #     CROSS JOIN 
+        #         (SELECT DISTINCT handler_id, course_code FROM l_class_course) l
+        #     LEFT JOIN 
+        #         t_complete_status c 
+        #     ON 
+        #         t.topic_id = c.topic_id 
+        #         AND l.handler_id = c.handler_id 
+        #         AND t.course_code = c.course_code
+        #     WHERE 
+        #         t.course_code = '{course_code}' 
+        #         AND c.topic_id IS NULL;
+        # """)
+        # conn.execute(q)
         conn.commit()
         return json.dumps({'data': 'Success'})
 
@@ -342,7 +370,7 @@ def faculty_info():
 @app.route('/api/faculty_course_info', methods=['POST', 'GET'])
 def faculty_course_info():
     course_code = request.json['course_code']
-    q = sqlalchemy.text(f"select u.uid,u.name,l.class_id from l_class_course l,user_details_check u where l.faculty_id=u.uid and u.role_id=1 and l.course_code='{course_code}';")  
+    q = sqlalchemy.text(f"select u.uid,u.name,l.class_id from l_class_course l,user_details_check u where l.handler_id=u.uid and u.role_id=1 and l.course_code='{course_code}';")  
     r = conn.execute(q).fetchall()
     data = [dict(i._mapping) for i in r]
     print(data)
@@ -407,7 +435,7 @@ def assign_course():
         uid = request.json['uid']
         class_id = request.json['class_id']
         print(course_code,uid)
-        if conn.execute(sqlalchemy.text(f"Select * from l_class_course where course_code='{course_code}' and faculty_id={uid} and class_id='{class_id}';")).first() != None:
+        if conn.execute(sqlalchemy.text(f"Select * from l_class_course where course_code='{course_code}' and handler_id={uid} and class_id='{class_id}';")).first() != None:
             return json.dumps({'response': 'mentor is already assigned that course for that class'})
         q = sqlalchemy.text(f"update l_class_course set handler_id='{uid}' where class_id={class_id};")
         conn.execute(q)
@@ -510,17 +538,27 @@ def course_progress():
     status = {0:"Not uploaded",1:"Uploaded",2:"Disapproved",3:"Approved"}
     color_status = {0:'lightgrey',1:'orange',2:'red',3:'green'}
     codes,mdata,mcolor = [status[i[0]] for i in r],[i[1] for i in r],[color_status[i[0]] for i in r]
-    q = sqlalchemy.text(f"SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, cd.course_name FROM (SELECT DISTINCT course_code, uid FROM faculty_table WHERE course_code = '{course_code}') AS all_courses LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours FROM faculty_table WHERE status_code = 5 AND course_code = '{course_code}' GROUP BY course_code, uid) AS active_courses ON all_courses.course_code = active_courses.course_code AND all_courses.uid = active_courses.uid JOIN t_users t ON all_courses.uid = t.uid JOIN t_course_details cd ON all_courses.course_code = cd.course_code;")
+    q = sqlalchemy.text(f"""
+        SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, cd.course_name,all_courses.class_id 
+        FROM (SELECT DISTINCT course_code, uid,class_id FROM faculty_table WHERE course_code = 'CS1') AS all_courses 
+        LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours,class_id 
+        FROM faculty_table WHERE status_code = 5 AND course_code = 'CS1' 
+        GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code AND all_courses.uid = active_courses.uid JOIN t_users t ON all_courses.uid = t.uid JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+    """)
     r = conn.execute(q).fetchall()
     course_data_current = []
     for i in r:
-        temp={'uid':i[0],'name':i[1],'course_code':i[2],'completed_hours':i[3],'total_hours':i[4],'bar_color':progress_color(i[3],i[4]),'course_name':i[5]}
+        temp={'uid':i[0],'name':i[1],'course_code':i[2],'completed_hours':i[3],'total_hours':i[4],'bar_color':progress_color(i[3],i[4]),'course_name':i[5],'class_id':i[6]}
         course_data_current.append(temp)
-    q = sqlalchemy.text(f"SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed, cd.course_name FROM faculty_table f JOIN t_users t ON t.uid = f.uid JOIN t_course_details cd ON f.course_code = cd.course_code WHERE f.course_code = '{course_code}' GROUP BY f.uid, f.course_code, t.name, cd.course_name;")
+    q = sqlalchemy.text(f"""
+        SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed, cd.course_name,f.class_id 
+        FROM faculty_table f JOIN t_users t ON t.uid = f.uid JOIN t_course_details cd ON f.course_code = cd.course_code WHERE f.course_code = 'CS1' 
+        GROUP BY f.uid, f.course_code, t.name, cd.course_name,f.class_id;
+    """)
     r = conn.execute(q).fetchall()
     course_data_overall = []
     for i in r:
-        temp={'uid':i[0],'name':i[1],'course_code':i[2],'count':i[4],'total_count':i[3],'course_name':i[5]}
+        temp={'uid':i[0],'name':i[1],'course_code':i[2],'count':i[4],'total_count':i[3],'course_name':i[5],'class_id':i[6]}
         course_data_overall.append(temp)
     print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current})
     return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current}) 

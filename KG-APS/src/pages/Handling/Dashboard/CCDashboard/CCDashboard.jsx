@@ -114,7 +114,7 @@ function HandlingCCDashboard() {
         <div className="handlingfaculty-dashboard-card-container">
           {courseDataCurrent.map((item, i) => (
             <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}</div>
+              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}- {item.class_id}</div>
               <div className="handlingfaculty-dashboard-card-content">
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">

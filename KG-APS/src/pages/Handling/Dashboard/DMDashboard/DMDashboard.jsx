@@ -1,7 +1,5 @@
 import React, { useState,useEffect } from 'react';
 import './DMDashboard.css';
-import { Pie } from "react-chartjs-2";
-
 import axios from 'axios';
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 
@@ -32,6 +30,7 @@ function HandlingDMDashboard() {
           }
         );
         setDomainCourses(course.data);
+        console.log(course.data);
         if (course.data.length > 0) {
           setSelectedOption(course.data[0].courses[0]);
           await fetchChartData(course.data[0].courses[0]);
