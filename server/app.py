@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@192.168.0.247/kgaps")
+    "postgresql://admin:admin@172.24.96.1/kgaps")
 conn = engine.connect()
 
 
@@ -27,15 +27,15 @@ def progress_color(comp,total):
         print(value)
         return 'red'
  
-
-@app.route('/api/', methods=['POST', 'GET'])
-def index():
-    # q = sqlalchemy.text(f"TRUNCATE TABLE t_complete_status,t_course_topics,t_topic_comments,t_topic_links;")
-    # r = conn.execute(q)
-    # conn.commit()
-    # print(r)
-    data = {'error': 'none'}
-    return json.dumps(data)
+# test route only
+# @app.route('/api/', methods=['POST', 'GET'])
+# def index():
+#     # q = sqlalchemy.text(f"TRUNCATE TABLE t_complete_status,t_course_topics,t_topic_comments,t_topic_links;")
+#     # r = conn.execute(q)
+#     # conn.commit()
+#     # print(r)
+#     data = {'error': 'none'}
+#     return json.dumps(data)
 
 
 @app.route('/api/login', methods=['POST', 'GET'])
@@ -44,6 +44,9 @@ def login():
         role = request.json['role']
         uid = request.json['username']
         password = request.json['password']
+        if uid.isalpha():
+            print("error")
+            return json.dumps({'Error': 'Incorrect details entered'})
         q = sqlalchemy.text(f"SELECT uid,name,role_id,department_id FROM user_details_check WHERE uid='{uid}' and password='{password}' and role_id={role};")
         print(q)
         r = conn.execute(q).fetchall()
@@ -88,7 +91,7 @@ def register():
 def faculty_courses():
     uid = request.json['uid']
     q = sqlalchemy.text(
-        f"SELECT l.course_code,t.course_name FROM l_faculty_courses l,t_course_details t WHERE l.faculty_id='{uid}' and l.course_code=t.course_code;")
+        f"SELECT l.course_code,t.course_name FROM l_class_course l,t_course_details t WHERE l.faculty_id='{uid}' and l.course_code=t.course_code;")
     if conn.execute(q).fetchall() is not None:
         r = conn.execute(q).fetchall()
         print(r)
@@ -223,7 +226,7 @@ def domain_mentor():
 @app.route('/api/head_of_department', methods=['POST', 'GET'])
 def head_of_department():
     course_code = request.json['course_code']
-    q = sqlalchemy.text(f"SELECT DISTINCT course_code,course_name,topic,outcome,topic_id,status_code,url,comment FROM faculty_table where course_code='{course_code}';")
+    q = sqlalchemy.text(f"SELECT DISTINCT course_code,course_name,topic,outcome,topic_id,CASE WHEN status_code > 3 THEN 3 ELSE status_code END AS status_code,url,comment FROM faculty_table where course_code='{course_code}';")
     if conn.execute(q).first():
         r=conn.execute(q).fetchall()
         if r:
@@ -275,16 +278,25 @@ def add_course():
         domain_id = request.json['domain_id']
         year = request.json['year']
         combined_id = str(dept_id)+str(year)
-        print(domain_id)
-        q = sqlalchemy.text(f"INSERT INTO t_course_details VALUES('{course_code}','{course_name}');")
-        conn.execute(q)
-        q = sqlalchemy.text(
-            f"INSERT INTO l_course_departments VALUES('{course_code}',{dept_id});")
-        conn.execute(q)
-        q = sqlalchemy.text(f"INSERT INTO l_course_domains VALUES('{course_code}','{domain_id}');")
-        conn.execute(q)
-        q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
-        conn.execute(q)
+        if (conn.execute(sqlalchemy.text(f"select * from t_course_details where course_code='{course_code}';")).first() != None):
+            print("error-course exists")
+            return json.dumps({'error': 'course already exists'})
+        elif (conn.execute(sqlalchemy.text(f"select * from l_course_departments where course_code='{course_code}';")).first() != None):
+            q = sqlalchemy.text(
+                f"INSERT INTO l_course_departments VALUES('{course_code}',{dept_id});")
+            conn.execute(q)
+            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+            conn.execute(q)
+        else:
+            q = sqlalchemy.text(f"INSERT INTO t_course_details VALUES('{course_code}','{course_name}');")
+            conn.execute(q)
+            q = sqlalchemy.text(
+                f"INSERT INTO l_course_departments VALUES('{course_code}',{dept_id});")
+            conn.execute(q)
+            q = sqlalchemy.text(f"INSERT INTO l_course_domains VALUES('{course_code}','{domain_id}');")
+            conn.execute(q)
+            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+            conn.execute(q)
         conn.commit()
         return json.dumps({'data': 'Success'})
 
@@ -309,9 +321,9 @@ def add_topic():
         conn.execute(q)
         q = sqlalchemy.text(f"""
             INSERT INTO t_complete_status (hours_completed, topic_id, handler_id, course_code, status_code)
-            SELECT 0,{topic_id}, faculty_id, '{course_code}', 0
-            FROM  l_faculty_courses
-            WHERE l_faculty_courses.course_code = '{course_code}';
+            SELECT 0,{topic_id}, handler_id, '{course_code}', 0
+            FROM  l_class_course
+            WHERE l_class_course.course_code = '{course_code}';
         """)
         conn.execute(q)
         conn.commit()
@@ -330,7 +342,7 @@ def faculty_info():
 @app.route('/api/faculty_course_info', methods=['POST', 'GET'])
 def faculty_course_info():
     course_code = request.json['course_code']
-    q = sqlalchemy.text(f"select u.uid,u.name from l_faculty_courses l,user_details_check u where l.faculty_id=u.uid and u.role_id=1 and l.course_code='{course_code}';")  
+    q = sqlalchemy.text(f"select u.uid,u.name,l.class_id from l_class_course l,user_details_check u where l.faculty_id=u.uid and u.role_id=1 and l.course_code='{course_code}';")  
     r = conn.execute(q).fetchall()
     data = [dict(i._mapping) for i in r]
     print(data)
@@ -395,11 +407,8 @@ def assign_course():
         uid = request.json['uid']
         class_id = request.json['class_id']
         print(course_code,uid)
-        if conn.execute(sqlalchemy.text(f"Select * from l_faculty_courses where course_code='{course_code}' and faculty_id={uid};")).first() != None:
-            return json.dumps({'response': 'mentor is already assigned to that course'})
-
-        q = sqlalchemy.text(f"insert into l_faculty_courses values({uid},'{course_code}');")
-        conn.execute(q)
+        if conn.execute(sqlalchemy.text(f"Select * from l_class_course where course_code='{course_code}' and faculty_id={uid} and class_id='{class_id}';")).first() != None:
+            return json.dumps({'response': 'mentor is already assigned that course for that class'})
         q = sqlalchemy.text(f"update l_class_course set handler_id='{uid}' where class_id={class_id};")
         conn.execute(q)
         conn.commit()  

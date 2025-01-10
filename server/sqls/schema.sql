@@ -123,13 +123,6 @@ CREATE TABLE l_mentor_courses (
   FOREIGN KEY (mentor_id) REFERENCES t_users(uid)
 );
 
--- Create the l_faculty_courses table
-CREATE TABLE l_faculty_courses (    
-  faculty_id INT,
-  course_code VARCHAR(24) NOT NULL,
-  FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
-  FOREIGN KEY (faculty_id) REFERENCES t_users(uid)
-);
 
 -- Create the l_domain_mentors table
 CREATE TABLE l_domain_mentors (    
@@ -145,11 +138,10 @@ create view user_details_check as select u.uid,u.name,u.password,u.department_id
 
 --view for faculty table
 
-create view faculty_table as select u.uid,c.course_code,d.course_name,t.topic,t.outcome,c.status_code,c.hours_completed,t.total_hours,c.topic_id,z.url,x.comment, CASE 
+create view faculty_table as select u.uid,a.class_id,c.course_code,d.course_name,t.topic,t.outcome,c.status_code,c.hours_completed,t.total_hours,c.topic_id,z.url,x.comment, CASE 
     WHEN z.topic_id IS NOT NULL AND z.handler_id = u.uid THEN 1
     ELSE 0
-  END AS can_upload  from t_users u,t_complete_status c,t_course_details d,t_course_topics t,t_topic_links z,t_topic_comments x where z.topic_id=t.topic_id and x.topic_id=t.topic_id and z.topic_id=t.topic_id and x.topic_id=t.topic_id and u.uid=c.handler_id and c.course_code=d.course_code and t.topic_id=c.topic_id;
-
+  END AS can_upload  from t_users u,l_class_course a,t_complete_status c,t_course_details d,t_course_topics t,t_topic_links z,t_topic_comments x where a.handler_id=u.uid and z.topic_id=t.topic_id and x.topic_id=t.topic_id and z.topic_id=t.topic_id and x.topic_id=t.topic_id and u.uid=c.handler_id and c.course_code=d.course_code and t.topic_id=c.topic_id;
 --view for domain mentor table
 
 create view domain_mentor_table as select z.mentor_id,c.course_code,d.course_name,t.topic,t.outcome,CASE 
