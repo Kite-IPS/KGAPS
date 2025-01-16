@@ -259,15 +259,6 @@ const HandlingSupervisorTable = () => {
                       }}
                     ></span>
                   </td>
-                  <td>
-                    {viewMode === "upload" && (
-                      <div className="link-input">
-                        <button onClick={() => verifyTopic(item.topic_id)}>
-                          Verify
-                        </button>
-                      </div>
-                    )}
-                  </td>
                 </tr>
               ))
             ) : (
