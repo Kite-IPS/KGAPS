@@ -79,6 +79,7 @@ const CreationDMTable = () => {
           domain_id: data.domain_id,
         });
         if (courseResponse.data) {
+          console.log(courseResponse.data);
           setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);

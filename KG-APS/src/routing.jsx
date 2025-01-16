@@ -40,7 +40,6 @@ function Routing() {
         <Route path="/handling/hod/table" element={ < HandlingHODTable />} />
         <Route path="/handling/supervisor/dashboard" element={ < HandlingSupervisorDashboard/>} />
         <Route path="/handling/supervisor/table" element={ < HandlingSupervisorTable />} />
-
         <Route path="/creation/faculty/dashboard" element={ < CreationFacultyDashboard />} />
         <Route path="/creation/faculty/table" element={ < CreationFacultyTable />} />
         <Route path="/creation/course-coordinator/dashboard" element={ < CreationCCDashboard />} />

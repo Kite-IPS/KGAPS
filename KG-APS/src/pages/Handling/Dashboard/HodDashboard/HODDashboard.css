@@ -99,3 +99,19 @@
       padding: 10px;
   }
 }
+
+.class-section{
+  align-items: center;
+  padding: .4rem;
+  margin: 0.5rem;
+  width:15vw;
+  color:white;
+  border: none;
+  background-color: rgb(71, 71, 255);
+}
+
+.class-section:hover{
+  background-color: rgb(255, 255, 255);
+  color: rgb(71, 71, 255);
+  border: 2px solid rgb(71, 71, 255);
+}
