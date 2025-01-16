@@ -164,8 +164,11 @@ create view domain_mentor_table as select  z.mentor_id,c.course_code,d.course_na
 --view for faculty table for handling part
 create view faculty_table_handling as select distinct u.uid,a.class_id,c.course_code,d.course_name,t.topic,t.outcome,c.status_code,c.hours_completed,t.total_hours,c.topic_id 
 from t_users u,l_class_course a,t_handling_hours c,t_course_details d,t_course_topics t where a.handler_id=u.uid and u.uid=c.handler_id 
-and c.course_code=d.course_code and t.topic_id=c.topic_id;
+and c.course_code=d.course_code and t.topic_id=c.topic_id and a.class_id=c.class_id;
 
+--
+--  INITIALIZATION PART
+--
 
 
 -- initialize the roles

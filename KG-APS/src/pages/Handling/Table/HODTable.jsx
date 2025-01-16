@@ -33,6 +33,7 @@ const HandlingHODTable = () => {
       const res = await axios.post("http://localhost:8000/api/verify_hours", {
         topic_id: key,
         handler_id: selectedFaculty,
+        class_id: selectedOption.class_id,
       });
       if (res) {
         fetchTableData();
@@ -69,7 +70,7 @@ const HandlingHODTable = () => {
       try {
         if (selectedFaculty) {
           const courseResponse = await axios.post(
-            "http://localhost:8000/api/faculty_courses",
+            "http://localhost:8000/api/handling_faculty_courses",
             {
               uid: selectedFaculty,
             }
@@ -92,9 +93,10 @@ const HandlingHODTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/faculty", {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
         uid: selectedFaculty,
         course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
       });
       if (res.data && !("response" in res.data)) {
         console.log(res.data);
@@ -131,6 +133,37 @@ const HandlingHODTable = () => {
     );
   }, [viewMode, tableData]);
 
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
+  };
+
+  const yearMap = {
+    1: "1st Year",
+    2: "2nd Year",
+    3: "3rd Year",
+    4: "4th Year",
+    };
+  
+  const sectionMap = {
+    1: "A",
+    2: "B"
+  };
+
+  const convertToClass = (item) => {
+    console.log(item);
+    const class_id = item.toString();
+    return yearMap[class_id[1]]+" - "+departmentMap[class_id[0]]+" "+sectionMap[class_id[2]];
+  };
+
+
   return (
     <div className="page-cover" style={{ display: "flex", gap: "5vw" }}>
       <HandlingSidebar />
@@ -166,7 +199,7 @@ const HandlingHODTable = () => {
             </option>
             {FacultyCourses.map((option, index) => (
               <option key={index} value={JSON.stringify(option)}>
-                {option.course_code + " - " + option.course_name}
+                {option.course_code + " - " + option.course_name+" - "+convertToClass(option.class_id)}
               </option>
             ))}
           </select>
@@ -178,7 +211,7 @@ const HandlingHODTable = () => {
               <th>Topic</th>
               <th>Outcome</th>
               <th>Status Code</th>
-              {viewMode==="upload"?(<th>Verify</th>):(<th>Link</th>)}
+              {viewMode==="upload" && (<th>Verify</th>)}
             </tr>
           </thead>
           <tbody>
@@ -201,22 +234,12 @@ const HandlingHODTable = () => {
                     ></span>
                   </td>
                   <td>
-                    {viewMode === "upload" ? (
+                    {viewMode === "upload" && (
                       <div className="link-input">
                         <button onClick={() => verifyTopic(item.topic_id)}>
                           Verify
                         </button>
                       </div>
-                    ) : item.url ? (
-                      <a
-                        href={item.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        View
-                      </a>
-                    ) : (
-                      <span>No Link Available</span>
                     )}
                   </td>
                 </tr>

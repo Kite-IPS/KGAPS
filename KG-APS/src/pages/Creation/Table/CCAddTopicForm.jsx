@@ -49,6 +49,10 @@ const CreationTopicAddForm = () => {
             uid,
         };
         console.log(formData);
+        if (!topic || !outcome || !total_hours || !uid) {
+            alert("Please fill all the fields!");
+            return;
+        }
         try {
             const res = await axios.post("http://localhost:8000/api/add_topic", formData);
             console.log(res);

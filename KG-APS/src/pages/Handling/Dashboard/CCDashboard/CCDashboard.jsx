@@ -50,6 +50,7 @@ function HandlingCCDashboard() {
           },
           data: course.data[0],
         });
+        console.log(res.data);
         if(res){
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
@@ -97,7 +98,7 @@ function HandlingCCDashboard() {
             <p className="handlingfaculty-dashboard-greeting">Welcome Coordinator - {data.name}</p>
           </div>
         </div>
-        {courseDataOverall.length>0?(
+        {courseDataOverall.length>0 && courseDataCurrent.length>0?(
         <>  
         <h1>Course {courseDataOverall[0].course_code+" - "+courseDataOverall[0].course_name}</h1>
         <div className="handlingfaculty-dashboard-aggregate">

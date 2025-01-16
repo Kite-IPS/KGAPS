@@ -168,7 +168,7 @@ function HandlingDMDashboard() {
             </div>
           </div>
           
-          {courseDataOverall.length>0?(
+          {courseDataOverall.length>0 & courseDataCurrent.lenght>0?(
         <>  
         <h1>Course {courseDataOverall[0].course_code+" - "+courseDataOverall[0].course_name}</h1>
         <div className="handlingfaculty-dashboard-aggregate">
