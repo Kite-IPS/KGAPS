@@ -88,7 +88,7 @@ const CreationCCDashboard = () => {
 
   return (
     <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
-      <HandlingSidebar />
+      <HandlingSidebar className="custom-sidebar-class"/>
       <div style={{ width: '80vw' }}>
       
         {showStuff ? (

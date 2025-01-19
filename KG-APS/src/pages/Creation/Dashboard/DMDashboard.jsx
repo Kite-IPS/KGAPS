@@ -92,7 +92,7 @@ const CreationDMDashboard = () => {
   };
   return (
     <>
-      <HandlingSidebar />
+      <HandlingSidebar className="custom-sidebar-class"/>
       <div className="dashboard-container">
         <div className="dashboard-content">
           <div className="">
