@@ -287,7 +287,6 @@ def add_course():
             conn.execute(q)
             print("ALREADY ASSIGNED COURSE course "+course_code+"-"+course_name+" is also added to department "+str(dept_id))        
         else:
-            print("here????")
             q = sqlalchemy.text(f"INSERT INTO t_course_details VALUES('{course_code}','{course_name}');")
             conn.execute(q)
             q = sqlalchemy.text(
@@ -706,7 +705,7 @@ def facultyprogress():
         AS total_hours,class_id FROM faculty_table_handling WHERE status_code = 5 AND uid = '{handler_id}' 
         GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code 
 		and all_courses.class_id=active_courses.class_id JOIN t_course_details cd 
-        ON all_courses.course_code = cd.course_code;
+        ON all_courses.course_code = cd.course_code order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_current = []
@@ -718,7 +717,7 @@ def facultyprogress():
 	    FROM (SELECT course_code, COUNT(*) AS total_course_count,class_id FROM faculty_table_handling WHERE uid = '{handler_id}' 
 	    GROUP BY course_code, uid,class_id) AS all_courses LEFT JOIN (SELECT course_code, COUNT(*) AS active_course_count,class_id 
 	    FROM faculty_table_handling WHERE uid = '{handler_id}' AND status_code = 5 GROUP BY course_code, uid,class_id) AS active_courses 
-	    ON all_courses.course_code = active_courses.course_code and all_courses.class_id=active_courses.class_id JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+	    ON all_courses.course_code = active_courses.course_code and all_courses.class_id=active_courses.class_id JOIN t_course_details cd ON all_courses.course_code = cd.course_code order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_overall = []
@@ -744,7 +743,7 @@ def course_progress():
         FROM faculty_table_handling WHERE status_code = 5 AND course_code = '{course_code}' 
         GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code 
 		AND all_courses.uid = active_courses.uid and all_courses.class_id=active_courses.class_id JOIN t_users t ON all_courses.uid = t.uid 
-		JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+		JOIN t_course_details cd ON all_courses.course_code = cd.course_code order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_current = []
@@ -754,7 +753,7 @@ def course_progress():
     q = sqlalchemy.text(f"""
         SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed, cd.course_name,f.class_id 
         FROM faculty_table_handling f JOIN t_users t ON t.uid = f.uid JOIN t_course_details cd ON f.course_code = cd.course_code WHERE f.course_code = '{course_code}' 
-        GROUP BY f.uid, f.course_code, t.name, cd.course_name,f.class_id;
+        GROUP BY f.uid, f.course_code, t.name, cd.course_name,f.class_id order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_overall = []
@@ -775,7 +774,7 @@ def class_progress():
         FROM faculty_table_handling WHERE status_code = 5 AND class_id = {class_id} 
         GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code 
 		AND all_courses.uid = active_courses.uid and all_courses.class_id=active_courses.class_id JOIN t_users t ON all_courses.uid = t.uid 
-		JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+		JOIN t_course_details cd ON all_courses.course_code = cd.course_code order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_current = []
@@ -785,12 +784,128 @@ def class_progress():
     q = sqlalchemy.text(f"""
         SELECT f.uid, t.name, f.course_code, COUNT(*) AS total_topics_assigned, SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed, cd.course_name,f.class_id 
         FROM faculty_table_handling f JOIN t_users t ON t.uid = f.uid JOIN t_course_details cd ON f.course_code = cd.course_code WHERE f.class_id = '{class_id}' 
-        GROUP BY f.uid, f.course_code, t.name, cd.course_name,f.class_id;
+        GROUP BY f.uid, f.course_code, t.name, cd.course_name,f.class_id order by class_id;
     """)
     r = conn.execute(q).fetchall()
     course_data_overall = []
     for i in r:
         temp={'uid':i[0],'name':i[1],'course_code':i[2],'count':i[4],'total_count':i[3],'course_name':i[5],'class_id':i[6]}
+        course_data_overall.append(temp)
+    print({'course_data_overall':course_data_overall,'course_data_current':course_data_current})
+    return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current})
+
+# used to generate data for progress of a course
+@app.route('/api/department_overall_progress', methods=['POST', 'GET'])
+def department_overall_progress():
+    department_id = request.json['department_id']
+    q = sqlalchemy.text(f"""
+        SELECT 
+        SUM(active_courses.hours_completed) AS hours_completed, 
+        SUM(active_courses.total_hours) AS total_hours
+        FROM (
+        SELECT DISTINCT course_code, uid, class_id 
+        FROM faculty_table_handling 
+        WHERE class_id::TEXT SIMILAR TO '{department_id}%'
+        ) AS all_courses
+        LEFT JOIN (
+        SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours, class_id 
+        FROM faculty_table_handling 
+        WHERE status_code = 5 AND class_id::TEXT SIMILAR TO '{department_id}%'
+        GROUP BY course_code, uid, class_id
+        ) AS active_courses 
+        ON all_courses.course_code = active_courses.course_code 
+        AND all_courses.uid = active_courses.uid 
+        AND all_courses.class_id = active_courses.class_id
+        JOIN t_users t ON all_courses.uid = t.uid 
+        JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+    """)
+    r = conn.execute(q).fetchall()
+    course_data_current = []
+    for i in r:
+        temp={'department_id':department_id,'completed_hours':i[0],'total_hours':i[1],'bar_color':progress_color(i[0],i[1])}
+        course_data_current.append(temp)
+    q = sqlalchemy.text(f"""
+        SELECT 
+        SUM(total_topics_assigned) AS total_topics_assigned, 
+        SUM(topics_completed) AS topics_completed
+        FROM (
+        SELECT 
+            COUNT(*) AS total_topics_assigned, 
+            SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed
+        FROM faculty_table_handling f
+        JOIN t_users t ON t.uid = f.uid
+        JOIN t_course_details cd ON f.course_code = cd.course_code
+        WHERE f.class_id::TEXT SIMILAR TO '{department_id}%'
+        GROUP BY f.uid, f.course_code, t.name, cd.course_name, f.class_id
+        ) AS aggregated_data;
+    """)
+    r = conn.execute(q).fetchall()
+    course_data_overall = []
+    for i in r:
+        temp={'department_id':department_id,'count':i[1],'total_count':i[0]}
+        course_data_overall.append(temp)
+    print({'department_overall':course_data_overall,'department_current':course_data_current})
+    return json.dumps({'department_overall':course_data_overall,'department_current':course_data_current})
+
+# used to generate data for progress of a year for a department
+@app.route('/api/department_year_progress', methods=['POST', 'GET'])
+def department_year_progress():
+    department_id = request.json['department_id']
+    q = sqlalchemy.text(f"""
+        SELECT 
+        SUBSTRING(all_courses.class_id::TEXT FROM 1 FOR 2) AS department_year, -- Extract first two digits
+        SUM(COALESCE(active_courses.hours_completed, 0)) AS total_hours_completed,
+        SUM(COALESCE(active_courses.total_hours, 0)) AS total_hours
+        FROM (
+        SELECT DISTINCT course_code, uid, class_id 
+        FROM faculty_table_handling 
+        WHERE class_id::TEXT SIMILAR TO '{department_id}1%' OR class_id::TEXT SIMILAR TO '{department_id}2%' OR class_id::TEXT SIMILAR TO '{department_id}3%' OR class_id::TEXT SIMILAR TO '{department_id}4%'
+        ) AS all_courses
+        LEFT JOIN (
+        SELECT 
+            course_code, 
+            uid, 
+            SUM(hours_completed) AS hours_completed, 
+            SUM(total_hours) AS total_hours, 
+            class_id 
+        FROM faculty_table_handling 
+        WHERE status_code = 5 AND (class_id::TEXT SIMILAR TO '{department_id}1%' OR class_id::TEXT SIMILAR TO '{department_id}2%' OR class_id::TEXT SIMILAR TO '{department_id}3%' OR class_id::TEXT SIMILAR TO '{department_id}4%')
+        GROUP BY course_code, uid, class_id
+        ) AS active_courses 
+        ON all_courses.course_code = active_courses.course_code 
+        AND all_courses.uid = active_courses.uid 
+        AND all_courses.class_id = active_courses.class_id
+        JOIN t_users t ON all_courses.uid = t.uid
+        JOIN t_course_details cd ON all_courses.course_code = cd.course_code
+        GROUP BY SUBSTRING(all_courses.class_id::TEXT FROM 1 FOR 2)
+        order by department_year;
+    """)
+    r = conn.execute(q).fetchall()
+    course_data_current = []
+    for i in r:
+        temp={'year':str(i[0])[1],'completed_hours':i[1],'total_hours':i[2],'bar_color':progress_color(i[1],i[2])}
+        course_data_current.append(temp)
+    q = sqlalchemy.text(f"""
+        SELECT  
+        SUBSTRING(f.class_id::TEXT FROM 1 FOR 2) AS department_year,
+        COUNT(*) AS total_topics_assigned, 
+        SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed
+        FROM 
+        faculty_table_handling f 
+        JOIN 
+        t_users t ON t.uid = f.uid 
+        JOIN 
+        t_course_details cd ON f.course_code = cd.course_code 
+        WHERE 
+        f.class_id::TEXT SIMILAR TO '{department_id}%'
+        GROUP BY 
+        SUBSTRING(f.class_id::TEXT FROM 1 FOR 2) order by department_year; 
+
+    """)
+    r = conn.execute(q).fetchall()
+    course_data_overall = []
+    for i in r:
+        temp={'year':str(i[0])[1],'count':i[2],'total_count':i[1]}
         course_data_overall.append(temp)
     print({'course_data_overall':course_data_overall,'course_data_current':course_data_current})
     return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current}) 
