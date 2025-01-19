@@ -124,6 +124,7 @@ const CreationDMDashboard = () => {
                             }`}
                             onClick={async () => {
                               setSelectedCard(courseIndex);
+                              setSelectedOption(courseOption);
                               UpdateChart(courseOption);
                             }}
                           >

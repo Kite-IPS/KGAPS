@@ -242,7 +242,6 @@ const CreationFacultyTable = () => {
                     </span>
                   )}
                 </td>
-                
                 {viewMode === "upload" && (
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     {item.comment ? (

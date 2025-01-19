@@ -99,7 +99,6 @@ const CreationHODTable = () => {
   useEffect(() => {
     setFilteredData(
       tableData.filter((item) => {
-        if (viewMode === "upload") return item.status_code===2 || item.status_code===1;
         return true;
       })
     );

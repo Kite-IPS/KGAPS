@@ -4,28 +4,81 @@ import axios from 'axios';
 import HandlingSidebar from '../../HandlingSidebar/HandlingSidebar';
 
 function HandlingSupervisorDashboard() {
+  const [courseDataCurrent,setCourseDataCurrent] = useState([]);
+  const [courseDataOverall,setCourseDataOverall] = useState([]); 
+  const userData = JSON.parse(sessionStorage.getItem("userData"));
+  const [department_id,setDepartment_id] = useState(1);
+  const [selectedYear, setSelectedYear] = useState(0);
+  const [selectedOption, setSelectedOption] = useState({});
+  const [DomainCourses, setDomainCourses] = useState([]);
+  const [selectedCard, setSelectedCard] = useState(0);
+  const [viewMode, setViewMode] = useState("course");
   const value = (current,total) => {
     if (total===0 || current === 0 || current>total){
       return 100;
     }
     return (current/total)*100;
-  }
-  const data = JSON.parse(sessionStorage.getItem('userData'));
+  } 
 
-  const [facultyDetails,setFacultyDetails] = useState(data); 
-  console.log(facultyDetails);
-  // Course data
-  const [courseDataCurrent,setCourseDataCurrent] = useState([
-    { course_code: 'CSE101', completed_hours: 20, total_hours: 40, bar_color: 'blue' },
-    { course_code: 'CSE102', completed_hours: 10, total_hours: 40, bar_color: 'red' },
-  ]);
 
-  const [courseDataOverall,setCourseDataOverall] = useState([
-    { course_code: 'CSE101', count: 20, total_count: 40 },
-    { course_code: 'CSE102', count: 10, total_count: 40 },
-  ]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const course = await axios.post(
+          "http://localhost:8000/api/department_courses",
+          {'department_id':department_id},
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        setDomainCourses(course.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  
+    fetchData();
+  }, [department_id]);
+
+  const fetchChartDataCourse = async (selectedCourse) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/course_progress",
+        selectedCourse,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(res.data);
+      setCourseDataCurrent(res.data.course_data_current);
+      setCourseDataOverall(res.data.course_data_overall);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const fetchChartDataClass = async (class_id) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/class_progress",
+        {'class_id':class_id},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      console.log(res.data);
+      setCourseDataCurrent(res.data.course_data_current);
+      setCourseDataOverall(res.data.course_data_overall);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const UpdateChart = async (option) => {
+    console.log(option);
+    console.log(typeof(option.course_code));
+  if('course_code' in option){await fetchChartDataCourse(option);
+  }else{await fetchChartDataClass(option);}};
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -41,60 +94,274 @@ function HandlingSupervisorDashboard() {
         return null;
     }
   };
- 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios({
-          url: "http://localhost:8000/api/faculty_progress",
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: data,
-        });
-        if(res){
-          setCourseDataCurrent(res.data.course_data_current);
-          setCourseDataOverall(res.data.course_data_overall);
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
+  };
+
+  const yearMap = {
+    1: "1st Year",
+    2: "2nd Year",
+    3: "3rd Year",
+    4: "4th Year",
     };
   
-    fetchData();
-  }, []); // Run only once when the component mounts
+  const sectionMap = {
+    1: "A",
+    2: "B"
+  };
 
+  const convertToClass = (item) => {
+    const class_id = item.toString();
+    return yearMap[class_id[1]]+" - "+departmentMap[class_id[0]]+" "+sectionMap[class_id[2]];
+  };
+
+  const aggregateData = () => {
+    let aggrdata = [];
+    var count = 0;
+    var total_count = 0;
+    var hours_count = 0;
+
+    for(let i=0;i<courseDataOverall.length;i++){
+      count += courseDataOverall[i].count;
+      total_count += courseDataOverall[i].total_count;
+      var temp = courseDataCurrent[i].completed_hours/courseDataCurrent[i].total_hours;
+      if (temp>1){hours_count+=1;}
+      else if (temp<1){hours_count-=1;}
+    }
+    var comment = "";
+    var topic_count = count/total_count;
+    if (hours_count<0){ comment = "Ahead of time";}
+    else if (hours_count>0){ comment = "Lagging";}
+    else if (hours_count===0){ comment = "On Time";}
+    else { comment = "Not yet started";}
+
+    aggrdata.push({ topic_count: topic_count, comment:comment });
+    
+    console.log(aggrdata);
+    return aggrdata;
+  };
   return (
-    <div className="handlingfaculty-dashboard-container">
-      <>
-      <HandlingSidebar></HandlingSidebar>
-      <div className="handlingfaculty-dashboard-content">
-        <div className="handlingfaculty-dashboard-nametext">
-          <div className="handlingfaculty-dashboard-welcome-box">
-            <p className="handlingfaculty-dashboard-greeting">Welcome hod - {facultyDetails.name}</p>
-          </div>
+    <>
+      <HandlingSidebar />
+      <div className="dashboard-container">
+        <div className="dashboard-content">
+          <div className="">
+          <h1>Supervisor Dashboard</h1>
+          <div className="department-selector">
+          <label className="dropdown-label">Select a department:</label>
+          <select onChange={(e) => setDepartment_id(e.target.value)}>
+            {Object.keys(departmentMap).map((departmentKey) => (
+              <option key={departmentKey} value={departmentKey}>
+                {departmentMap[departmentKey]}
+              </option>
+            ))}
+          </select>
         </div>
-        <div className="handlingfaculty-dashboard-card-container">
-          {courseDataCurrent.map((item, i) => (
-            <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header">Course {courseDataOverall[i].course_code}</div>
-              <div className="handlingfaculty-dashboard-card-content">
-                <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
-                <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                  <div style={{ width: `${value(item.completed_hours,item.total_hours)}%`, backgroundColor: item.bar_color }} />
+            <div className="course-selector">
+              
+              <button
+                className="HFTbutton-1"
+                onClick={() => setViewMode("course")}
+              >
+                Course wise
+              </button>
+              <button
+                className="HFTbutton-2"
+                onClick={() => setViewMode("class")}
+              >
+                Class wise
+              </button>
+              {viewMode === "class" && (
+               
+                (department_id == 6?(<><div className="cards-container">
+                  <div><button className="class-section" onClick={() => {setSelectedOption(111);fetchChartDataClass(111);}}>1st Year - CSE A</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(112);fetchChartDataClass(112);}}>1st Year - CSE B</button>
+                  </div>
+                  <div>
+                    <button className="class-section" onClick={() => {setSelectedOption(211);fetchChartDataClass(211);}}>1st Year - AI&DS A</button>
+                    <button className="class-section" onClick={() => {setSelectedOption(212);fetchChartDataClass(212);}}>1st Year - AI&DS B</button>
+                  </div>
+                  <div>
+                    <button className="class-section" onClick={() => {setSelectedOption(311);fetchChartDataClass(311);}}>1st Year - ECE A</button>
+                    <button className="class-section" onClick={() => {setSelectedOption(312);fetchChartDataClass(312);}}>1st Year - ECE B</button>
+                  </div><button className="class-section" onClick={() => {setSelectedOption(411);fetchChartDataClass(411);}}>1st Year - CSBS</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(511);fetchChartDataClass(511);}}>1st Year - IT</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(711);fetchChartDataClass(711);}}>1st Year - MECH</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(811);fetchChartDataClass(811);}}>1st Year - CYS</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(911);fetchChartDataClass(911);}}>1st Year - AI&ML</button>
                 </div>
-                {/* Color comment section */}
-                <div className="handlingfaculty-dashboard-colorcomment">
-                  {renderColorComment(item.bar_color)}
+                </>):department_id == 1 || department_id == 2 || department_id == 3 ?(<>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+11);fetchChartDataClass(department_id*100+11);}}>1st Year - {departmentMap[department_id]} A</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(department_id*100+12);fetchChartDataClass(department_id*100+12);}}>1st Year - {departmentMap[department_id]} B</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+21);fetchChartDataClass(department_id*100+21);}}>2nd Year - {departmentMap[department_id]} A</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(department_id*100+22);fetchChartDataClass(department_id*100+22);}}>2nd Year - {departmentMap[department_id]} B</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+31);fetchChartDataClass(department_id*100+31);}}>3rd Year - {departmentMap[department_id]} A</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(department_id*100+32);fetchChartDataClass(department_id*100+32);}}>3rd Year - {departmentMap[department_id]} B</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+41);fetchChartDataClass(department_id*100+41);}}>4th Year - {departmentMap[department_id]} A</button>
+                  <button className="class-section" onClick={() => {setSelectedOption(department_id*100+42);fetchChartDataClass(department_id*100+42);}}>4th Year - {departmentMap[department_id]} B</button>
+                  </div>
+                </>):(<>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+11);fetchChartDataClass(department_id*100+11);}}>1st Year - {departmentMap[department_id]} A</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+21);fetchChartDataClass(department_id*100+21);}}>2nd Year - {departmentMap[department_id]} A</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+31);fetchChartDataClass(department_id*100+31);}}>3rd Year - {departmentMap[department_id]} A</button>
+                  </div>
+                  <div><button className="class-section" onClick={() => {setSelectedOption(department_id*100+41);fetchChartDataClass(department_id*100+41);}}>4th Year - {departmentMap[department_id]} A</button>
+                  </div>
+                </>))
+              )}
+              {DomainCourses.length > 0 ? (
+                viewMode === "course"? (
+                <>
+                  <label className="dropdown-label">
+                    Select a course to view progress:
+                  </label>
+                  <div className="cards-container">
+                    {DomainCourses.map((yearOption, yearIndex) => (
+                      <div key={yearIndex} className="year-section">
+                        <div
+                          className={`year-card ${
+                            selectedYear === yearIndex ? "expanded" : ""
+                          }`}
+                          onClick={async () => {
+                            setSelectedYear(yearIndex);
+                            setSelectedCard(0);
+                          }}
+                        >
+                          <h3>{yearMap[yearOption.year]}</h3>
+                        </div>
+                        {selectedYear === yearIndex && (
+                          <div className="courses-container">
+                            {yearOption.courses.map(
+                              (courseOption, courseIndex) => (
+                                <div
+                                  key={courseIndex}
+                                  className={`course-card ${
+                                    selectedCard === courseIndex
+                                      ? "expanded"
+                                      : ""
+                                  }`}
+                                  onClick={async () => {
+                                    setSelectedCard(courseIndex);
+                                    UpdateChart(courseOption);
+                                  }}
+                                >
+                                  <h3>{courseOption.course_name}</h3>
+                                  {selectedCard === courseIndex && (
+                                    <div className="card-details">
+                                      <p>
+                                        Course Code: {courseOption.course_code}
+                                      </p>
+                                    </div>
+                                  )}
+                                </div>
+                              )
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </> ) :(<>
+                </>)) : (
+                <h1>No courses available</h1>
+              )}
+            </div>
+          </div>
+
+          {courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
+            <>
+              {viewMode==="course" && <h1>
+                Course{" "}
+                {courseDataOverall[0].course_code +
+                  " - " +
+                  courseDataOverall[0].course_name}
+              </h1>}
+              <div className="handlingfaculty-dashboard-aggregate">
+                <p>Aggregate Progress</p>
+                <div className="handlingfaculty-dashboard-aggregate-content">
+                  <p>
+                    Overall Progress:{" "}
+                    {(aggregateData()[0].topic_count * 100).toFixed(0)}%
+                  </p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div
+                      style={{
+                        width: `${(
+                          aggregateData()[0].topic_count * 100
+                        ).toFixed(2)}%`,
+                        backgroundColor: "purple",
+                      }}
+                    />
+                  </div>
+                  <p>Average Status: {aggregateData()[0].comment}</p>
                 </div>
               </div>
-            </div>
-          ))}
+              <div className="handlingfaculty-dashboard-card-container">
+                {courseDataCurrent.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      {" "}
+                      Faculty - {item.uid} - {item.name} - {convertToClass(item.class_id)}
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>
+                        Hours Completed: {item.completed_hours} /{" "}
+                        {item.total_hours}
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${value(
+                              item.completed_hours,
+                              item.total_hours
+                            ).toFixed(2)}%`,
+                            backgroundColor: item.bar_color,
+                          }}
+                        />
+                      </div>
+                      <p>
+                        Topics Completed: {courseDataOverall[i].count}/
+                        {courseDataOverall[i].total_count}
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${(
+                              (courseDataOverall[i].count /
+                                courseDataOverall[i].total_count) *
+                              100
+                            ).toFixed(2)}%`,
+                            backgroundColor: "green",
+                          }}
+                        />
+                      </div>
+                      <div className="handlingfaculty-dashboard-colorcomment">
+                        {renderColorComment(item.bar_color)}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <h1>No progress!</h1>
+          )}
         </div>
       </div>
-      </>
-    </div>
+    </>
   );
 }
 

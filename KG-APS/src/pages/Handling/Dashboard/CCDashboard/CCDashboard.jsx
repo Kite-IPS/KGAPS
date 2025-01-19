@@ -50,6 +50,7 @@ function HandlingCCDashboard() {
           },
           data: course.data[0],
         });
+        console.log(res.data);
         if(res){
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
@@ -87,6 +88,35 @@ function HandlingCCDashboard() {
     console.log(aggrdata);
     return aggrdata;
   }
+
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
+  };
+
+  const yearMap = {
+    1: "1st Year",
+    2: "2nd Year",
+    3: "3rd Year",
+    4: "4th Year",
+    };
+  
+  const sectionMap = {
+    1: "A",
+    2: "B"
+  };
+
+  const convertToClass = (item) => {
+    const class_id = item.toString();
+    return yearMap[class_id[1]]+" - "+departmentMap[class_id[0]]+" "+sectionMap[class_id[2]];
+  };
   return (
     <>
     <HandlingSidebar />
@@ -97,7 +127,7 @@ function HandlingCCDashboard() {
             <p className="handlingfaculty-dashboard-greeting">Welcome Coordinator - {data.name}</p>
           </div>
         </div>
-        {courseDataOverall.length>0?(
+        {courseDataOverall.length>0 && courseDataCurrent.length>0?(
         <>  
         <h1>Course {courseDataOverall[0].course_code+" - "+courseDataOverall[0].course_name}</h1>
         <div className="handlingfaculty-dashboard-aggregate">
@@ -114,7 +144,7 @@ function HandlingCCDashboard() {
         <div className="handlingfaculty-dashboard-card-container">
           {courseDataCurrent.map((item, i) => (
             <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}</div>
+              <div className="handlingfaculty-dashboard-card-header"> Faculty - {item.uid} - {item.name}- {convertToClass(item.class_id)}</div>
               <div className="handlingfaculty-dashboard-card-content">
                 <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                 <div className="handlingfaculty-dashboard-progressbar-horizontal">

@@ -30,11 +30,12 @@ const HandlingFacultyTable = () => {
     setUpdatedLink(e.target.value);
   };
 
-  const updateLink = async (key) => {
+  const updateHours = async (key) => {
     try {
       const res = await axios.post("http://localhost:8000/api/edithourscompleted", {
         topic_id: key,
         handler_id: data.uid,
+        class_id: selectedOption.class_id,
         hours_completed: updatedLink,
       });
       if (res) {
@@ -48,7 +49,7 @@ const HandlingFacultyTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/faculty_courses", {
+        const courseResponse = await axios.post("http://localhost:8000/api/handling_faculty_courses", {
           uid: data.uid,
         });
         if (courseResponse.data) {
@@ -68,9 +69,10 @@ const HandlingFacultyTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/faculty", {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
         uid: data.uid,
         course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
       });
       if (res.data && !('response' in res.data)) {
         console.log(res.data);
@@ -108,6 +110,35 @@ const HandlingFacultyTable = () => {
     );
   }, [viewMode, tableData]);
 
+  const departmentMap = {
+    1: "CSE",
+    2: "AI & DS",
+    3: "ECE",
+    4: "CSBS",
+    5: "IT",
+    6: "S&H",
+    7: "MECH",
+    8: "CYS",
+    9: "AI & ML",
+  };
+
+  const yearMap = {
+    1: "1st Year",
+    2: "2nd Year",
+    3: "3rd Year",
+    4: "4th Year",
+    };
+  
+  const sectionMap = {
+    1: "A",
+    2: "B"
+  };
+
+  const convertToClass = (item) => {
+    const class_id = item.toString();
+    return yearMap[class_id[1]]+" - "+departmentMap[class_id[0]]+" "+sectionMap[class_id[2]];
+  };
+
   return (
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
@@ -123,7 +154,7 @@ const HandlingFacultyTable = () => {
         <option value="" disabled>Select an option</option>
         {FacultyCourses.map((option, index) => (
           <option key={index} value={JSON.stringify(option)}>
-            {option.course_code + " - " + option.course_name}
+            {option.course_code + " - " + option.course_name + " - " + convertToClass(option.class_id)}
           </option>
         ))}
       </select>
@@ -159,11 +190,11 @@ const HandlingFacultyTable = () => {
                   {viewMode === "upload" && item.status_code === 3 && editedIndex===item.topic_id? (
                     <div className="link-input">
                       <input
-                        type="text"
+                        type="number"
                         placeholder="Enter hours"
                         onChange={(e) => handleLinkInput(e, item)}
                       />
-                      <button className="HFTbutton-1" onClick={() => updateLink(item.topic_id)}>Submit</button>
+                      <button className="HFTbutton-1" onClick={() => updateHours(item.topic_id)}>Submit</button>
                       <button className="HFTbutton-1" onClick={() => setEditedIndex(null)}>Cancel</button>
 
                     </div>

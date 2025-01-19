@@ -74,6 +74,7 @@ const CreationCCTable = () => {
       });
       const courseData = res2.data[0];
       setCourse(courseData);
+      console.log(res2.data);
       if (res.data && !('response' in res.data)) {
         setTableData(res.data);
         const filtered = res.data.filter((item) => {

@@ -79,6 +79,7 @@ const CreationDMTable = () => {
           domain_id: data.domain_id,
         });
         if (courseResponse.data) {
+          console.log(courseResponse.data);
           setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);
@@ -177,8 +178,8 @@ const CreationDMTable = () => {
               <th style={{ textAlign: 'center' }}>Outcome</th>
               <th style={{ textAlign: 'center' }}>Status Code</th>
               <th style={{ textAlign: 'center' }}>Link</th>
-              <th style={{ textAlign: 'center' }}>Actions</th>
-              {viewMode === "upload" && <th style={{ textAlign: "center", verticalAlign: "middle" }}>Disapproval Message</th>}
+              <th style={{ textAlign: "center", verticalAlign: "middle" }}>Disapproval Message</th>
+              {viewMode === "upload" && <><th style={{ textAlign: 'center' }}>Actions</th></>}
             </tr>
           </thead>
           <tbody>
@@ -207,8 +208,16 @@ const CreationDMTable = () => {
                       <span>No Link Available</span>
                     )}
                   </td>
-                  <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
-                    {item.url && viewMode === "upload" ? (
+                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                      {item.comment && item.status_code !== 3 ? (
+                        <span style={{ display: "block" }}>{item.comment}</span>
+                      ) : (
+                        <span style={{ display: "block" }}>No message</span>
+                      )}
+                    </td>
+                  
+                    {item.url && viewMode === "upload" && (
+                      <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                       <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                         <button
                           className="dynamic-button"
@@ -225,30 +234,9 @@ const CreationDMTable = () => {
                           Disapprove
                         </button>
                       </div>
-                    ) : (
-                      <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                        {item.status_code === 3 ? ("Approved") : (
-                          <>
-                            <button className="dynamic-button" disabled>
-                              Approve
-                            </button>
-                            <button className="dynamic-button" disabled>
-                              Disapprove
-                            </button>
-                          </>
-                        )}
-                      </div>
+                      </td>
                     )}
-                  </td>
-                  {viewMode === "upload" && (
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                      {item.comment && item.status_code !== 3 ? (
-                        <span style={{ display: "block" }}>{item.comment}</span>
-                      ) : (
-                        <span style={{ display: "block" }}>No message</span>
-                      )}
-                    </td>
-                  )}
+                  
                 </tr>
               ))
             ) : (

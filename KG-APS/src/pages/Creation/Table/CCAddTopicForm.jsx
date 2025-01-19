@@ -25,7 +25,8 @@ const CreationTopicAddForm = () => {
                     method: 'POST',
                     data: { 'course_code': courseData.course_code }
                 });
-                setStaffList(response.data);}
+                const resData = response.data.filter( (item, index, self) => index === self.findIndex((t) => t.uid === item.uid));
+                setStaffList(resData);}
                 else{
                     console.log("No course data found");
                 }
@@ -47,7 +48,11 @@ const CreationTopicAddForm = () => {
             total_hours,
             uid,
         };
-
+        console.log(formData);
+        if (!topic || !outcome || !total_hours || !uid) {
+            alert("Please fill all the fields!");
+            return;
+        }
         try {
             const res = await axios.post("http://localhost:8000/api/add_topic", formData);
             console.log(res);
