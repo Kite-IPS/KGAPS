@@ -83,6 +83,7 @@ const CreationDMTable = () => {
           setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);
+            setSelectedYear(courseResponse.data[0].year -1);
           }
         }
       } catch (error) {
@@ -94,10 +95,11 @@ const CreationDMTable = () => {
   }, []);
 
   useEffect(() => {
+    let filteredCourse = [];
     if (!courseList.length > 0) return;
     console.log(selectedYear);
-    const filteredCourse = courseList.filter((item) => {
-      if (item.year == parseInt(selectedYear) + 1) return item;
+    filteredCourse = courseList.filter((item) => {
+      if (item.year -1 == parseInt(selectedYear)) return item;
     });
     setFacultyCourses(filteredCourse[0].courses);
     setSelectedOption(filteredCourse[0].courses[0]);
@@ -158,7 +160,7 @@ const CreationDMTable = () => {
           <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>
             <option value="" disabled>Select An option</option>
             {Object.keys(courseList).map((year, index) => (
-              <option key={index} value={year}>{yearMap[year]}</option>
+              <option key={index} value={courseList[year].year-1}>{yearMap[courseList[year].year-1]}</option>
             ))}
           </select>
           <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>

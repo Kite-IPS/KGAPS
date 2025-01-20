@@ -95,7 +95,7 @@ const CreationFacultyDashboard = () => {
               <Pie data={MainChartData} />
             </div>
           </div>
-          <div className="sub-progress-section">
+          <div className="sub-progress-section" style={{ width: "100vw" }}>
             {ChartData.map((chartData, index) => (
               <div key={index} className="sub-progress-chart">
                 <h3>{chartData.datasets[0].label}</h3>
