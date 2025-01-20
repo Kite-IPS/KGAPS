@@ -247,7 +247,7 @@ const HandlingHODTable = () => {
             </option>
             {FacultyCourses.map((option, index) => (
               <option key={index} value={JSON.stringify(option)}>
-                {option.course_code + " - " + option.course_name}
+                        {option.course_code + " - " + option.course_name+ " - "+option.handler_id +" - " +option.handler_name }
               </option>
             ))}
           </select>
@@ -259,6 +259,7 @@ const HandlingHODTable = () => {
               <th>Topic</th>
               <th>Outcome</th>
               <th>Status Code</th>
+              <th>hours</th>
               {viewMode==="upload" && (<th>Verify</th>)}
             </tr>
           </thead>
@@ -281,15 +282,19 @@ const HandlingHODTable = () => {
                       }}
                     ></span>
                   </td>
-                  <td>
+                      <td>
+                      <p>{"declared :"+item.hours_completed+" alloted :"+item.total_hours}</p>
+                      </td>
                     {viewMode === "upload" && (
+                        <td>
                       <div className="link-input">
                         <button onClick={() => verifyTopic(item.topic_id)}>
                           Verify
                         </button>
                       </div>
+                      </td>
                     )}
-                  </td>
+                  
                 </tr>
               ))
             ) : (

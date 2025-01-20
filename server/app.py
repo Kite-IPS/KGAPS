@@ -503,6 +503,11 @@ def add_topic():
         conn.execute(q)
         q = sqlalchemy.text(f"select topic_id from t_course_topics where course_code='{course_code}' and topic='{topic}';")
         topic_id=conn.execute(q).fetchone()[0]
+        if conn.execute(sqlalchemy.text(f"""
+                SELECT {topic_id}, handler_id, '{course_code}', 0,class_id
+                FROM  l_class_course
+                WHERE l_class_course.course_code = '{course_code}' where handler_id=0;""")).first() != None:
+            return json.dumps({'error': 'not all classes have faculty assigned to course'})
         try:
             q = sqlalchemy.text(f"""
                 INSERT INTO t_complete_status (topic_id, handler_id, course_code, status_code)
@@ -800,8 +805,8 @@ def department_overall_progress():
     department_id = request.json['department_id']
     q = sqlalchemy.text(f"""
         SELECT 
-        SUM(active_courses.hours_completed) AS hours_completed, 
-        SUM(active_courses.total_hours) AS total_hours
+        SUM(active_courses.hours_completed)::bigint AS hours_completed, 
+        SUM(active_courses.total_hours)::bigint AS total_hours
         FROM (
         SELECT DISTINCT course_code, uid, class_id 
         FROM faculty_table_handling 
@@ -826,8 +831,8 @@ def department_overall_progress():
         course_data_current.append(temp)
     q = sqlalchemy.text(f"""
         SELECT 
-        SUM(total_topics_assigned) AS total_topics_assigned, 
-        SUM(topics_completed) AS topics_completed
+        SUM(total_topics_assigned)::bigint AS total_topics_assigned, 
+        SUM(topics_completed)::bigint AS topics_completed
         FROM (
         SELECT 
             COUNT(*) AS total_topics_assigned, 
