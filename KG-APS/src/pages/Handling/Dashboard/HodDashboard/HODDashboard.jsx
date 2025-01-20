@@ -336,6 +336,10 @@ function HandlingHODDashboard() {
                       {" "}
                       Faculty - {item.uid} - {item.name} - {convertToClass(item.class_id)}
                     </div>
+                    { viewMode === 'class' && <div className="handlingfaculty-dashboard-card-header">
+                      {" "}
+                      Course - {item.course_code} - {item.course_name}
+                    </div>}
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
                         Hours Completed: {item.completed_hours} /{" "}

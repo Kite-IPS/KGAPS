@@ -506,7 +506,7 @@ def add_topic():
         if conn.execute(sqlalchemy.text(f"""
                 SELECT {topic_id}, handler_id, '{course_code}', 0,class_id
                 FROM  l_class_course
-                WHERE l_class_course.course_code = '{course_code}' where handler_id=0;""")).first() != None:
+                WHERE l_class_course.course_code = '{course_code}' and handler_id=0;""")).first() != None:
             return json.dumps({'error': 'not all classes have faculty assigned to course'})
         try:
             q = sqlalchemy.text(f"""
