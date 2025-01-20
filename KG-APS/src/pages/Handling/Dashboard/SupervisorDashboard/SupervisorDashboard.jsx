@@ -9,6 +9,8 @@ function HandlingSupervisorDashboard() {
   const userData = JSON.parse(sessionStorage.getItem("userData"));
   const [department_id,setDepartment_id] = useState(1);
   const [selectedYear, setSelectedYear] = useState(0);
+  const [departmentProgressOverall,setDepartmentProgressOverall] = useState([]);
+  const [departmentProgressCurrent,setDepartmentProgressCurrent] = useState([]);
   const [selectedOption, setSelectedOption] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
@@ -32,6 +34,26 @@ function HandlingSupervisorDashboard() {
           }
         );
         setDomainCourses(course.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      try {
+        const progress = await axios.post(
+          "http://localhost:8000/api/department_overall_progress",
+          {'department_id':department_id},
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        if ('department_overall' in progress.data){
+          setDepartmentProgressOverall(progress.data.department_overall);
+          setDepartmentProgressCurrent(progress.data.department_current);
+        }
+        else{
+        setDepartmentProgressOverall([]);
+        setDepartmentProgressCurrent([]);
+        }
+        console.log(departmentProgressCurrent,departmentProgressOverall);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -165,6 +187,24 @@ function HandlingSupervisorDashboard() {
             ))}
           </select>
         </div>
+        { departmentProgressOverall.length>0 && <div className="handlingfaculty-dashboard-aggregate">
+                <div className="handlingfaculty-dashboard-aggregate-content">
+                  <p>
+                    Overall Department Progress:
+                    {departmentProgressOverall[0].count == 0 && (<span>0%</span>) || departmentProgressOverall[0].count > 0 && (<span>{(departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0)}%</span>)}
+                  </p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div
+                      style={{
+                        width: `${(
+                          (departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0))}%`,
+                        backgroundColor: "darkblue",
+                      }}
+                    />
+                  </div>
+                  <p>Status: {departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours>0 && <span style={{color:"red"}}>Delayed</span>}{departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours<0 && <span style={{color:"lightgreen"}}>Ahead of time</span>}{!departmentProgressCurrent[0].completed_hours== null && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <span style={{color:"green"}}>On time</span>}{departmentProgressCurrent[0].completed_hours==null && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <span style={{color:"black"}}>Not yet started</span>}</p>
+                </div>
+              </div>}
             <div className="course-selector">
               
               <button

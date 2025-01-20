@@ -10,6 +10,8 @@ function HandlingHODDashboard() {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedOption, setSelectedOption] = useState({});
+  const [departmentProgressOverall,setDepartmentProgressOverall] = useState([]);
+  const [departmentProgressCurrent,setDepartmentProgressCurrent] = useState([]);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const [viewMode, setViewMode] = useState("course");
@@ -32,6 +34,20 @@ function HandlingHODDashboard() {
           }
         );
         setDomainCourses(course.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+      try {
+        const course = await axios.post(
+          "http://localhost:8000/api/department_overall_progress",
+          {department_id:data.department_id},
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        setDepartmentProgressOverall(course.data.department_overall);
+        setDepartmentProgressCurrent(course.data.department_current);
+        console.log(departmentProgressCurrent,departmentProgressOverall);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -144,8 +160,6 @@ function HandlingHODDashboard() {
     else { comment = "Not yet started";}
 
     aggrdata.push({ topic_count: topic_count, comment:comment });
-    
-    console.log(aggrdata);
     return aggrdata;
   };
   return (
@@ -156,6 +170,24 @@ function HandlingHODDashboard() {
           <div className="">
             <div className="course-selector">
               <h1>Head of department Dashboard</h1>
+              { departmentProgressOverall.length>0 && <div className="handlingfaculty-dashboard-aggregate">
+                <div className="handlingfaculty-dashboard-aggregate-content">
+                  <p>
+                    Overall Department Progress:
+                    {(departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0)}%
+                  </p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div
+                      style={{
+                        width: `${(
+                          (departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0))}%`,
+                        backgroundColor: "darkblue",
+                      }}
+                    />
+                  </div>
+                  <p>Status: {departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours>0 && <p style={{color:"red"}}>Delayed</p>}{departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours<0 && <p style={{color:"lightgreen"}}>Ahead of time</p>}{!departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"green"}}>On time</p>}{departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"black"}}>Not yet started</p>}</p>
+                </div>
+              </div>}
               <button
                 className="HFTbutton-1"
                 onClick={() => setViewMode("course")}
