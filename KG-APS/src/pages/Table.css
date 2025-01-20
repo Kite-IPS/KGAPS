@@ -94,7 +94,7 @@ tr:hover {
 
 .dynamic-button:hover {
     background-color: #fe370f; 
-    transform: scale(1.05);*/
+    transform: scale(1.05);
 }
 
 .dynamic-button:focus {
@@ -105,6 +105,89 @@ tr:hover {
 .dynamic-button:disabled {
     background-color: #cccccc; 
     cursor: not-allowed; 
+}
+
+.page-cover {
+    display: flex;
+    background-image: url('../assets/bg.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+.dashboard-contents {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    padding: 50px;
+    width: 100%;
+}
+
+.overall-progress-section {
+    grid-column: span 2;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.2); /* More prominent shadow */
+    border-radius: 20px;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: white; /* Background only for this section */
+    transition: filter 0.3s ease; /* Smooth transition for blur */
+}
+
+.overall-progress-section.blur {
+    filter: blur(5px); /* Apply blur effect */
+}
+
+.overall-progress-chart {
+    width: 300px; /* Reduced size */
+    height: 300px; /* Reduced size */
+}
+
+.sub-progress-section-container {
+    position: relative;
+    height: 300px; /* Set height for scrolling */
+    overflow-y: auto;
+    background: white; /* Background for clarity */
+    padding: 10px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+.sub-progress-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.sub-progress-chart {
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    background: white; /* Background only for sub-progress chart */
+}
+
+.sub-progress-chart h3 {
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+.sub-progress-chart div {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+}
+
+@media screen and (max-width: 768px) {
+    .overall-progress-chart {
+        width: 250px;
+        height: 250px;
+    }
+
+    .sub-progress-chart div {
+        width: 120px;
+        height: 120px;
+    }
 }
 
 @media screen and (max-width: 768px) {
