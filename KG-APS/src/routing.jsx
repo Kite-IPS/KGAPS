@@ -22,7 +22,9 @@ import CreationDMTable from "./pages/Creation/Table/DMTable";
 import CreationHODTable from "./pages/Creation/Table/HODTable";
 import CreationFacultyTable from "./pages/Creation/Table/FacultyTable";
 import AdminComponent from "./pages/Admin/IQAC/IQAC";
+import Admin from "./pages/Admin/Admin/Admin";
 import AssigningRoleToCoursesComponent from "./pages/Admin/IQAC/RoleAssignment";
+
 
 function Routing() {
   return (
@@ -53,6 +55,7 @@ function Routing() {
         <Route path="/admin-entry" element={ < AdminComponent />} />
         <Route path="/admin" element={ < HandlingFacultyTable />} />
         <Route path="/trial" element={ < AssigningRoleToCoursesComponent />} />
+        <Route path="/admin-panel" element={ < Admin />} />
       </Routes>
     </BrowserRouter>
   );
