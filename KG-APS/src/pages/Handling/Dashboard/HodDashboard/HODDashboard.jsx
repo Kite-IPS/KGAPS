@@ -1,27 +1,26 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './HODDashboard.css';
 import axios from 'axios';
 import HandlingSidebar from '../../HandlingSidebar/HandlingSidebar';
 
-
 function HandlingHODDashboard() {
-  const [courseDataCurrent,setCourseDataCurrent] = useState([]);
-  const [courseDataOverall,setCourseDataOverall] = useState([]); 
+  const [courseDataCurrent, setCourseDataCurrent] = useState([]);
+  const [courseDataOverall, setCourseDataOverall] = useState([]);
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedOption, setSelectedOption] = useState({});
-  const [departmentProgressOverall,setDepartmentProgressOverall] = useState([]);
-  const [departmentProgressCurrent,setDepartmentProgressCurrent] = useState([]);
+  const [departmentProgressOverall, setDepartmentProgressOverall] = useState([]);
+  const [departmentProgressCurrent, setDepartmentProgressCurrent] = useState([]);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const [viewMode, setViewMode] = useState("course");
-  const value = (current,total) => {
-    if (total===0 || current === 0 || current>total){
+
+  const value = (current, total) => {
+    if (total === 0 || current === 0 || current > total) {
       return 100;
     }
-    return (current/total)*100;
-  } 
-
+    return (current / total) * 100;
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,14 +39,14 @@ function HandlingHODDashboard() {
       try {
         const course = await axios.post(
           "http://localhost:8000/api/department_overall_progress",
-          {department_id:data.department_id},
+          { department_id: data.department_id },
           {
             headers: { "Content-Type": "application/json" },
           }
         );
         setDepartmentProgressOverall(course.data.department_overall);
         setDepartmentProgressCurrent(course.data.department_current);
-        console.log(departmentProgressCurrent,departmentProgressOverall);
+        console.log(departmentProgressCurrent, departmentProgressOverall);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -77,7 +76,7 @@ function HandlingHODDashboard() {
     try {
       const res = await axios.post(
         "http://localhost:8000/api/class_progress",
-        {'class_id':class_id},
+        { 'class_id': class_id },
         {
           headers: { "Content-Type": "application/json" },
         }
@@ -92,9 +91,13 @@ function HandlingHODDashboard() {
 
   const UpdateChart = async (option) => {
     console.log(option);
-    console.log(typeof(option.course_code));
-  if('course_code' in option){await fetchChartDataCourse(option);
-  }else{await fetchChartDataClass(option);}};
+    console.log(typeof (option.course_code));
+    if ('course_code' in option) {
+      await fetchChartDataCourse(option);
+    } else {
+      await fetchChartDataClass(option);
+    }
+  };
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -110,6 +113,7 @@ function HandlingHODDashboard() {
         return null;
     }
   };
+
   const departmentMap = {
     1: "CSE",
     2: "AI & DS",
@@ -127,8 +131,8 @@ function HandlingHODDashboard() {
     2: "2nd Year",
     3: "3rd Year",
     4: "4th Year",
-    };
-  
+  };
+
   const sectionMap = {
     1: "A",
     2: "B"
@@ -136,7 +140,7 @@ function HandlingHODDashboard() {
 
   const convertToClass = (item) => {
     const class_id = item.toString();
-    return yearMap[class_id[1]]+" - "+departmentMap[class_id[0]]+" "+sectionMap[class_id[2]];
+    return yearMap[class_id[1]] + " - " + departmentMap[class_id[0]] + " " + sectionMap[class_id[2]];
   };
 
   const aggregateData = () => {
@@ -145,167 +149,185 @@ function HandlingHODDashboard() {
     var total_count = 0;
     var hours_count = 0;
 
-    for(let i=0;i<courseDataOverall.length;i++){
+    for (let i = 0; i < courseDataOverall.length; i++) {
       count += courseDataOverall[i].count;
       total_count += courseDataOverall[i].total_count;
-      var temp = courseDataCurrent[i].completed_hours/courseDataCurrent[i].total_hours;
-      if (temp>1){hours_count+=1;}
-      else if (temp<1){hours_count-=1;}
+      var temp = courseDataCurrent[i].completed_hours / courseDataCurrent[i].total_hours;
+      if (temp > 1) { hours_count += 1; }
+      else if (temp < 1) { hours_count -= 1; }
     }
-    var comment = "";
-    var topic_count = count/total_count;
-    if (hours_count<0){ comment = "Ahead of time";}
-    else if (hours_count>0){ comment = "Lagging";}
-    else if (hours_count===0){ comment = "On Time";}
-    else { comment = "Not yet started";}
 
-    aggrdata.push({ topic_count: topic_count, comment:comment });
+    var comment = "";
+    var topic_count = count / total_count;
+    if (hours_count < 0) { comment = "Ahead of time"; }
+    else if (hours_count > 0) { comment = "Lagging"; }
+    else if (hours_count === 0) { comment = "On Time"; }
+    else { comment = "Not yet started"; }
+
+    aggrdata.push({ topic_count: topic_count, comment: comment });
     return aggrdata;
   };
+
   return (
     <>
       <HandlingSidebar />
-      
-      <div className="dashboard-container">
-        <div className="dashboard-content">
-        <h1>Head of department Dashboard</h1>
-          <div className="">
-            <div className="course-selector">
-              
-              { departmentProgressOverall.length>0 && <div className="handlingfaculty-dashboard-aggregate">
-                <div className="handlingfaculty-dashboard-aggregate-content">
-                  <p>
-                    Overall Department Progress:
-                    {(departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0)}%
-                  </p>
-                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                    <div
-                      style={{
-                        width: `${(
-                          (departmentProgressOverall[0].count/departmentProgressOverall[0].total_count * 100).toFixed(0))}%`,
-                        backgroundColor: "darkblue",
-                      }}
-                    />
-                  </div>
-                  <p>Status: {departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours>0 && <p style={{color:"red"}}>Delayed</p>}{departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours<0 && <p style={{color:"lightgreen"}}>Ahead of time</p>}{!departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"green"}}>On time</p>}{departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"black"}}>Not yet started</p>}</p>
-                </div>
-              </div>}
-              <button
-                className="HFTbutton-1"
-                onClick={() => setViewMode("course")}
-              >
-                Course wise
-              </button>
-              <button
-                className="HFTbutton-2"
-                onClick={() => setViewMode("class")}
-              >
-                Class wise
-              </button>
-              {viewMode === "class" && (
-              (data.department_id === 6 ? (
-                <>
-                  <div className="class-section-container">
-                    <button className="class-section" onClick={() => { setSelectedOption(111); fetchChartDataClass(111); }}>1st Year - CSE A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(112); fetchChartDataClass(112); }}>1st Year - CSE B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(211); fetchChartDataClass(211); }}>1st Year - AI&DS A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(212); fetchChartDataClass(212); }}>1st Year - AI&DS B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(311); fetchChartDataClass(311); }}>1st Year - ECE A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(312); fetchChartDataClass(312); }}>1st Year - ECE B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(411); fetchChartDataClass(411); }}>1st Year - CSBS</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(511); fetchChartDataClass(511); }}>1st Year - IT</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(711); fetchChartDataClass(711); }}>1st Year - MECH</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(811); fetchChartDataClass(811); }}>1st Year - CYS</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(911); fetchChartDataClass(911); }}>1st Year - AI&ML</button>
-                  </div>
-                </>
-              ) : data.department_id === 1 || data.department_id === 2 || data.department_id === 3 ? (
-                <>
-                  <div className="class-section-container">
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 12); fetchChartDataClass(data.department_id * 100 + 12); }}>1st Year - {departmentMap[data.department_id]} B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 22); fetchChartDataClass(data.department_id * 100 + 22); }}>2nd Year - {departmentMap[data.department_id]} B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 32); fetchChartDataClass(data.department_id * 100 + 32); }}>3rd Year - {departmentMap[data.department_id]} B</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 42); fetchChartDataClass(data.department_id * 100 + 42); }}>4th Year - {departmentMap[data.department_id]} B</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div className="class-section-container">
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
-                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
-                  </div>
-                </>
-              ))
-            )}
 
-              {DomainCourses.length > 0 ? (
-                viewMode === "course"? (
-                <>
-                  <label className="dropdown-label">
-                    Select a course to view progress:
-                  </label>
-                  <div className="cards-container">
-                    {DomainCourses.map((yearOption, yearIndex) => (
-                      <div key={yearIndex} className="year-section">
-                        <div
-                          className={`year-card ${
-                            selectedYear === yearIndex ? "expanded" : ""
-                          }`}
-                          onClick={async () => {
-                            setSelectedYear(yearIndex);
-                            setSelectedCard(0);
-                          }}
-                        >
-                          <h3>{yearMap[yearOption.year]}</h3>
-                        </div>
-                        {selectedYear === yearIndex && (
-                          <div className="courses-container">
-                            {yearOption.courses.map(
-                              (courseOption, courseIndex) => (
-                                <div
-                                  key={courseIndex}
-                                  className={`course-card ${
-                                    selectedCard === courseIndex
-                                      ? "expanded"
-                                      : ""
-                                  }`}
-                                  onClick={async () => {
-                                    setSelectedCard(courseIndex);
-                                    UpdateChart(courseOption);
-                                  }}
-                                >
-                                  <h3>{courseOption.course_name}</h3>
-                                  {selectedCard === courseIndex && (
-                                    <div className="card-details">
-                                      <p>
-                                        Course Code: {courseOption.course_code}
-                                      </p>
-                                    </div>
-                                  )}
-                                </div>
-                              )
-                            )}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </> ) :(<>
-                </>)) : (
-                <h1>No courses available</h1>
-              )}
+      <div className="dashboard-container"> 
+        <div className="dashboard-content">
+          <h1>Head of department Dashboard</h1>
+
+          {/* Overall Department Progress - Centered */}
+          {departmentProgressOverall.length > 0 && (
+            <div className="handlingfaculty-dashboard-aggregate">
+              <div className="handlingfaculty-dashboard-aggregate-content">
+                <p>
+                  Overall Department Progress:{" "}
+                  {(
+                    (departmentProgressOverall[0].count / departmentProgressOverall[0].total_count) * 100
+                  ).toFixed(0)}%
+                </p>
+                <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                  <div
+                    style={{
+                      width: `${(
+                        (departmentProgressOverall[0].count / departmentProgressOverall[0].total_count) * 100
+                      ).toFixed(0)}%`,
+                      backgroundColor: "darkblue",
+                    }}
+                  />
+                </div>
+                <p>Status: {
+                  departmentProgressCurrent[0].completed_hours - departmentProgressCurrent[0].total_hours > 0 ? (
+                    <span style={{ color: "red" }}>Delayed</span>
+                  ) : departmentProgressCurrent[0].completed_hours - departmentProgressCurrent[0].total_hours < 0 ? (
+                    <span style={{ color: "lightgreen" }}>Ahead of time</span>
+                  ) : (
+                    <span style={{ color: "green" }}>On time</span>
+                  )}
+                </p>
+              </div>
             </div>
+          )}
+          <br></br>
+          {/* View Mode Buttons */}
+          <div>
+            <button
+              className="HFTbutton-1"
+              onClick={() => setViewMode("course")}
+            >
+              Course wise
+            </button>
+            <button
+              className="HFTbutton-2"
+              onClick={() => setViewMode("class")}
+            >
+              Class wise
+            </button>
           </div>
 
+          {/* Class Section */}
+          {viewMode === "class" && (
+            data.department_id === 6 ? (
+              <>
+                <div className="class-section-container">
+                  <button className="class-section" onClick={() => { setSelectedOption(111); fetchChartDataClass(111); }}>1st Year - CSE A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(112); fetchChartDataClass(112); }}>1st Year - CSE B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(211); fetchChartDataClass(211); }}>1st Year - AI&DS A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(212); fetchChartDataClass(212); }}>1st Year - AI&DS B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(311); fetchChartDataClass(311); }}>1st Year - ECE A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(312); fetchChartDataClass(312); }}>1st Year - ECE B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(411); fetchChartDataClass(411); }}>1st Year - CSBS</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(511); fetchChartDataClass(511); }}>1st Year - IT</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(711); fetchChartDataClass(711); }}>1st Year - MECH</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(811); fetchChartDataClass(811); }}>1st Year - CYS</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(911); fetchChartDataClass(911); }}>1st Year - AI&ML</button>
+                </div>
+              </>
+            ) : data.department_id === 1 || data.department_id === 2 || data.department_id === 3 ? (
+              <>
+                <div className="class-section-container">
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 12); fetchChartDataClass(data.department_id * 100 + 12); }}>1st Year - {departmentMap[data.department_id]} B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 22); fetchChartDataClass(data.department_id * 100 + 22); }}>2nd Year - {departmentMap[data.department_id]} B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 32); fetchChartDataClass(data.department_id * 100 + 32); }}>3rd Year - {departmentMap[data.department_id]} B</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 42); fetchChartDataClass(data.department_id * 100 + 42); }}>4th Year - {departmentMap[data.department_id]} B</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="class-section-container">
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
+                  <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
+                </div>
+              </>
+            )
+          )}
+
+          {/* Domain Courses */}
+          {DomainCourses.length > 0 ? (
+            viewMode === "course" ? (
+              <>
+                <label className="dropdown-label">
+                  Select a course to view progress:
+                </label>
+                <div className="cards-container">
+                  {DomainCourses.map((yearOption, yearIndex) => (
+                    <div key={yearIndex} className="year-section">
+                      <div
+                        className={`year-card ${selectedYear === yearIndex ? "expanded" : ""}`}
+                        onClick={async () => {
+                          setSelectedYear(yearIndex);
+                          setSelectedCard(0);
+                        }}
+                      >
+                        <h3>{yearMap[yearOption.year]}</h3>
+                      </div>
+                      {selectedYear === yearIndex && (
+                        <div className="courses-container">
+                          {yearOption.courses.map((courseOption, courseIndex) => (
+                            <div
+                              key={courseIndex}
+                              className={`course-card ${selectedCard === courseIndex ? "expanded" : ""}`}
+                              onClick={async () => {
+                                setSelectedCard(courseIndex);
+                                UpdateChart(courseOption);
+                              }}
+                            >
+                              <h3>{courseOption.course_name}</h3>
+                              {selectedCard === courseIndex && (
+                                <div className="card-details">
+                                  <p>
+                                    Course Code: {courseOption.course_code}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <></>
+            )
+          ) : (
+            <h1>No courses available</h1>
+          )}
+
+          <br></br>
+          <hr></hr>
+          <br></br> 
+          {/* Course Data Display */}
           {courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
             <>
-              {viewMode==="course" && <h1>
+              {viewMode === "course" && <h1>
                 Course{" "}
                 {courseDataOverall[0].course_code +
                   " - " +
@@ -331,6 +353,7 @@ function HandlingHODDashboard() {
                   <p>Average Status: {aggregateData()[0].comment}</p>
                 </div>
               </div>
+              <br></br>
               <div className="handlingfaculty-dashboard-card-container">
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
@@ -338,7 +361,7 @@ function HandlingHODDashboard() {
                       {" "}
                       Faculty - {item.uid} - {item.name} - {convertToClass(item.class_id)}
                     </div>
-                    { viewMode === 'class' && <div className="handlingfaculty-dashboard-card-header">
+                    {viewMode === 'class' && <div className="handlingfaculty-dashboard-card-header">
                       {" "}
                       Course - {item.course_code} - {item.course_name}
                     </div>}
