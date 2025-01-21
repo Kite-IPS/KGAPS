@@ -185,7 +185,7 @@ function HandlingHODDashboard() {
                       }}
                     />
                   </div>
-                  <p>Status: {departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours>0 && <p style={{color:"red"}}>Delayed</p>}{departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours<0 && <p style={{color:"lightgreen"}}>Ahead of time</p>}{!departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"green"}}>On time</p>}{departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"black"}}>Not yet started</p>}</p>
+                  <p>Status: {departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours>0 && <span style={{color:"red"}}>Delayed</span>}{departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours<0 && <span style={{color:"lightgreen"}}>Ahead of time</span>}{!departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <span style={{color:"green"}}>On time</span>}{departmentProgressCurrent[0].completed_hours===0 && departmentProgressCurrent[0].completed_hours-departmentProgressCurrent[0].total_hours === 0 && <p style={{color:"black"}}>Not yet started</p>}</p>
                 </div>
               </div>}
               <button
