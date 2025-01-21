@@ -1,3 +1,48 @@
+/* For centering the Heading */
+.dashboard-content h1 {
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 20px;
+
+}
+
+/* Centering the Overall Department Progress container */
+.handlingfaculty-dashboard-aggregate {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  width: 100%; /* Ensuring it takes up the full width */
+  max-width: 800px; /* Optional, restricts the width for better appearance */
+  margin-left: auto; /* Centers it horizontally */
+  margin-right: auto; /* Centers it horizontally */
+}
+
+
+.handlingfaculty-dashboard-aggregate-content {
+  width: 100%;
+  max-width: 600px; /* Ensure it doesn't stretch too wide */
+}
+
+.handlingfaculty-dashboard-progressbar-horizontal {
+  width: 100%;
+  background-color: #f3f3f3;
+  border-radius: 4px;
+  height: 20px;
+  margin: 10px 0;
+}
+
+.handlingfaculty-dashboard-progressbar-horizontal > div {
+  height: 100%;
+  border-radius: 4px;
+}
+
+
 /* General container styles */
 .dashboard-container {
   display: flex;
@@ -42,12 +87,13 @@
 /* Grid for class sections (nested inside courses) */
 .class-section-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Dynamic grid with multiple columns */
-  gap: 20px; /* Add space between buttons */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Grid with dynamic columns */
+  gap: 15px; /* Space between class section buttons */
   margin-top: 20px;
   width: 100%;
   padding: 10px; /* Padding around the grid */
 }
+
 
 /* Individual class section styles */
 .class-section {

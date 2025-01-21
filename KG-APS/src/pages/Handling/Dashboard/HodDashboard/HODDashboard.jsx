@@ -168,9 +168,10 @@ function HandlingHODDashboard() {
       
       <div className="dashboard-container">
         <div className="dashboard-content">
+        <h1>Head of department Dashboard</h1>
           <div className="">
             <div className="course-selector">
-              <h1>Head of department Dashboard</h1>
+              
               { departmentProgressOverall.length>0 && <div className="handlingfaculty-dashboard-aggregate">
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
@@ -202,47 +203,47 @@ function HandlingHODDashboard() {
                 Class wise
               </button>
               {viewMode === "class" && (
-                (data.department_id === 6?(<><div className="cards-container">
-                  <div><button className="class-section" onClick={() => {setSelectedOption(111);fetchChartDataClass(111);}}>1st Year - CSE A</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(112);fetchChartDataClass(112);}}>1st Year - CSE B</button>
+              (data.department_id === 6 ? (
+                <>
+                  <div className="class-section-container">
+                    <button className="class-section" onClick={() => { setSelectedOption(111); fetchChartDataClass(111); }}>1st Year - CSE A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(112); fetchChartDataClass(112); }}>1st Year - CSE B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(211); fetchChartDataClass(211); }}>1st Year - AI&DS A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(212); fetchChartDataClass(212); }}>1st Year - AI&DS B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(311); fetchChartDataClass(311); }}>1st Year - ECE A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(312); fetchChartDataClass(312); }}>1st Year - ECE B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(411); fetchChartDataClass(411); }}>1st Year - CSBS</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(511); fetchChartDataClass(511); }}>1st Year - IT</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(711); fetchChartDataClass(711); }}>1st Year - MECH</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(811); fetchChartDataClass(811); }}>1st Year - CYS</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(911); fetchChartDataClass(911); }}>1st Year - AI&ML</button>
                   </div>
-                  <div>
-                    <button className="class-section" onClick={() => {setSelectedOption(211);fetchChartDataClass(211);}}>1st Year - AI&DS A</button>
-                    <button className="class-section" onClick={() => {setSelectedOption(212);fetchChartDataClass(212);}}>1st Year - AI&DS B</button>
+                </>
+              ) : data.department_id === 1 || data.department_id === 2 || data.department_id === 3 ? (
+                <>
+                  <div className="class-section-container">
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 12); fetchChartDataClass(data.department_id * 100 + 12); }}>1st Year - {departmentMap[data.department_id]} B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 22); fetchChartDataClass(data.department_id * 100 + 22); }}>2nd Year - {departmentMap[data.department_id]} B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 32); fetchChartDataClass(data.department_id * 100 + 32); }}>3rd Year - {departmentMap[data.department_id]} B</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 42); fetchChartDataClass(data.department_id * 100 + 42); }}>4th Year - {departmentMap[data.department_id]} B</button>
                   </div>
-                  <div>
-                    <button className="class-section" onClick={() => {setSelectedOption(311);fetchChartDataClass(311);}}>1st Year - ECE A</button>
-                    <button className="class-section" onClick={() => {setSelectedOption(312);fetchChartDataClass(312);}}>1st Year - ECE B</button>
-                  </div><button className="class-section" onClick={() => {setSelectedOption(411);fetchChartDataClass(411);}}>1st Year - CSBS</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(511);fetchChartDataClass(511);}}>1st Year - IT</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(711);fetchChartDataClass(711);}}>1st Year - MECH</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(811);fetchChartDataClass(811);}}>1st Year - CYS</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(911);fetchChartDataClass(911);}}>1st Year - AI&ML</button>
-                </div>
-                </>):data.department_id === 1 || data.department_id === 2 || data.department_id === 3 ?(<>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+11);fetchChartDataClass(data.department_id*100+11);}}>1st Year - {departmentMap[data.department_id]} A</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+12);fetchChartDataClass(data.department_id*100+12);}}>1st Year - {departmentMap[data.department_id]} B</button>
+                </>
+              ) : (
+                <>
+                  <div className="class-section-container">
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 11); fetchChartDataClass(data.department_id * 100 + 11); }}>1st Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 21); fetchChartDataClass(data.department_id * 100 + 21); }}>2nd Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 31); fetchChartDataClass(data.department_id * 100 + 31); }}>3rd Year - {departmentMap[data.department_id]} A</button>
+                    <button className="class-section" onClick={() => { setSelectedOption(data.department_id * 100 + 41); fetchChartDataClass(data.department_id * 100 + 41); }}>4th Year - {departmentMap[data.department_id]} A</button>
                   </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+21);fetchChartDataClass(data.department_id*100+21);}}>2nd Year - {departmentMap[data.department_id]} A</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+22);fetchChartDataClass(data.department_id*100+22);}}>2nd Year - {departmentMap[data.department_id]} B</button>
-                  </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+31);fetchChartDataClass(data.department_id*100+31);}}>3rd Year - {departmentMap[data.department_id]} A</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+32);fetchChartDataClass(data.department_id*100+32);}}>3rd Year - {departmentMap[data.department_id]} B</button>
-                  </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+41);fetchChartDataClass(data.department_id*100+41);}}>4th Year - {departmentMap[data.department_id]} A</button>
-                  <button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+42);fetchChartDataClass(data.department_id*100+42);}}>4th Year - {departmentMap[data.department_id]} B</button>
-                  </div>
-                </>):(<>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+11);fetchChartDataClass(data.department_id*100+11);}}>1st Year - {departmentMap[data.department_id]} A</button>
-                  </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+21);fetchChartDataClass(data.department_id*100+21);}}>2nd Year - {departmentMap[data.department_id]} A</button>
-                  </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+31);fetchChartDataClass(data.department_id*100+31);}}>3rd Year - {departmentMap[data.department_id]} A</button>
-                  </div>
-                  <div><button className="class-section" onClick={() => {setSelectedOption(data.department_id*100+41);fetchChartDataClass(data.department_id*100+41);}}>4th Year - {departmentMap[data.department_id]} A</button>
-                  </div>
-                </>))
-              )}
+                </>
+              ))
+            )}
+
               {DomainCourses.length > 0 ? (
                 viewMode === "course"? (
                 <>
