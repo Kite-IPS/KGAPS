@@ -99,8 +99,8 @@ const CreationFacultyTable = () => {
         setTableData(res.data);
         const filtered = res.data.filter((item) => {
           if (viewMode === "upload") return item.status_code < 3 && item.can_upload === 1;
-          return true;
         });
+        console.log(filtered);
         setFilteredData(filtered);
       } else {
         setTableData([]);
@@ -214,12 +214,12 @@ const CreationFacultyTable = () => {
                     </div>
                   </td>
                 )}
-                {viewMode === "upload" && item.status_code>0 && editedIndex !== item.topic_id && (
+                {viewMode === "upload" && item.status_code>0 && editedIndex !== item.topic_id && item.can_upload == 1 &&(
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <button className="dynamic-button" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
                   </td>
                 )}
-                {viewMode === "upload" && item.status_code===0 && editedIndex !== item.topic_id && (
+                {viewMode === "upload" && item.status_code===0 && editedIndex !== item.topic_id && item.can_upload == 1 &&(
                   <td style={{ textAlign: "center", verticalAlign: "middle" }}>
                     <button className="dynamic-button" onClick={() => setEditedIndex(item.topic_id)}>Upload</button>
                   </td>
