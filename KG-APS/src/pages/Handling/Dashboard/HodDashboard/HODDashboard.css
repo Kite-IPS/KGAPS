@@ -1,117 +1,99 @@
-.handlingfaculty-dashboard-container {
-  display: flex;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.handlingfaculty-dashboard-content {
-  flex-grow: 1;
-  padding: 20px;
+/* General container styles */
+.dashboard-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.handlingfaculty-dashboard-nametext {
-  text-align: right;
-  margin-bottom: 20px;
-}
-
-.handlingfaculty-dashboard-greeting {
-  font-size: 1.5rem;
-  color: white;
-}
-
-.handlingfaculty-dashboard-welcome-box {
-  background-color: #fe370f;
-  color: white;
+  align-items: center;
   padding: 20px;
-  text-align: center;
-  margin-top: 2vh;
-  width: fit-content;
-  max-width: 90%;
-  overflow: hidden;
 }
 
-.handlingfaculty-dashboard-card-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.handlingfaculty-dashboard-card {
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.handlingfaculty-dashboard-card-header {
-  font-size: 1.25rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-.handlingfaculty-dashboard-card-content {
-  flex-grow: 1;
-}
-
-.handlingfaculty-dashboard-progressbar-horizontal {
+.dashboard-content {
+  max-width: 1200px;
   width: 100%;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Grid for course sections */
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Dynamic columns */
+  gap: 20px; /* Add spacing between course cards */
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Styles for each course section */
+.course-section {
+  padding: 20px;
   background-color: #e0e0e0;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  color: #333;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.handlingfaculty-dashboard-progressbar-horizontal div {
-  height: 10px;
-  border-radius: 5px;
+.course-section:hover {
+  background-color: #d0d0d0;
 }
 
-.handlingfaculty-dashboard-colorcomment p {
-  margin: 5px 0;
+/* Grid for class sections (nested inside courses) */
+.class-section-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* Dynamic grid with multiple columns */
+  gap: 20px; /* Add space between buttons */
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px; /* Padding around the grid */
+}
+
+/* Individual class section styles */
+.class-section {
+  padding: 15px; /* Padding inside each button */
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.class-section:hover {
+  background-color: #0056b3;
 }
 
 /* Responsive Design */
+@media (max-width: 768px) {
+  .class-section-container {
+    grid-template-columns: 1fr; /* Stack buttons in a single column on small screens */
+    gap: 15px; /* Adjust gap for smaller screens */
+  }
+}
+
+
+
+/* Responsive Design */
 @media (max-width: 1024px) {
-  .handlingfaculty-dashboard-card-container {
-      grid-template-columns: repeat(2, 1fr);
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns on medium screens */
   }
 }
 
 @media (max-width: 768px) {
-  .handlingfaculty-dashboard-card-container {
-      grid-template-columns: 1fr;
+  .cards-container {
+    grid-template-columns: 1fr; /* Single column on small screens */
   }
 
-  .handlingfaculty-dashboard-greeting {
-      font-size: 1.2rem;
+  .dashboard-content {
+    padding: 10px;
   }
-
-  .handlingfaculty-dashboard-welcome-box {
-      margin-top: 6vh;
-      width: auto;
-  }
-
-  .handlingfaculty-dashboard-content {
-      padding: 10px;
-  }
-}
-
-.class-section{
-  align-items: center;
-  padding: .4rem;
-  margin: 0.5rem;
-  width:15vw;
-  color:white;
-  border: none;
-  background-color: rgb(71, 71, 255);
-}
-
-.class-section:hover{
-  background-color: rgb(255, 255, 255);
-  color: rgb(71, 71, 255);
-  border: 2px solid rgb(71, 71, 255);
 }
