@@ -1,116 +1,116 @@
-/* Full page container */
-.page-cover {
+/* Ensure the body and html take up the full height */
+html, body {
+  height: 100%;
+  margin-left: 10px;
   display: flex;
-  height: 100vh;
-  width: 100%;
-  margin-left: 5;
-  padding: 0;
-  overflow: hidden;
+  flex-direction: column;
 }
 
-/* Sidebar container */
-.handlingSidebar {
-  flex-shrink: 0;
-  width: 250px;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Main dashboard container */
 .handlingfaculty-dashboard-container {
-  flex-grow: 1;
-  margin-left: 0;
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  height: 100vh;
-  box-sizing: border-box;
+  height: 100%;
 }
 
-/* Flex container to make sure the content stretches correctly */
 .handlingfaculty-dashboard-content {
-  flex-grow: 1;
+  flex-grow: 1; /* Ensures content takes up remaining height */
+  overflow-y: auto; /* Enables scrolling */
+  padding: 20px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
 
-/* Ensure no margins or padding on this specific content */
 .handlingfaculty-dashboard-nametext {
-  text-align: right;
+  text-align: center;
   margin-bottom: 20px;
 }
 
-.handlingfaculty-dashboard-greeting {
-  font-size: 1.5rem;
-  color: white;
-}
-
 .handlingfaculty-dashboard-welcome-box {
-  background-color: #fe370f;
-  color: white;
-  padding: 20px;
-  text-align: center;
-  margin-top: 2vh;
-  width: fit-content;
-  max-width: 90%;
+  background-color: #f4f4f4;
+  padding: 10px;
+  border-radius: 5px;
 }
 
-.handlingfaculty-dashboard-card-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-}
-
-.handlingfaculty-dashboard-card {
-  background-color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.handlingfaculty-dashboard-card-header {
-  font-size: 1.25rem;
+.handlingfaculty-dashboard-greeting {
+  font-size: 20px;
   font-weight: bold;
-  margin-bottom: 10px;
+}
+
+.handlingfaculty-dashboard-aggregate {
+  margin-bottom: 20px;
+}
+
+.handlingfaculty-dashboard-aggregate-content {
+  margin-top: 10px;
 }
 
 .handlingfaculty-dashboard-progressbar-horizontal {
   width: 100%;
-  background-color: #e0e0e0;
-  border-radius: 5px;
-  margin-bottom: 10px;
-}
-
-.handlingfaculty-dashboard-progressbar-horizontal div {
-  height: 10px;
-  border-radius: 5px;
-}
-
-.handlingfaculty-dashboard-colorcomment p {
+  height: 8px;
+  background-color: #f3f3f3;
   margin: 5px 0;
 }
 
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .handlingfaculty-dashboard-card-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.handlingfaculty-dashboard-card-container {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* Allow scrolling if there are many cards */
 }
 
-@media (max-width: 768px) {
-  .handlingfaculty-dashboard-card-container {
-    grid-template-columns: 1fr;
-  }
+/* Header styling for cards */
+.handlingfaculty-dashboard-card-header {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr); /* Five equally spaced columns */
+  gap: 0; /* No gap for consistent vertical borders */
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  align-items: center; /* Align text vertically in the center */
+  border: 2px solid #ff8c00; /* Orange border around the entire header */
+  border-radius: 8px; /* Rounded corners for the header */
+  padding: 10px; /* Inner padding for the header */
+  background-color: #fff4e6; /* Light orange background */
+  color: #003366; /* Dark blue text */
+}
 
-  /* Stack content on smaller screens */
-  .page-cover {
-    flex-direction: column;
-  }
+/* Styling grid items */
+.grid-item {
+  text-align: center;
+  padding: 10px;
+  font-size: 1rem;
+  font-weight: normal;
+  color: #003366;
+  background-color: #fff4e6;
+  border-right: 2px solid #ff8c00; /* Orange vertical border */
+}
 
-  .handlingfaculty-dashboard-container {
-    margin-left: 0;
-  }
+/* Remove border for the last grid item */
+.grid-item:last-child {
+  border-right: none;
+}
+
+.handlingfaculty-dashboard-card {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.handlingfaculty-dashboard-card-header {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+}
+
+.grid-item {
+  font-size: 14px;
+}
+
+.handlingfaculty-dashboard-card-content {
+  margin-top: 10px;
+}
+
+.handlingfaculty-dashboard-colorcomment {
+  margin-top: 10px;
 }
