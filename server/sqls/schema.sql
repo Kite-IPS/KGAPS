@@ -41,6 +41,16 @@ CREATE TABLE t_course_topics (
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code)
 );
 
+-- Create the t_course_assignments table 
+CREATE TABLE t_course_assignments (
+  course_code VARCHAR(48) NOT NULL,
+  assignment VARCHAR(48) NOT NULL,
+  class_id INT NOT NULL,
+  link VARCHAR(255) NOT NULL,
+  assignment_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  FOREIGN KEY (course_code) REFERENCES t_course_details(course_code)
+);
+
 -- Create the l_role_user table
 CREATE TABLE l_role_user (
   uid INT NOT NULL,  
@@ -102,9 +112,11 @@ CREATE TABLE t_complete_status (
   status_code INT DEFAULT 0,
   comment VARCHAR(255) DEFAULT '',
   url VARCHAR(255) DEFAULT '',
+  uploader_id int,
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
   FOREIGN KEY (topic_id) REFERENCES t_course_topics(topic_id),
-  FOREIGN KEY (handler_id) REFERENCES t_users(uid)
+  FOREIGN KEY (handler_id) REFERENCES t_users(uid),
+  FOREIGN KEY (uploader_id) REFERENCES t_users(uid)
 );
 
 -- Create the l_mentor_courses table
@@ -134,10 +146,10 @@ create view user_details_check as select u.uid,u.name,u.password,u.department_id
 
 --view for faculty table
 create view faculty_table as select distinct u.uid,c.course_code,d.course_name,t.topic,t.outcome,c.status_code,c.topic_id,c.url,c.comment, CASE 
-    WHEN c.topic_id IS NOT NULL AND c.handler_id = u.uid THEN 1
+    WHEN c.topic_id IS NOT NULL AND c.handler_id = c.uploader_id THEN 1
     ELSE 0
   END AS can_upload from t_users u,t_complete_status c,t_course_details d,t_course_topics t 
-  where u.uid=c.handler_id and c.course_code=d.course_code and t.topic_id=c.topic_id;
+  where u.uid=c.handler_id and c.course_code=d.course_code and t.topic_id=c.topic_id order by topic_id;
 
 --view for domain mentor table
 create view domain_mentor_table as select  z.mentor_id,c.course_code,d.course_name,t.topic,t.outcome,CASE 
@@ -166,10 +178,13 @@ create view faculty_table_handling as select distinct u.uid,a.class_id,c.course_
 from t_users u,l_class_course a,t_handling_hours c,t_course_details d,t_course_topics t where a.handler_id=u.uid and u.uid=c.handler_id 
 and c.course_code=d.course_code and t.topic_id=c.topic_id and a.class_id=c.class_id;
 
+--view for assignments table for handling part
+create view assignment_table_handling as select distinct a.class_id,c.course_code,c.assignment,c.link,c.assignment_id 
+from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
+
 --
 --  INITIALIZATION PART
 --
-
 
 -- initialize the roles
 INSERT INTO t_roles (role_id, designation) VALUES (1, 'Faculty'), (2, 'Course Coordinator'), (3, 'Domain Mentor'),(4,'Head Of Department'),(5,'Supervisor'),(6,'IQAC');
