@@ -36,20 +36,17 @@ function HandlingFacultyDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios({
-          url: "http://localhost:8000/api/faculty_progress",
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: data,
+        const res = await axios.post("http://localhost:8000/api/faculty_progress", data, {
+          headers: { 'Content-Type': 'application/json' },
         });
         if (res) {
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
         }
-      } catch (error) {
+      }catch (error) {
         console.error('Error fetching data:', error);
+      } finally{
+        setLoading(false);
       }
     };
 
