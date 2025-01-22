@@ -10,7 +10,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@172.16.30.17/kgaps")
+    "postgresql://admin:admin@172.24.96.1/kgaps")
 conn = engine.connect()
 
 # helper functions
@@ -510,8 +510,8 @@ def add_topic():
             return json.dumps({'error': 'not all classes have faculty assigned to course'})
         try:
             q = sqlalchemy.text(f"""
-                INSERT INTO t_complete_status (topic_id, handler_id, course_code, status_code)
-                SELECT {topic_id}, handler_id, '{course_code}', 0
+                INSERT INTO t_complete_status (topic_id, handler_id, course_code, status_code,uploader_id)
+                SELECT {topic_id}, handler_id, '{course_code}', 0,{uid}
                 FROM  l_class_course
                 WHERE l_class_course.course_code = '{course_code}';
             """)
