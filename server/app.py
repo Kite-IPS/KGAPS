@@ -1,7 +1,13 @@
 from flask import Flask, request, jsonify
 import sqlalchemy
 import os
+import requests
+import pandas as pd
 import json
+import atexit
+from io import StringIO
+from apscheduler.schedulers.background import BackgroundScheduler
+import datetime
 from collections import defaultdict
 from flask_cors import CORS
 
@@ -10,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@172.16.30.17/kgaps")
+    "postgresql://admin:admin@172.24.96.1/kgaps")
 conn = engine.connect()
 
 # helper functions
@@ -27,11 +33,56 @@ def progress_color(comp,total):
         print(value)
         return 'red'
 
+#
+#   Cron job for updating progress of assignments
+#
+def update_table():
+    try:
+        print(f"Update started at: {datetime.datetime.now()}")
+        print("Scheduler started with the API server.")
+        q = sqlalchemy.text(f"select link,assignment_id from t_course_assignments;")
+        r = conn.execute(q).fetchall()
+        print(r)
+        if r:
+            data = [dict(i._mapping) for i in r]
+            for i in data:
+                if "gid=" in i['link']:
+                    gid = i['link'].split("gid=")[1].split("#")[0]  # Extract GID
+                    base_url = i['link'].split("/edit")[0]  # Base URL before /edit
+                    csv_url = f"{base_url}/export?format=csv&gid={gid}"  # Build CSV export link
+                else:
+                    raise ValueError("Invalid Google Sheets URL. Make sure it includes a GID.")
+                response = requests.get(csv_url)
+                df = pd.read_csv(StringIO(response.text), skiprows=5)
+                extracted_column = df['Completion']  # Extract the 'Completion' column
+
+                # Count occurrences of "Y" and "y"
+                yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
+                no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
+                print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
+                q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where assignment_id={i['assignment_id']};")
+                r = conn.execute(q)
+                conn.commit()
+                print("Table updated successfully!")
+            return json.dumps({"response":"Table updated successfully!"})
+        else:
+            return json.dumps({"response":"no assignments added"})
+            
+    except Exception as e:
+        print(f"Error occurred: {e}")
+
+print("Scheduler created")
+# Initialize the scheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(update_table, 'cron', hour=0, minute=0)  # Run every night at 12 AM
+scheduler.start()
+print("Scheduler started")
+
 
 #
 #   GENERAL SECTION
 #
-
+    
 # verifies user details
 @app.route('/api/login', methods=['POST', 'GET'])
 def login():
@@ -97,9 +148,9 @@ def faculty_courses():
         f"SELECT distinct l.course_code,t.course_name FROM l_class_course l,t_course_details t WHERE l.handler_id='{uid}' and l.course_code=t.course_code;")
     if conn.execute(q).fetchall() is not None:
         r = conn.execute(q).fetchall()
-        print(r)
         if r:
             data = [dict(i._mapping) for i in r]
+            print(data)
             return json.dumps(data)
     else:
         return json.dumps({"response":"no courses assigned"})
@@ -261,7 +312,71 @@ def faculty_course_info():
     data = [dict(i._mapping) for i in r]
     print(data)
     return json.dumps(data)
+
+#
+#  ASSIGNMENTS SECTION
+#
+
+# adds assignments to a particular class   
+@app.route('/api/add_assignment', methods=['POST', 'GET'])
+def add_assignment():
+    if request.method == 'POST':
+        course_code = request.json['course_code']
+        assignment = request.json['assignment']
+        class_id = request.json['class_id']
+        link = request.json['link']
+        print(course_code,assignment,class_id,link)
+        q = sqlalchemy.text(f"INSERT INTO t_course_assignments(course_code,assignment,class_id,link) VALUES('{course_code}','{assignment}',{class_id},'{link}');")
+        conn.execute(q)
+        conn.commit()  
+        print("successfully added assignment "+str(assignment))
+        if "gid=" in link:
+                    gid = link.split("gid=")[1].split("#")[0]  # Extract GID
+                    base_url = link.split("/edit")[0]  # Base URL before /edit
+                    csv_url = f"{base_url}/export?format=csv&gid={gid}"  # Build CSV export link
+        else:
+            return json.dumps({"response":"Invalid Google Sheets URL. Make sure it includes a GID."})
+        response = requests.get(csv_url)
+        df = pd.read_csv(StringIO(response.text), skiprows=5)
+        extracted_column = df['Completion']  # Extract the 'Completion' column
+
+        # Count occurrences of "Y" and "y"
+        yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
+        no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
+        print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
+        q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where link='{link}';")
+        r = conn.execute(q)
+        conn.commit()
+        print("Table updated successfully!")
+        return json.dumps({'response': 'Success'})
+    return json.dumps({'response': 'incorrect method'})
+
+# gets classes for a particular topic to which no mentor is assigned 
+@app.route('/api/course_classes_assignments', methods=['POST', 'GET'])
+def course_classes_assignments():
+    course_code = request.json['course_code']
+    uid = request.json['uid']
+    q = sqlalchemy.text(
+        f"select * from l_class_course where course_code = '{course_code}' and handler_id={uid};")
+    r = conn.execute(q).fetchall()
+    data = [dict(i._mapping) for i in r]
     
+    print(data)
+    return json.dumps(data)
+
+# view for faculty
+@app.route('/api/handling_faculty_assignments', methods=['POST', 'GET'])
+def handling_faculty_assignments():
+    course_code=request.json['course_code']
+    class_id = request.json['class_id']
+    q = sqlalchemy.text(f"SELECT * FROM assignment_table_handling WHERE course_code='{course_code}' and class_id='{class_id}';")
+    if (conn.execute(q).fetchall()):
+        r = conn.execute(q).fetchall()
+        data = [dict(i._mapping) for i in r]
+        print(data)
+        return json.dumps(data)
+    return json.dumps({'response':'No topics assigned yet'})
+
 #
 #   COURSE MANAGEMENT SECTION
 #
@@ -316,8 +431,6 @@ def assign_course():
         print("successfully assigned to faculty "+str(uid))
         return json.dumps({'response': 'Success'})
     return json.dumps({'response': 'incorrect method'})
-
-
 
 #
 #   VIEW ALLOCATED TOPICS SECTION (TABLE CONTENT)
@@ -597,7 +710,6 @@ def domain_mentor_info():
     print(data)
     return json.dumps(data)
 
-
 #
 #   ASSIGNING MENTORS TO COURSES
 #
@@ -680,7 +792,6 @@ def verifyhours():
     conn.execute(q)
     conn.commit()
     return json.dumps({'data': 'Success'})
-
 
 #
 #   PROGRESS SECTION (GENERATES DATA FOR GRAPHS)
@@ -852,7 +963,7 @@ def department_overall_progress():
     print({'department_overall':course_data_overall,'department_current':course_data_current})
     return json.dumps({'department_overall':course_data_overall,'department_current':course_data_current})
 
-# used to generate data for progress of a year for a department
+# used to generate data for progress of a year for a department (not added yet)
 @app.route('/api/department_year_progress', methods=['POST', 'GET'])
 def department_year_progress():
     department_id = request.json['department_id']
@@ -916,4 +1027,10 @@ def department_year_progress():
     return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current}) 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8000, host="0.0.0.0")
+    try:
+        app.run(debug=True, port=8000, host="0.0.0.0")
+        #app.run(debug=True, use_reloader=False)  # use_reloader=False to avoid duplicate scheduler threads
+    except (KeyboardInterrupt, SystemExit):
+        scheduler.shutdown()  # Graceful shutdown of the scheduler
+        print("Scheduler stopped.")
+    

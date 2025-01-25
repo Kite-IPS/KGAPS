@@ -41,16 +41,6 @@ CREATE TABLE t_course_topics (
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code)
 );
 
--- Create the t_course_assignments table 
-CREATE TABLE t_course_assignments (
-  course_code VARCHAR(48) NOT NULL,
-  assignment VARCHAR(48) NOT NULL,
-  class_id INT NOT NULL,
-  link VARCHAR(255) NOT NULL,
-  assignment_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
-  FOREIGN KEY (course_code) REFERENCES t_course_details(course_code)
-);
-
 -- Create the l_role_user table
 CREATE TABLE l_role_user (
   uid INT NOT NULL,  
@@ -136,6 +126,18 @@ CREATE TABLE l_domain_mentors (
   FOREIGN KEY (mentor_id) REFERENCES t_users(uid)
 );
 
+-- Create the t_course_assignments table 
+CREATE TABLE t_course_assignments (
+  course_code VARCHAR(48) NOT NULL,
+  assignment VARCHAR(48) NOT NULL,
+  class_id INT NOT NULL,
+  link VARCHAR(255) NOT NULL,
+  assignment_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  progress int DEFAULT 0,
+  FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
+  FOREIGN KEY (class_id) REFERENCES t_class(id)
+);
+
 --view to check user details
 
 create view user_details_check as select u.uid,u.name,u.password,u.department_id,r.role_id from t_users u,l_role_user r where u.uid=r.uid;
@@ -179,7 +181,7 @@ from t_users u,l_class_course a,t_handling_hours c,t_course_details d,t_course_t
 and c.course_code=d.course_code and t.topic_id=c.topic_id and a.class_id=c.class_id;
 
 --view for assignments table for handling part
-create view assignment_table_handling as select distinct a.class_id,c.course_code,c.assignment,c.link,c.assignment_id 
+create view assignment_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.assignment,c.link,c.assignment_id,a.handler_id,c.progress 
 from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
 
 --

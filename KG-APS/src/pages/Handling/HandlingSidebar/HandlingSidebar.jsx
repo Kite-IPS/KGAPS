@@ -1,108 +1,97 @@
 import React, { useState } from 'react';
 import './HandlingSidebar.css';
 import { useLocation } from 'react-router-dom';
+import { FaUserCircle, FaSignOutAlt } from 'react-icons/fa';
 
 function HandlingSidebar() {
-  const temp = useLocation().pathname.split('/')[1];
-  const data = JSON.parse(sessionStorage.getItem('userData'));
-  const facultyDetails = data;
+  const location = useLocation();
+  const temp = location.pathname.split('/')[1];
 
-  function role(role) {
-    switch (role) {
-      case 2:
-        return 'Course Coordinator';
-      case 3:
-        return 'Department Mentor';
-      case 4:
-        return 'HOD';
-      case 5:
-        return 'Supervisor';
-      default:
-        return 'Faculty';
-    }
-  }
-
-  function department(department) {
-    switch (department) {
-      case 1:
-        return 'CSE';
-      case 2:
-        return 'ECE';
-      case 3:
-        return 'AI&DS';
-      case 4:
-        return 'IT';
-      case 5:
-        return 'CSBS';
-      case 6:
-        return 'MECH';
-      default:
-        return 'Dept not added yet';
-    }
-  }
+  const facultyDetails = JSON.parse(sessionStorage.getItem('userData'));
 
   const roleMapping = {
-    1: 'faculty',
-    2: 'course-coordinator',
-    3: 'domain-mentor',
-    4: 'hod',
-    5: 'supervisor'
+    1: 'Faculty',
+    2: 'Course Coordinator',
+    3: 'Department Mentor',
+    4: 'HOD',
+    5: 'Supervisor',
   };
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isDropupOpen, setIsDropupOpen] = useState(false);
+  const departmentMapping = {
+    1: 'CSE',
+    2: 'ECE',
+    3: 'AI&DS',
+    4: 'IT',
+    5: 'CSBS',
+    6: 'MECH',
+  };
 
-  return (
-      <div className={`handling-sidebar-container ${isSidebarOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-      <div className={`handling-sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <button
-          className="handling-sidebar-toggle-button"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const isActive = (path) => location.pathname.includes(path);
+
+  return (<>
+    <div className="handling-navbar-container">
+      <nav className="handling-navbar">
+        <div className="handling-navbar-brand">KG-APS</div>
+        <ul className="handling-navbar-links">
+          <li>
+            <a
+              href={`/${temp}/${roleMapping[facultyDetails.role_id]?.toLowerCase().replace(' ', '-')}/dashboard`}
+              className={`nav-button ${isActive('dashboard') ? 'active' : ''}`}
+            >
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a
+              href={`/${temp}/${roleMapping[facultyDetails.role_id]?.toLowerCase().replace(' ', '-')}/table`}
+              className={`nav-button ${isActive('table') ? 'active' : ''}`}
+            >
+              Table
+            </a>
+          </li>
+        </ul>
+        <div
+          className="handling-navbar-info"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          role="button"
+          aria-expanded={isDropdownOpen}
         >
-          {isSidebarOpen ? '<' : '☰'}
-        </button>
-        {isSidebarOpen && (
-          <div className="handling-sidebar-content">
-            <h3>KG-APS</h3>
-            <ul>
-              <li>
-                <a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/dashboard`}>Dashboard</a>
-              </li>
-              <li>
-                <a href={`/${temp}/${roleMapping[facultyDetails.role_id]}/table`}>Table</a>
-              </li>
-              <li>
-                <a href="/">Logout</a>
-              </li>
-            </ul>
-            <div className="handling-sidebar-info" onClick={() => setIsDropupOpen(!isDropupOpen)}>
-              <div className="handling-sidebar-name">{facultyDetails.name}</div>
-              {isDropupOpen && (
-                <div className="handling-sidebar-dropup-content">
-                  <img
-                    src="faculty-image-url.jpg"
-                    alt="Faculty"
-                    className="handling-sidebar-image"
-                  />
-                  <p>
-                    <strong>Role:</strong> {role(facultyDetails.role_id)}
-                  </p>
-                  <p>
-                    <strong>Name:</strong> {facultyDetails.name}
-                  </p>
-                  <p>
-                    <strong>Department:</strong> {department(facultyDetails.department_id)}
-                  </p>
-                  <p>
-                    <strong>ID:</strong> {facultyDetails.uid}
-                  </p>
-                </div>
-              )}
+          <FaUserCircle className="handling-navbar-icon" />
+          {isDropdownOpen && (
+            <div className="handling-navbar-dropdown">
+              <div className="faculty-info">
+                <img
+                  src={facultyDetails.image_url || '/default-profile.png'}
+                  alt="Faculty"
+                  className="faculty-img"
+                />
+                <p>
+                  <strong>Name:</strong> {facultyDetails.name || 'N/A'}
+                </p>
+                <p>
+                  <strong>Department:</strong>{' '}
+                  {departmentMapping[facultyDetails.department_id] || 'Not Assigned'}
+                </p>
+                <p>
+                  <strong>Role:</strong> {roleMapping[facultyDetails.role_id] || 'N/A'}
+                </p>
+                <p>
+                  <strong>ID:</strong> {facultyDetails.uid || 'N/A'}
+                </p>
+              </div>
+              <div className="logout-container">
+                <a href="/" aria-label="Logout">
+                  <FaSignOutAlt /> Logout
+                </a>
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-      </div>
+          )}
+        </div>
+      </nav>
+    </div>
+    </>
   );
 }
 

@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
+import FacultyAddAssignment from '../Assignments/FacultyAddAssignment';
 
 const HandlingFacultyTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -11,7 +12,9 @@ const HandlingFacultyTable = () => {
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
+  const [assignmentTableData, setAssignmentTableData] = useState([]);
   const [viewMode, setViewMode] = useState("all");
+  const [tableView, setTableView] = useState("topics");
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -92,9 +95,28 @@ const HandlingFacultyTable = () => {
     }
   };
 
+  const fetchAssignmentTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+        course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setAssignmentTableData(res.data);
+      } else {
+        setAssignmentTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchTableData();
-  }, [selectedOption]);
+    {tableView === "topics" && fetchTableData();}
+    {tableView === "assignments" && fetchAssignmentTableData();}
+  }, [selectedOption,tableView]);
 
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
@@ -142,6 +164,7 @@ const HandlingFacultyTable = () => {
   return (
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
+      <FacultyAddAssignment />
     <div className="HFTtable-container">
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
@@ -159,8 +182,13 @@ const HandlingFacultyTable = () => {
         ))}
       </select>
       </div>
-
-      <table>
+      <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
+          Topics
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
+          Assignments
+        </button>
+      {tableView === "topics" && <table>
         <thead>
           <tr>
             <th>Topic</th>
@@ -214,7 +242,26 @@ const HandlingFacultyTable = () => {
             </tr>
           )}
         </tbody>
-      </table>
+      </table>}
+      {tableView === "assignments" && <table>
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>link</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+        {assignmentTableData && assignmentTableData.length > 0 ? (
+            assignmentTableData.map((item) => (
+        <tr key={item.assignment_id}>
+                <td>{item.assignment}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.progress}</td>
+          </tr>))):(<tr><p>No assignments alloted</p></tr>)}
+          </tbody></table>}
     </div>
     
     </div>
