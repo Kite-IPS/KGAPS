@@ -5,13 +5,11 @@ import axios, { Axios } from 'axios';
 
 const HandlingCCTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
-  const [updatedLink, setUpdatedLink] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
-  const [editedIndex, setEditedIndex] = useState(null);
   const [FacultyCourses, setFacultyCourses] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
-  const [viewMode, setViewMode] = useState("all");
+  const [tableView, setTableView] = useState("topics");
+  const [assignmentTableData, setAssignmentTableData] = useState([]);
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -51,17 +49,14 @@ const HandlingCCTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_course_mentor", {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });
       if (res.data && !('response' in res.data)) {
         console.log(res.data);
-        const tableData = res.data.filter((item) => {return item.status_code>=3;});
-        setTableData(tableData);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code === 3;
-          return true;
+         return item.status_code >= 3;
         });
         setFilteredData(filtered); 
       } else {
@@ -73,23 +68,34 @@ const HandlingCCTable = () => {
     }
   };
 
+  const fetchAssignmentTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+        course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setAssignmentTableData(res.data);
+      } else {
+        setAssignmentTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchTableData();
-  }, [selectedOption]);
+    {tableView === "topics" && fetchTableData();}
+    {tableView === "assignments" && fetchAssignmentTableData();}
+  }, [selectedOption,tableView]);
 
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
     setSelectedOption(selected);
   };
 
-  useEffect(() => {
-    setFilteredData(
-      tableData.filter((item) => {
-        if (viewMode === "upload") return item.status_code === 3;
-        return true;
-      })
-    );
-  }, [viewMode, tableData]);
 
   const departmentMap = {
     1: "CSE",
@@ -125,7 +131,7 @@ const HandlingCCTable = () => {
       <HandlingSidebar />
     <div className="HFTtable-container">
       <div className="HFTbutton-group">
-        <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+        <button className="HFTbutton-1">
           All contents
         </button>
          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
@@ -137,8 +143,13 @@ const HandlingCCTable = () => {
         ))}
       </select>
       </div>
-
-      <table>
+      <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
+          Topics
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
+          Assignments
+        </button>
+      {tableView==="topics" &&<table>
         <thead>
           <tr>
             <th>Topic</th>
@@ -165,20 +176,7 @@ const HandlingCCTable = () => {
                   ></span>
                 </td>
                 <td>
-                  {viewMode === "upload" && item.status_code === 3 && editedIndex===item.topic_id? (
-                    <div className="link-input">
-                      <input
-                        type="number"
-                        placeholder="Enter hours"
-                        onChange={(e) => handleLinkInput(e, item)}
-                      />
-                      <button className="HFTbutton-1" onClick={() => updateHours(item.topic_id)}>Submit</button>
-                      <button className="HFTbutton-1" onClick={() => setEditedIndex(null)}>Cancel</button>
-
-                    </div>
-                  ) :viewMode=== "upload" && item.status_code === 3 ?(
-                    <button className="HFTbutton-1" onClick={() => setEditedIndex(item.topic_id)}>Edit</button>
-                   ) : item.status_code === 4 ? (
+                   { item.status_code === 4 ? (
                     <p>{"declared :"+item.hours_completed+" alloted :"+item.total_hours}</p>
                   ) : item.status_code <4?(
                     <span>Not declared yet</span>
@@ -192,7 +190,26 @@ const HandlingCCTable = () => {
             </tr>
           )}
         </tbody>
-      </table>
+      </table>}
+      {tableView === "assignments" && <table>
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>link</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+        {assignmentTableData && assignmentTableData.length > 0 ? (
+            assignmentTableData.map((item) => (
+        <tr key={item.assignment_id}>
+                <td>{item.assignment}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.progress}</td>
+          </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+          </tbody></table>}
     </div>
     
     </div>

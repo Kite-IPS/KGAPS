@@ -12,7 +12,7 @@ function HandlingSidebar() {
   const roleMapping = {
     1: 'Faculty',
     2: 'Course Coordinator',
-    3: 'Department Mentor',
+    3: 'Domain mentor',
     4: 'HOD',
     5: 'Supervisor',
   };

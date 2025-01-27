@@ -6,10 +6,12 @@ import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 function HandlingDMDashboard() {
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
+  const [assignmentData, setAssignmentData] = useState([]);
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedYear, setSelectedYear] = useState(0);
   const [selectedOption, setSelectedOption] = useState({});
   const [viewMode, setViewMode] = useState("course");
+  const [contentViewMode, setContentViewMode] = useState("topics");
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const value = (current, total) => {
@@ -55,6 +57,7 @@ function HandlingDMDashboard() {
       console.log(res.data);
       setCourseDataCurrent(res.data.course_data_current);
       setCourseDataOverall(res.data.course_data_overall);
+      setAssignmentData(res.data.assignment_data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -146,6 +149,9 @@ function HandlingDMDashboard() {
     console.log(aggrdata);
     return aggrdata;
   };
+  const convertToClass1 = (item) => yearMap[item.toString()[1]];
+  const convertToClass2 = (item) => departmentMap[item.toString()[0]];
+  const convertToClass3 = (item) => sectionMap[item.toString()[2]];
   return (
     <>
       <HandlingSidebar />
@@ -217,8 +223,15 @@ function HandlingDMDashboard() {
               )}
             </div>
           </div>
-
-          {courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
+          <div>
+            <button className="HFTbutton-1" onClick={() => setContentViewMode("topics")}>
+            Topics
+                    </button>
+                    <button className="HFTbutton-2" onClick={() => setContentViewMode("assignments")}>
+            Assignments
+                    </button>
+          </div>
+          {contentViewMode === "topics" && courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
             <>
               <h1>
                 Course{" "}
@@ -293,9 +306,32 @@ function HandlingDMDashboard() {
                 ))}
               </div>
             </>
-          ) : (
+          ) : contentViewMode === "topics" && (
             <h1>No progress!</h1>
-          )}
+          )}{
+            contentViewMode === "assignments" && assignmentData.length > 0? (<>
+            <div className="handlingfaculty-dashboard-card-container">
+                  {assignmentData.map((item, i) => (
+                    <div className="handlingfaculty-dashboard-card" key={i}>
+                      <div className="handlingfaculty-dashboard-card-header">
+                        <span className="grid-item">{item.course_code}</span>
+                        <span className="grid-item">{item.course_name}</span>
+                        <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                        <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                        <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                      </div>
+                      <div className="handlingfaculty-dashboard-card-content">
+                        <p>Overall Progress for Assignment: {item.avg_progress}%</p>
+                        <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                          <div style={{ width: `${item.avg_progress}%`, backgroundColor: 'green' }} />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+            </>) : contentViewMode === "assignments" && (<h1>No assignments!</h1>)
+          }
+
         </div>
       </div>
     </>

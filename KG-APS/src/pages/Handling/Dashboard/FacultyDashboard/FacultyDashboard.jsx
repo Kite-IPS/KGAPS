@@ -7,9 +7,11 @@ function HandlingFacultyDashboard() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
   const [facultyDetails, setFacultyDetails] = useState(data); 
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
+  const [assignmentData,setAssignmentData] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [viewMode, setViewMode] = useState("topics");
 
   const value = (current, total) => {
     if (total === 0 || current === 0 || current > total) {
@@ -42,6 +44,7 @@ function HandlingFacultyDashboard() {
         if (res) {
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
+          setAssignmentData(res.data.assignment_data);
         }
       }catch (error) {
         console.error('Error fetching data:', error);
@@ -114,12 +117,18 @@ function HandlingFacultyDashboard() {
             <div className="handlingfaculty-dashboard-welcome-box">
               <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
             </div>
+            <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>
+          Topics
+        </button>
+        <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>
+          Assignments
+        </button>
           </div>
           {loading ? (
             <h1>Loading...</h1>
-          ) : error ? (
+          ) : error && (
             <h1>{error}</h1>
-          ) : courseDataOverall.length > 0 ? (
+          ) }{viewMode === "topics" && courseDataOverall.length > 0 ? (
             <>
               <div className="handlingfaculty-dashboard-aggregate">
                 <p>Aggregate Progress</p>
@@ -159,9 +168,31 @@ function HandlingFacultyDashboard() {
                 ))}
               </div>
             </>
-          ) : (
+          ) : viewMode === "topics" && (
             <h1>No progress!</h1>
           )}
+          {viewMode === "assignments" && assignmentData.length > 0 ? ( <>
+            <div className="handlingfaculty-dashboard-card-container">
+                {assignmentData.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      <span className="grid-item">{item.course_code}</span>
+                      <span className="grid-item">{item.course_name}</span>
+                      <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                      <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                      <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>Overall Progress for Assignment: {item.avg_progress}%</p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div style={{ width: `${item.avg_progress}%`, backgroundColor: 'green' }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+          </>
+          ): viewMode==="assignments" && (<h1>No progress!</h1>)}
         </div>
       </div>
     </>

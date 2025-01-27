@@ -260,7 +260,7 @@ const HandlingFacultyTable = () => {
                 target="_blank"
                 rel="noopener noreferrer">View</a></td>
                 <td>{item.progress}</td>
-          </tr>))):(<tr><p>No assignments alloted</p></tr>)}
+                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
           </tbody></table>}
     </div>
     

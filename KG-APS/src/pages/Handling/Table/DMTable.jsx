@@ -5,50 +5,14 @@ import axios from 'axios';
 
 const HandlingDMTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
-  const [comment, setComment] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [selectedYear, setSelectedYear] = useState(0);
+  const [tableView, setTableView] = useState("topics");
+  const [assignmentTableData, setAssignmentTableData] = useState([]);
   const [courseList, setCourseList] = useState([]);
   const [FacultyCourses, setFacultyCourses] = useState([]);
-  const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
-
-  const handleApproval = async (topic_id) => {
-    try {
-      const res = await axios.post("http://localhost:8000/api/editcomment/1", {
-        topic_id,
-        status: "approved",
-      });
-      if (res.status === 200) {
-        alert("Topic approved successfully.");
-        fetchTableData(); // Refresh table
-      }
-    } catch (error) {
-      console.error("Error approving topic:", error);
-    }
-  };
-
-  const handleDisapproval = async (topic_id) => {
-    const message = prompt("Please enter a reason for disapproval:");
-    if (message) {
-      try {
-        const res = await axios.post("http://localhost:8000/api/editcomment/0", {
-          topic_id,
-          status: "disapproved",
-          comment: message,
-        });
-        if (res.status === 200) {
-          alert("Topic disapproved with comment.");
-          fetchTableData(); // Refresh table
-        }
-      } catch (error) {
-        console.error("Error disapproving topic:", error);
-      }
-    } else {
-      alert("Disapproval cancelled.");
-    }
-  };
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -127,20 +91,16 @@ const HandlingDMTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_domain_mentor", {
-        domain_id: data.domain_id,
+      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });
       if (res.data && !('response' in res.data)) {
-        setTableData(res.data);
         const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code === 2 || item.status_code === 1;
-          return true;
+          return item.status_code>=3;
         });
         setFilteredData(filtered);
       } else {
-        setTableData([]);
         setFilteredData([]); // Set to empty array if no data
       }
     } catch (error) {
@@ -148,23 +108,34 @@ const HandlingDMTable = () => {
     }
   };
 
+  const fetchAssignmentTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+        course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setAssignmentTableData(res.data);
+      } else {
+        setAssignmentTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchTableData();
-  }, [selectedOption]);
+    {tableView === "topics" && fetchTableData();}
+    {tableView === "assignments" && fetchAssignmentTableData();}
+  }, [selectedOption,tableView]);
 
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
     setSelectedOption(selected);
   };
 
-  useEffect(() => {
-    setFilteredData(
-      tableData.filter((item) => {
-        if (viewMode === "upload") return item.status_code === 2 || item.status_code === 1;
-        return true;
-      })
-    );
-  }, [viewMode, tableData]);
 
   const yearMap2 = {
     0: "Freshman (1st Year)",
@@ -196,8 +167,13 @@ const HandlingDMTable = () => {
         ))}
       </select>
       </div>
-
-      <table>
+      <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
+          Topics
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
+          Assignments
+        </button>
+      {tableView === "topics" && <table>
         <thead>
           <tr>
             <th>Topic</th>
@@ -251,7 +227,26 @@ const HandlingDMTable = () => {
             </tr>
           )}
         </tbody>
-      </table>
+      </table>}
+      {tableView === "assignments" && <table>
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>link</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+        {assignmentTableData && assignmentTableData.length > 0 ? (
+            assignmentTableData.map((item) => (
+        <tr key={item.assignment_id}>
+                <td>{item.assignment}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.progress}</td>
+          </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+          </tbody></table>}
     </div>
     
     </div>

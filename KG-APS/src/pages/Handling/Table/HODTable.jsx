@@ -6,6 +6,8 @@ import HandlingSidebar from "../HandlingSidebar/HandlingSidebar";
 const HandlingHODTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedOption, setSelectedOption] = useState("");
+  const [assignmentTableData, setAssignmentTableData] = useState([]);
+  const [tableView, setTableView] = useState("topics");
   const [selectedClass, setSelectedClass] = useState("");
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
@@ -72,16 +74,15 @@ const HandlingHODTable = () => {
     if (!selectedOption) return;
     console.log(selectedOption);
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_hod", {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });
       if (res.data && !("response" in res.data)) {
         console.log(res.data);
         setTableData(res.data);
-        const filtered = res.data.filter((item) => {
-          if (viewMode === "upload") return item.status_code === 4;
-          return true;
+        const filtered = res.data.filter((item) => {  if (viewMode === "upload") return item.status_code === 4;
+          if (viewMode === "all") return item.status_code >= 3;
         });
         setFilteredData(filtered);
       } else {
@@ -93,9 +94,29 @@ const HandlingHODTable = () => {
     }
   };
 
+  const fetchAssignmentTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+        course_code: selectedOption.course_code,
+        class_id: selectedClass,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setAssignmentTableData(res.data);
+      } else {
+        setAssignmentTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
+
   useEffect(() => {
-    fetchTableData();
-  }, [selectedOption]);
+    {tableView === "topics" && fetchTableData();}
+    {tableView === "assignments" && fetchAssignmentTableData();}
+  }, [selectedOption,tableView]);
+
 
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
@@ -106,7 +127,7 @@ const HandlingHODTable = () => {
     setFilteredData(
       tableData.filter((item) => {
         if (viewMode === "upload") return item.status_code === 4;
-        return true;
+        if (viewMode === "all") return item.status_code >= 3;
       })
     );
   }, [viewMode, tableData]);
@@ -252,8 +273,13 @@ const HandlingHODTable = () => {
             ))}
           </select>
         </div>
-
-        <table>
+        <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
+          Topics
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
+          Assignments
+        </button>
+        {tableView==="topics" && <table>
           <thead>
             <tr>
               <th>Topic</th>
@@ -297,7 +323,7 @@ const HandlingHODTable = () => {
                   
                 </tr>
               ))
-            ) : (
+            ) : tableView==="topics" && (
               <tr>
                 <td colSpan={4} style={{ textAlign: "center" }}>
                   No topics assigned yet.
@@ -305,7 +331,25 @@ const HandlingHODTable = () => {
               </tr>
             )}
           </tbody>
-        </table>
+        </table>}{tableView === "assignments" && <table>
+        <thead>
+          <tr>
+            <th>Assignment</th>
+            <th>link</th>
+            <th>Progress</th>
+          </tr>
+        </thead>
+        <tbody>
+        {assignmentTableData && assignmentTableData.length > 0 ? (
+            assignmentTableData.map((item) => (
+        <tr key={item.assignment_id}>
+                <td>{item.assignment}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.progress}</td>
+                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+          </tbody></table>}
       </div>
     </div>
   );
