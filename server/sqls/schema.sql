@@ -134,6 +134,16 @@ CREATE TABLE t_course_assignments (
   link VARCHAR(255) NOT NULL,
   assignment_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
   progress int DEFAULT 0,
+  avg_marks int DEFAULT 0,
+  FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
+  FOREIGN KEY (class_id) REFERENCES t_class(id)
+);
+
+CREATE TABLE t_course_results(
+  course_code VARCHAR(48) NOT NULL,
+  class_id INT NOT NULL,
+  result VARCHAR(48) NOT NULL,
+  link VARCHAR(255) NOT NULL,
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
   FOREIGN KEY (class_id) REFERENCES t_class(id)
 );
@@ -160,16 +170,7 @@ create view domain_mentor_table as select  z.mentor_id,c.course_code,d.course_na
     END AS status_code,c.url,c.comment,t.topic_id,q.domain_id  
     FROM l_course_domains q,t_complete_status c,t_course_details d,t_course_topics t,l_mentor_courses z where q.course_code=d.course_code 
     and c.course_code=d.course_code and t.topic_id=c.topic_id and z.course_code=c.course_code  GROUP BY 
-    z.mentor_id, 
-    c.course_code, 
-    d.course_name, 
-    t.topic, 
-    t.outcome, 
-    c.status_code, 
-    c.url, 
-    c.comment, 
-    t.topic_id,
-	  q.domain_id;
+    z.mentor_id,c.course_code,d.course_name,t.topic,t.outcome,c.status_code,c.url,c.comment,t.topic_id,q.domain_id;
 
 --
 --  HANDLING PART
@@ -181,8 +182,12 @@ from t_users u,l_class_course a,t_handling_hours c,t_course_details d,t_course_t
 and c.course_code=d.course_code and t.topic_id=c.topic_id and a.class_id=c.class_id;
 
 --view for assignments table for handling part
-create view assignment_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.assignment,c.link,c.assignment_id,a.handler_id,c.progress 
+create view assignment_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.assignment,c.link,c.assignment_id,a.handler_id,c.progress,c.avg_marks 
 from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
+
+--view for results table for handling part
+create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result 
+from l_class_course a,t_course_results c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
 
 --
 --  INITIALIZATION PART

@@ -60,7 +60,12 @@ def update_table():
                 yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
                 no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
                 print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
-                q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where assignment_id={i['assignment_id']};")
+                marks_column = df['Total Marks']
+                completed_marks = [int(i) for i in marks_column if int(i) != 0]
+                print(marks_column)
+                avg_marks = sum(completed_marks)/len(completed_marks)
+                print("Average Marks: ", avg_marks)
+                q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)},avg_marks={int(avg_marks)} where assignment_id={i['assignment_id']};")
                 r = conn.execute(q)
                 conn.commit()
                 print("Table updated successfully!")
@@ -343,8 +348,11 @@ def add_assignment():
         # Count occurrences of "Y" and "y"
         yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
         no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
-        print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
-        q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where link='{link}';")
+        marks_column = df['Total Marks']
+        completed_marks = [int(i) for i in marks_column if int(i) != 0]
+        avg_marks = sum(completed_marks)/len(completed_marks)
+        print("Average Marks: ", avg_marks)
+        q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)},avg_marks={int(avg_marks)} where link='{link}';")
         r = conn.execute(q)
         conn.commit()
         print("Table updated successfully!")
