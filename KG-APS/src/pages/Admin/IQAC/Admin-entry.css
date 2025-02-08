@@ -99,8 +99,8 @@
   
   /* Message styling */
   p {
-    color: #28a745;
-    font-weight: bold;
+    font-weight: 500;
+    font-size:.95rem;
   }
   
   p.admintitle {

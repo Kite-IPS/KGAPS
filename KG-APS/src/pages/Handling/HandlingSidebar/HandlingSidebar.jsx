@@ -35,7 +35,24 @@ function HandlingSidebar() {
       <nav className="handling-navbar">
         <div className="handling-navbar-brand">KG-APS</div>
         <ul className="handling-navbar-links">
+          {facultyDetails.role_id === 5?(<>
+            <li>
+            <a
+              href={`/supervisor/dashboard`}
+              className={`nav-button ${isActive('dashboard') ? 'active' : ''}`}
+            >
+              Dashboard
+            </a>
+          </li>
           <li>
+            <a
+              href={`/supervisor/table`}
+              className={`nav-button ${isActive('table') ? 'active' : ''}`}
+            >
+              Table
+            </a>
+          </li>
+          </>):(<><li>
             <a
               href={`/${temp}/${roleMapping[facultyDetails.role_id]?.toLowerCase().replace(' ', '-')}/dashboard`}
               className={`nav-button ${isActive('dashboard') ? 'active' : ''}`}
@@ -50,7 +67,7 @@ function HandlingSidebar() {
             >
               Table
             </a>
-          </li>
+          </li></>)}
         </ul>
         <div
           className="handling-navbar-info"

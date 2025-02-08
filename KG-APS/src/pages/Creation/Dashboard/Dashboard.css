@@ -200,3 +200,9 @@
   .course-selector{
     width:50%;
   }
+
+  .overall-progress-container {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);  /* Limit to exactly 5 columns */
+    gap: 20px;  /* Spacing between items */
+  }

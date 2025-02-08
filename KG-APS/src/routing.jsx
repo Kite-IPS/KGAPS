@@ -40,8 +40,6 @@ function Routing() {
         <Route path="/handling/domain-mentor/table" element={ < HandlingDMTable />} />
         <Route path="/handling/hod/dashboard" element={ < HandlingHODDashboard />} />
         <Route path="/handling/hod/table" element={ < HandlingHODTable />} />
-        <Route path="/handling/supervisor/dashboard" element={ < HandlingSupervisorDashboard/>} />
-        <Route path="/handling/supervisor/table" element={ < HandlingSupervisorTable />} />
         <Route path="/creation/faculty/dashboard" element={ < CreationFacultyDashboard />} />
         <Route path="/creation/faculty/table" element={ < CreationFacultyTable />} />
         <Route path="/creation/course-coordinator/dashboard" element={ < CreationCCDashboard />} />
@@ -50,8 +48,8 @@ function Routing() {
         <Route path="/creation/domain-mentor/table" element={ < CreationDMTable />} />
         <Route path="/creation/hod/dashboard" element={ < CreationHodDashboard />} />
         <Route path="/creation/hod/table" element={ < CreationHODTable />} />
-        <Route path="/creation/supervisor/dashboard" element={ < CreationSupervisorDashboard />} />
-        <Route path="/creation/supervisor/table" element={ < CreationSupervisorTable />} />
+        <Route path="/supervisor/dashboard" element={ < CreationSupervisorDashboard />} />
+        <Route path="/supervisor/table" element={ < CreationSupervisorTable />} />
         <Route path="/admin-entry" element={ < AdminComponent />} />
         <Route path="/admin" element={ < HandlingFacultyTable />} />
         <Route path="/trial" element={ < AssigningRoleToCoursesComponent />} />

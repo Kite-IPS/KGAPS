@@ -2,13 +2,15 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
-import FacultyAddAssignment from '../Assignments/FacultyAddAssignment';
+import FacultyAddAssignment from '../Forms/FacultyAddAssignment';
+import FacultyAddResult from '../Forms/FacultyAddResult';
 
 const HandlingFacultyTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [updatedLink, setUpdatedLink] = useState("");
   const [selectedOption, setSelectedOption] = useState(null);
   const [editedIndex, setEditedIndex] = useState(null);
+  const [addView, setAddView] = useState("assignments");
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
@@ -164,8 +166,13 @@ const HandlingFacultyTable = () => {
   return (
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
-      <FacultyAddAssignment />
-    <div className="HFTtable-container">
+      <div>
+        
+        <button className="button" onClick={() => setAddView("assignments")}>Assignments</button>
+        <button className="button" onClick={() => setAddView("results")}>Results</button>
+             {addView=="assignments" && <FacultyAddAssignment />}
+             {addView=="results" && <FacultyAddResult />}
+      </div>   <div className="HFTtable-container">
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents

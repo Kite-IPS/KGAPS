@@ -144,6 +144,9 @@ CREATE TABLE t_course_results(
   class_id INT NOT NULL,
   result VARCHAR(48) NOT NULL,
   link VARCHAR(255) NOT NULL,
+  result_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  progress int DEFAULT 0,
+  avg_marks int DEFAULT 0,
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
   FOREIGN KEY (class_id) REFERENCES t_class(id)
 );
@@ -186,7 +189,7 @@ create view assignment_table_handling as select distinct a.class_id,c.course_cod
 from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
 
 --view for results table for handling part
-create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result 
+create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result,c.progress,c.avg_marks 
 from l_class_course a,t_course_results c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
 
 --

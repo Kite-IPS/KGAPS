@@ -9,9 +9,9 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const [role, setRole] = useState(1);
+    const [role, setRole] = useState("1");
     const [section, setSection] = useState("0");
-    const roleMapping = {1:'faculty',2:'course-coordinator',3:'domain-mentor',4:'hod',5:'supervisor'}
+    const roleMapping = {"1":'faculty',"2":'course-coordinator',"3":'domain-mentor',"4":'hod',"5":'supervisor'}
     const submitCheck = async (e) => {
         e.preventDefault();
         if (!username || !password) {
@@ -40,14 +40,19 @@ export default function Login() {
                 console.log(loginData);
                 const response = res.data;
                 console.log(response);
-                if(loginData.section === "0" && 'name' in response){
+                if(loginData.section === "0" && 'name' in response && loginData.role !== "5"){
                     sessionStorage.setItem('userData', JSON.stringify(response));
                     navigate('/creation/'+roleMapping[loginData.role]+'/dashboard');
+                }
+                else if(loginData.role === "5"){
+                    sessionStorage.setItem('userData', JSON.stringify(response));
+                    navigate('/supervisor/dashboard');
                 }
                 else if(loginData.section === "1" && 'name' in response){
                     sessionStorage.setItem('userData', JSON.stringify(response));
                     navigate('/handling/'+roleMapping[loginData.role]+'/dashboard');
                 }
+                
               });
         } catch (error) {
             console.log(error);
@@ -79,12 +84,12 @@ export default function Login() {
                                 <option value="5">Supervisor</option>
                             </select>
                         </div>
-                        <div className="drop-down-container">
+                        {role !== "5" && <div className="drop-down-container">
                             <select name="section" id="roles" value={section} onChange={((e) => setSection(e.target.value))}>
                                 <option value="0">Creation</option>
                                 <option value="1">Handling</option>
                             </select>
-                        </div>
+                        </div>}
                         <form onSubmit={submitCheck}>
                             <div className="login-form-wrapper">
                                 <input type="text" name="username" id="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
