@@ -154,6 +154,9 @@ const FacultyAddAssignment = () => {
                             <option key="Capstone Project" value="Capstone Project">
                                 Capstone Project
                             </option>
+                            <option key="Class test" value="Class test">
+                                Class test
+                            </option>
                     </select>
                 </div>
                 <p>please ensure the given Google sheet is accessible to all as viewer and ensure the right sub-sheet is as the link</p>

@@ -446,8 +446,12 @@ def add_course():
             q = sqlalchemy.text(
                 f"INSERT INTO l_course_departments VALUES('{course_code}',{dept_id});")
             conn.execute(q)
-            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
-            conn.execute(q)
+            if int(dept_id)!=6:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+                conn.execute(q)
+            else:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '_1_';")
+                conn.execute(q)
             print("ALREADY ASSIGNED COURSE course "+course_code+"-"+course_name+" is also added to department "+str(dept_id))        
         else:
             q = sqlalchemy.text(f"INSERT INTO t_course_details VALUES('{course_code}','{course_name}');")
@@ -457,8 +461,12 @@ def add_course():
             conn.execute(q)
             q = sqlalchemy.text(f"INSERT INTO l_course_domains VALUES('{course_code}','{domain_id}');")
             conn.execute(q)
-            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
-            conn.execute(q)
+            if int(dept_id)!=6:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+                conn.execute(q)
+            else:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '_1_';")
+                conn.execute(q)
             print("course "+course_code+"-"+course_name+"added to department "+str(dept_id))
         conn.commit()
         return json.dumps({'data': 'Success'})
