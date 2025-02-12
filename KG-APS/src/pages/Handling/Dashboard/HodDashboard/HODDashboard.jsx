@@ -15,6 +15,8 @@ function HandlingHODDashboard() {
   const [departmentProgressCurrent, setDepartmentProgressCurrent] = useState(
     []
   );
+  const [facultyList, setFacultyList] = useState([]);
+  const [facultyData, setFacultyData] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
@@ -60,6 +62,24 @@ function HandlingHODDashboard() {
 
     fetchData();
   }, []);
+  useEffect(() => {
+    const fetchFaculty = async () => {
+      try {
+        const faculty = await axios.post(
+          "http://localhost:8000/api/faculty_info",
+          { department_id: data.department_id },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(faculty.data);
+        setFacultyList(faculty.data);
+      } catch (error) {
+        console.error("Error fetching faculty data:", error);
+      }
+    };
+    fetchFaculty();
+  }, [viewMode]);
 
   const fetchChartDataCourse = async (selectedCourse) => {
     try {
@@ -96,16 +116,44 @@ function HandlingHODDashboard() {
       console.error("Error fetching data:", error);
     }
   };
-
+  const fetchFacultyData = async (option) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8000/api/faculty_progress",
+        option,
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      if (res.data) {
+        setCourseDataCurrent(res.data.course_data_current);
+        setCourseDataOverall(res.data.course_data_overall);
+        setAssignmentData(res.data.assignment_data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const UpdateChart = async (option) => {
     console.log(option);
-    console.log(typeof option.course_code);
     if ("course_code" in option) {
       await fetchChartDataCourse(option);
+    } else if ("uid" in option) {
+      setFacultyData(option);
+      await fetchFacultyData(option);
     } else {
       await fetchChartDataClass(option);
     }
   };
+
+  useEffect(() => {
+    const resetData = () => {
+      setCourseDataCurrent([]);
+      setCourseDataOverall([]);
+      setAssignmentData([]);
+    };
+    resetData();
+  },[viewMode]);
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -257,6 +305,12 @@ function HandlingHODDashboard() {
               onClick={() => setViewMode("class")}
             >
               Class wise
+            </button>
+            <button
+              className="HFTbutton-2"
+              onClick={() => setViewMode("faculty")}
+            >
+              Faculty wise
             </button>
           </div>
 
@@ -546,6 +600,58 @@ function HandlingHODDashboard() {
           ) : (
             <h1>No courses available</h1>
           )}
+          {viewMode === "faculty" && (
+            <>
+              {facultyList.length > 0 &&
+                facultyList.map((faculty, index) => (
+                  <div
+                    key={index}
+                    className={`course-card ${
+                      selectedCard === faculty.uid ? "expanded" : ""
+                    }`}
+                    onClick={async () => {
+                      setSelectedCard(faculty.uid);
+                      console.log(faculty);
+                      UpdateChart(faculty);
+                    }}
+                  >
+                    <h3>{faculty.name}</h3>
+                    {selectedCard === faculty.uid && (
+                      <div className="card-details">
+                        <p>Faculty ID: {faculty.uid}</p>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              {viewMode === "topics" && courseDataOverall.length > 0 ? (
+                <>
+                  <div className="handlingfaculty-dashboard-aggregate">
+                    <p>Aggregate Progress</p>
+                    <div className="handlingfaculty-dashboard-aggregate-content">
+                      <p>
+                        Overall Progress:{" "}
+                        {(aggregateData()[0].topic_count * 100).toFixed(0)}%
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${(
+                              aggregateData()[0].topic_count * 100
+                            ).toFixed(2)}%`,
+                            backgroundColor: "purple",
+                          }}
+                        />
+                      </div>
+                      <p>Average Status: {aggregateData()[0].comment}</p>
+                    </div>
+                  </div>
+                  <br />
+                </>
+              ) : (
+                viewMode === "topics" && <h1>No progress!</h1>
+              )}
+            </>
+          )}
           <div>
             <button
               className="HFTbutton-1"
@@ -564,7 +670,9 @@ function HandlingHODDashboard() {
           <hr></hr>
           <br></br>
           {/* Course Data Display */}
-          {contentViewMode==="topics" && courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
+          {contentViewMode === "topics" &&
+          courseDataOverall.length > 0 &&
+          courseDataCurrent.length > 0 ? (
             <>
               {viewMode === "course" && (
                 <h1>
@@ -595,20 +703,32 @@ function HandlingHODDashboard() {
                 </div>
               </div>
               <br></br>
+              {viewMode === "faculty" && (
+                <span>
+                  Faculty - {facultyData.uid} - {facultyData.name}
+                </span>
+              )}
               <div className="handlingfaculty-dashboard-card-container">
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
                     <div className="handlingfaculty-dashboard-card-header">
-                      {" "}
-                      Faculty - {item.uid} - {item.name} -{" "}
-                      {convertToClass(item.class_id)}
-                    </div>
-                    {viewMode === "class" && (
-                      <div className="handlingfaculty-dashboard-card-header">
+                    <p>
+                        {(viewMode === "course" || viewMode === "class") && (
+                          <span>
+                            Faculty - {item.uid} - {item.name}
+                          </span>
+                        )}{" "}
+                        {convertToClass(item.class_id)} 
+                        {(viewMode === "class" || viewMode === "faculty") && (
+                          <p>
                         {" "}
                         Course - {item.course_code} - {item.course_name}
-                      </div>
+                          </p>
                     )}
+                      </p>
+
+                    </div>
+                
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
                         Hours Completed: {item.completed_hours} /{" "}
@@ -649,31 +769,47 @@ function HandlingHODDashboard() {
                 ))}
               </div>
             </>
-          ) : contentViewMode==="topics" && (
-            <h1>No progress!</h1>
-          )}{
-            contentViewMode === "assignments" && assignmentData.length > 0? (<>
-            <div className="handlingfaculty-dashboard-card-container">
-                  {assignmentData.map((item, i) => (
-                    <div className="handlingfaculty-dashboard-card" key={i}>
-                      <div className="handlingfaculty-dashboard-card-header">
-                        <span className="grid-item">{item.course_code}</span>
-                        <span className="grid-item">{item.course_name}</span>
-                        <span className="grid-item">{convertToClass1(item.class_id)}</span>
-                        <span className="grid-item">{convertToClass2(item.class_id)}</span>
-                        <span className="grid-item">{convertToClass3(item.class_id)}</span>
-                      </div>
-                      <div className="handlingfaculty-dashboard-card-content">
-                        <p>Overall Progress for Assignment: {item.avg_progress}%</p>
-                        <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                          <div style={{ width: `${item.avg_progress}%`, backgroundColor: 'green' }} />
-                        </div>
+          ) : (
+            contentViewMode === "topics" && <h1>No progress!</h1>
+          )}
+          {contentViewMode === "assignments" && assignmentData.length > 0 ? (
+            <>
+              <div className="handlingfaculty-dashboard-card-container">
+                {assignmentData.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      <span className="grid-item">{item.course_code}</span>
+                      <span className="grid-item">{item.course_name}</span>
+                      <span className="grid-item">
+                        {convertToClass1(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass2(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass3(item.class_id)}
+                      </span>
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>
+                        Overall Progress for Assignment: {item.avg_progress}%
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${item.avg_progress}%`,
+                            backgroundColor: "green",
+                          }}
+                        />
                       </div>
                     </div>
-                  ))}
-                </div>
-            </>) : contentViewMode === "assignments" && (<h1>No assignments!</h1>)
-          }
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            contentViewMode === "assignments" && <h1>No assignments!</h1>
+          )}
         </div>
       </div>
     </>
