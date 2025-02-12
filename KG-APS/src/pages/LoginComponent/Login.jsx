@@ -44,7 +44,7 @@ export default function Login() {
                     sessionStorage.setItem('userData', JSON.stringify(response));
                     navigate('/creation/'+roleMapping[loginData.role]+'/dashboard');
                 }
-                else if(loginData.role === "5"){
+                else if(loginData.role === "5" && 'name' in response){
                     sessionStorage.setItem('userData', JSON.stringify(response));
                     navigate('/supervisor/dashboard');
                 }

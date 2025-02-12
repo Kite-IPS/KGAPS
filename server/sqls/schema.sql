@@ -190,7 +190,7 @@ from l_class_course a,t_course_assignments c,t_course_details d where c.course_c
 
 --view for results table for handling part
 create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result,c.progress,c.avg_marks 
-from l_class_course a,t_course_results c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
+from l_class_course a,t_course_results c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id and c.course_code=a.course_code;
 
 --
 --  INITIALIZATION PART

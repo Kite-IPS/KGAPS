@@ -6,13 +6,14 @@ import HandlingSidebar from '../../HandlingSidebar/HandlingSidebar';
 function HandlingSupervisorDashboard() {
   const [courseDataCurrent,setCourseDataCurrent] = useState([]);
   const [courseDataOverall,setCourseDataOverall] = useState([]); 
-  const userData = JSON.parse(sessionStorage.getItem("userData"));
+  const [facultyList, setFacultyList] = useState([]);
   const [department_id,setDepartment_id] = useState(1);
   const [selectedYear, setSelectedYear] = useState(0);
   const [departmentProgressOverall,setDepartmentProgressOverall] = useState([]);
   const [departmentProgressCurrent,setDepartmentProgressCurrent] = useState([]);
   const [assignmentData,setAssignmentData] = useState([]);
   const [selectedOption, setSelectedOption] = useState({});
+  const [facultyData, setFacultyData] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const [viewMode, setViewMode] = useState("course");
@@ -64,6 +65,24 @@ function HandlingSupervisorDashboard() {
     fetchData();
   }, [department_id]);
 
+  useEffect(() => {
+    const fetchFaculty = async () => {
+    try {
+    const faculty = await axios.post(
+      "http://localhost:8000/api/faculty_info",
+      { department_id: department_id },
+      {
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+    console.log(faculty.data);
+    setFacultyList(faculty.data);
+  } catch (error) {
+    console.error("Error fetching faculty data:", error);
+  }}
+  fetchFaculty();
+}, [viewMode]);
+
   const fetchChartDataCourse = async (selectedCourse) => {
     try {
       const res = await axios.post(
@@ -99,12 +118,32 @@ function HandlingSupervisorDashboard() {
       console.error("Error fetching data:", error);
     }
   };
+  const fetchFacultyData = async (option) => {
 
+    try {
+      const res = await axios.post("http://localhost:8000/api/faculty_progress", option, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (res.data) {
+        setCourseDataCurrent(res.data.course_data_current);
+        setCourseDataOverall(res.data.course_data_overall);
+        setAssignmentData(res.data.assignment_data);
+      }
+    }catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const UpdateChart = async (option) => {
     console.log(option);
-    console.log(typeof(option.course_code));
-  if('course_code' in option){await fetchChartDataCourse(option);
-  }else{await fetchChartDataClass(option);}};
+  if('course_code' in option){
+    await fetchChartDataCourse(option);
+  }
+  else if('uid' in option){
+    setFacultyData(option);
+    await fetchFacultyData(option);}
+  else{
+    await fetchChartDataClass(option);
+  }};
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -227,6 +266,12 @@ function HandlingSupervisorDashboard() {
               >
                 Class wise
               </button>
+              <button
+                className="HFTbutton-2"
+                onClick={() => setViewMode("faculty")}
+              >
+                Faculty wise
+              </button>
               {viewMode === "class" && (
                
                 (department_id == 6?(<><div className="cards-container">
@@ -327,6 +372,48 @@ function HandlingSupervisorDashboard() {
                 </>)) : (
                 <h1>No courses available</h1>
               )}
+              {viewMode === "faculty" && (
+                            <>
+                              {facultyList.length > 0 && 
+                                facultyList.map((faculty, index) => (
+                                  <div
+                                    key={index}
+                                    className={`course-card ${
+                                      selectedCard === faculty.uid ? "expanded" : ""
+                                    }`}
+                                    onClick={async () => {
+                                      setSelectedCard(faculty.uid);
+                                      console.log(faculty);
+                                      UpdateChart(faculty);
+                                    }}
+                                  >
+                                    <h3>{faculty.name}</h3>
+                                    {selectedCard === faculty.uid && (
+                                      <div className="card-details">
+                                        <p>Faculty ID: {faculty.uid}</p>
+                                      </div>
+                                    )}
+                                  </div>
+                                ))}
+                                {viewMode === "topics" && courseDataOverall.length > 0 ? (
+            <>
+              <div className="handlingfaculty-dashboard-aggregate">
+                <p>Aggregate Progress</p>
+                <div className="handlingfaculty-dashboard-aggregate-content">
+                  <p>Overall Progress: {(aggregateData()[0].topic_count * 100).toFixed(0)}%</p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div style={{ width: `${(aggregateData()[0].topic_count * 100).toFixed(2)}%`, backgroundColor: 'purple' }} />
+                  </div>
+                  <p>Average Status: {aggregateData()[0].comment}</p>
+                </div>
+              </div>
+              <br />
+            </>
+          ) : viewMode === "topics" && (
+            <h1>No progress!</h1>
+          )}
+                            </>
+                          )}
             </div>
           </div>
           <div>
@@ -371,12 +458,15 @@ function HandlingSupervisorDashboard() {
                   <p>Average Status: {aggregateData()[0].comment}</p>
                 </div>
               </div>
+              {(viewMode==="faculty") && <span>Faculty - {facultyData.uid} - {facultyData.name}</span>}
               <div className="handlingfaculty-dashboard-card-container">
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
-                    <div className="handlingfaculty-dashboard-card-header">
+                   <div className="handlingfaculty-dashboard-card-header">
+                   <p>
+                   {(viewMode==="course" || viewMode==="class") && <span>Faculty - {item.uid} - {item.name}</span>}
                       {" "}
-                      Faculty - {item.uid} - {item.name} - {convertToClass(item.class_id)}
+                       {convertToClass(item.class_id)} - {item.course_code} - {item.course_name}</p>
                     </div>
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>

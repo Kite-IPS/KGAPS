@@ -329,6 +329,10 @@ const CreationSupervisorDashboard = () => {
       </div>
       {overallView === "creation" && (
         <>
+        
+        <div className="dashboard-container">
+        <div className="dashboard-content">
+        
           <h1>Creation Section</h1>
           <div className="course-selector">
             <button
@@ -469,6 +473,8 @@ const CreationSupervisorDashboard = () => {
                             </div></>}
               </>
             )}
+          </div>
+          </div>
           </div>
         </>
       )}
