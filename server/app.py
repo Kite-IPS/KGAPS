@@ -60,15 +60,11 @@ def update_table():
                 yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
                 no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
                 print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
-                marks_column = df['Total Marks']
-                completed_marks = [int(i) for i in marks_column if int(i) != 0]
-                print(marks_column)
-                avg_marks = sum(completed_marks)/len(completed_marks)
-                print("Average Marks: ", avg_marks)
-                q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)},avg_marks={int(avg_marks)} where assignment_id={i['assignment_id']};")
-                r = conn.execute(q)
-                conn.commit()
-                print("Table updated successfully!")
+                if no_count!=0:
+                    q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where assignment_id={i['assignment_id']};")
+                    r = conn.execute(q)
+                    conn.commit()
+                    print("Table updated successfully!")
             return json.dumps({"response":"Table updated successfully!"})
         else:
             return json.dumps({"response":"no assignments added"})
@@ -319,7 +315,7 @@ def faculty_course_info():
     return json.dumps(data)
 
 #
-#  ASSIGNMENTS SECTION
+#  ASSIGNMENTS AND RESULTS SECTION
 #
 
 # adds assignments to a particular class   
@@ -348,11 +344,42 @@ def add_assignment():
         # Count occurrences of "Y" and "y"
         yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
         no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
-        marks_column = df['Total Marks']
-        completed_marks = [int(i) for i in marks_column if int(i) != 0]
-        avg_marks = sum(completed_marks)/len(completed_marks)
-        print("Average Marks: ", avg_marks)
-        q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)},avg_marks={int(avg_marks)} where link='{link}';")
+        print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
+        q = sqlalchemy.text(f"update t_course_assignments set progress={int((yes_count/(yes_count + no_count))*100)} where link='{link}';")
+        r = conn.execute(q)
+        conn.commit()
+        print("Table updated successfully!")
+        return json.dumps({'response': 'Success'})
+    return json.dumps({'response': 'incorrect method'})
+
+# adds results to a particular class   
+@app.route('/api/add_result', methods=['POST', 'GET'])
+def add_result():
+    if request.method == 'POST':
+        course_code = request.json['course_code']
+        result = request.json['result']
+        class_id = request.json['class_id']
+        link = request.json['link']
+        print(course_code,result,class_id,link)
+        q = sqlalchemy.text(f"INSERT INTO t_course_results(course_code,result,class_id,link) VALUES('{course_code}','{result}',{class_id},'{link}');")
+        conn.execute(q)
+        conn.commit()  
+        print("successfully added assignment "+str(result))
+        if "gid=" in link:
+                    gid = link.split("gid=")[1].split("#")[0]  # Extract GID
+                    base_url = link.split("/edit")[0]  # Base URL before /edit
+                    csv_url = f"{base_url}/export?format=csv&gid={gid}"  # Build CSV export link
+        else:
+            return json.dumps({"response":"Invalid Google Sheets URL. Make sure it includes a GID."})
+        response = requests.get(csv_url)
+        df = pd.read_csv(StringIO(response.text), skiprows=5)
+        extracted_column = df['Completion']  # Extract the 'Completion' column
+
+        # Count occurrences of "Y" and "y"
+        yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
+        no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
+        print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
+        q = sqlalchemy.text(f"update t_course_results set progress={int((yes_count/(yes_count + no_count))*100)} where link='{link}';")
         r = conn.execute(q)
         conn.commit()
         print("Table updated successfully!")
@@ -385,6 +412,19 @@ def handling_faculty_assignments():
         return json.dumps(data)
     return json.dumps({'response':'No topics assigned yet'})
 
+# view for faculty
+@app.route('/api/handling_faculty_results', methods=['POST', 'GET'])
+def handling_faculty_results():
+    course_code=request.json['course_code']
+    class_id = request.json['class_id']
+    q = sqlalchemy.text(f"SELECT * FROM assignment_table_handling WHERE course_code='{course_code}' and class_id='{class_id}';")
+    if (conn.execute(q).fetchall()):
+        r = conn.execute(q).fetchall()
+        data = [dict(i._mapping) for i in r]
+        print(data)
+        return json.dumps(data)
+    return json.dumps({'response':'No topics assigned yet'})
+
 #
 #   COURSE MANAGEMENT SECTION
 #
@@ -406,8 +446,12 @@ def add_course():
             q = sqlalchemy.text(
                 f"INSERT INTO l_course_departments VALUES('{course_code}',{dept_id});")
             conn.execute(q)
-            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
-            conn.execute(q)
+            if int(dept_id)!=6:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+                conn.execute(q)
+            else:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '_1_';")
+                conn.execute(q)
             print("ALREADY ASSIGNED COURSE course "+course_code+"-"+course_name+" is also added to department "+str(dept_id))        
         else:
             q = sqlalchemy.text(f"INSERT INTO t_course_details VALUES('{course_code}','{course_name}');")
@@ -417,8 +461,12 @@ def add_course():
             conn.execute(q)
             q = sqlalchemy.text(f"INSERT INTO l_course_domains VALUES('{course_code}','{domain_id}');")
             conn.execute(q)
-            q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
-            conn.execute(q)
+            if int(dept_id)!=6:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '{combined_id}_';")
+                conn.execute(q)
+            else:
+                q = sqlalchemy.text(f"INSERT INTO l_class_course(class_id,course_code,handler_id) SELECT id,'{course_code}',0 FROM t_class WHERE id::text LIKE '_1_';")
+                conn.execute(q)
             print("course "+course_code+"-"+course_name+"added to department "+str(dept_id))
         conn.commit()
         return json.dumps({'data': 'Success'})
@@ -837,7 +885,7 @@ def course_progress():
         SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, cd.course_name,all_courses.class_id 
         FROM (SELECT DISTINCT course_code, uid,class_id FROM faculty_table_handling WHERE course_code = '{course_code}') AS all_courses 
         LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours,class_id 
-        FROM faculty_table_handling WHERE status_code = 5 AND course_code = '{course_code}' 
+        FROM faculty_table_handling WHERE status_code = 5 AND course_code = '{course_code}'  
         GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code 
 		AND all_courses.uid = active_courses.uid and all_courses.class_id=active_courses.class_id JOIN t_users t ON all_courses.uid = t.uid 
 		JOIN t_course_details cd ON all_courses.course_code = cd.course_code order by class_id;
@@ -935,10 +983,20 @@ def class_progress():
     print({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})
     return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})
 
-# used to generate data for progress of a course
+# used to generate data for progress of a department
 @app.route('/api/department_overall_progress', methods=['POST', 'GET'])
 def department_overall_progress():
     department_id = request.json['department_id']
+    q = sqlalchemy.text(f"""
+        SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
+        COUNT(*) AS count FROM faculty_table f,l_course_departments l 
+        WHERE f.course_code=l.course_code and department_id={department_id} 
+        GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
+    """)
+    r = conn.execute(q).fetchall()
+    status = {0:"Not uploaded",1:"Uploaded",2:"Disapproved",3:"Approved"}
+    color_status = {0:'lightgrey',1:'orange',2:'red',3:'green'}
+    codes,mdata,mcolor = [status[i[0]] for i in r],[i[1] for i in r],[color_status[i[0]] for i in r]
     q = sqlalchemy.text(f"""
         SELECT 
         SUM(active_courses.hours_completed)::bigint AS hours_completed, 
@@ -986,7 +1044,110 @@ def department_overall_progress():
         temp={'department_id':department_id,'count':i[1],'total_count':i[0]}
         course_data_overall.append(temp)
     print({'department_overall':course_data_overall,'department_current':course_data_current})
-    return json.dumps({'department_overall':course_data_overall,'department_current':course_data_current})
+    q = sqlalchemy.text(f"""
+        SELECT 
+            COALESCE(SUM(c.progress), 0) / NULLIF(COUNT(c.assignment_id), 0) AS avg_progress
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_assignments c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+		JOIN 
+			l_course_departments l ON a.course_code=l.course_code
+		WHERE 
+			l.department_id={department_id}""")
+    assignment_data = []
+    r = conn.execute(q).fetchall()
+    for i in r:
+        temp={'department_id':department_id,'avg_progress':i[0]}
+        assignment_data.append(temp)
+    print(assignment_data,codes,mdata,mcolor)
+    return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'assignment_data':assignment_data})
+
+# used to generate data for progress of all departments
+@app.route('/api/all_department_overall_progress', methods=['POST', 'GET'])
+def all_department_overall_progress():
+    departments = [1,2,3,4,5,6,7,8,9]
+    overall_progress=[]
+    for department_id in departments:
+        q = sqlalchemy.text(f"""
+            SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
+            COUNT(*) AS count FROM faculty_table f,l_course_departments l 
+            WHERE f.course_code=l.course_code and department_id={department_id} 
+            GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
+        """)
+        r = conn.execute(q).fetchall()
+        status = {0:"Not uploaded",1:"Uploaded",2:"Disapproved",3:"Approved"}
+        color_status = {0:'lightgrey',1:'orange',2:'red',3:'green'}
+        codes,mdata,mcolor = [status[i[0]] for i in r],[i[1] for i in r],[color_status[i[0]] for i in r]
+        q = sqlalchemy.text(f"""
+            SELECT 
+            SUM(active_courses.hours_completed)::bigint AS hours_completed, 
+            SUM(active_courses.total_hours)::bigint AS total_hours
+            FROM (
+            SELECT DISTINCT course_code, uid, class_id 
+            FROM faculty_table_handling 
+            WHERE class_id::TEXT SIMILAR TO '{department_id}%'
+            ) AS all_courses
+            LEFT JOIN (
+            SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours, class_id 
+            FROM faculty_table_handling 
+            WHERE status_code = 5 AND class_id::TEXT SIMILAR TO '{department_id}%'
+            GROUP BY course_code, uid, class_id
+            ) AS active_courses 
+            ON all_courses.course_code = active_courses.course_code 
+            AND all_courses.uid = active_courses.uid 
+            AND all_courses.class_id = active_courses.class_id
+            JOIN t_users t ON all_courses.uid = t.uid 
+            JOIN t_course_details cd ON all_courses.course_code = cd.course_code;
+        """)
+        r = conn.execute(q).fetchall()
+        course_data_current = []
+        for i in r:
+            temp={'department_id':department_id,'completed_hours':i[0],'total_hours':i[1],'bar_color':progress_color(i[0],i[1])}
+            course_data_current.append(temp)
+        q = sqlalchemy.text(f"""
+            SELECT 
+            SUM(total_topics_assigned)::bigint AS total_topics_assigned, 
+            SUM(topics_completed)::bigint AS topics_completed
+            FROM (
+            SELECT 
+                COUNT(*) AS total_topics_assigned, 
+                SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed
+            FROM faculty_table_handling f
+            JOIN t_users t ON t.uid = f.uid
+            JOIN t_course_details cd ON f.course_code = cd.course_code
+            WHERE f.class_id::TEXT SIMILAR TO '{department_id}%'
+            GROUP BY f.uid, f.course_code, t.name, cd.course_name, f.class_id
+            ) AS aggregated_data;
+        """)
+        r = conn.execute(q).fetchall()
+        course_data_overall = []
+        for i in r:
+            temp={'department_id':department_id,'count':i[1],'total_count':i[0]}
+            course_data_overall.append(temp)
+        q = sqlalchemy.text(f"""
+            SELECT 
+                COALESCE(SUM(c.progress), 0) / NULLIF(COUNT(c.assignment_id), 0) AS avg_progress
+            FROM 
+                l_class_course a
+            JOIN 
+                t_course_assignments c ON a.class_id = c.class_id 
+            JOIN 
+                t_course_details d ON c.course_code = d.course_code
+            JOIN 
+                l_course_departments l ON a.course_code=l.course_code
+            WHERE 
+                l.department_id={department_id}""")
+        assignment_data = []
+        r = conn.execute(q).fetchall()
+        for i in r:
+            temp={'department_id':department_id,'avg_progress':i[0]}
+            assignment_data.append(temp)
+        overall_progress.append({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor}})
+    print({'overall_progress':overall_progress})
+    return json.dumps({'overall_progress':overall_progress})
 
 # used to generate data for progress of a year for a department (not added yet)
 @app.route('/api/department_year_progress', methods=['POST', 'GET'])

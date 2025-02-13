@@ -17,11 +17,9 @@
   flex-direction: column;
   text-align: center;
   margin-top: 20px;
-  padding: 10px;
+  padding: 1.5vw;
   border: 1px solid #ddd;
   border-radius: 8px;
-  width: 100%;
-  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }

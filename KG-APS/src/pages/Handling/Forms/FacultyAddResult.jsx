@@ -2,17 +2,17 @@ import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import "./FacultyAddAssignment.css"; // Import the CSS file
 
-const FacultyAddAssignment = () => {
+const FacultyAddResult = () => {
     const data = JSON.parse(sessionStorage.getItem("userData"));
     const [courseList, setCourseList] = useState([]);
-    const [AssignmentCourse, setCourse] = useState({});
-    const [assignment, setAssignment] = useState('');
+    const [resultCourse, setCourse] = useState({});
+    const [result, setResult] = useState('');
     const [classList, setClassList] = useState([]);
     const [class_id, setClassId] = useState('');
     const [link, setLink] = useState('');
 
     useEffect(() => {
-        const fetchStaffList = async () => {
+        const fetchFacultyCourseList = async () => {
             try {
                 const res = await axios.post("http://localhost:8000/api/faculty_courses", {
                     uid: data.uid,
@@ -28,20 +28,20 @@ const FacultyAddAssignment = () => {
             }
         };
 
-        fetchStaffList();
+        fetchFacultyCourseList();
     }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const course_code = AssignmentCourse;
+        const course_code = resultCourse;
         const formData = {
             course_code,
-            assignment,
+            result,
             class_id,
             link,
         };
         console.log(formData);
-        if (!assignment || !class_id || !link || !course_code) {
+        if (!result || !class_id || !link || !course_code) {
             alert("Please fill all the fields!");
             return;
         }
@@ -54,7 +54,7 @@ const FacultyAddAssignment = () => {
             alert("Please enter a valid Google Sheets link!");
             return;}
         try {
-            const res = await axios.post("http://localhost:8000/api/add_assignment", formData);
+            const res = await axios.post("http://localhost:8000/api/add_result", formData);
             console.log(res);
             window.location.reload();
         } catch (e) {
@@ -64,18 +64,18 @@ const FacultyAddAssignment = () => {
 
     useEffect(() => {
         const getclass = async () => {
-            console.log(AssignmentCourse);
-            if(AssignmentCourse){
+            console.log(resultCourse);
+            if(resultCourse){
         const res = await axios.post("http://localhost:8000/api/course_classes_assignments", {
             uid: data.uid,
-            course_code:AssignmentCourse,
+            course_code:resultCourse,
         });
         if (res.data && !("response" in res.data)) {
                 console.log(res.data);
                 setClassList(res.data);     
             }}};
             getclass();
-    }, [AssignmentCourse]);
+    }, [resultCourse]);
 
     const departmentMap = {
         1: "CSE",
@@ -108,15 +108,15 @@ const FacultyAddAssignment = () => {
 
     return (
         <div className="form-container">
-            {AssignmentCourse && (
+            {resultCourse && (
                 <>
-                <h1>Add Assignment</h1>
+                <h1>Add Result</h1>
                 
             <form className="topic-form" onSubmit={handleSubmit}>
             <div className="form-group">
                     <label>Course</label>
                     <select
-                        value={AssignmentCourse}
+                        value={resultCourse}
                         onChange={(e) => {setCourse(e.target.value);setClassId('');}}
                     >
                         <option value="">Select Course</option>
@@ -142,21 +142,27 @@ const FacultyAddAssignment = () => {
                     </select>
                 </div>}
                 <div className="form-group">
-                    <label>Assignment</label>
+                    <label>Result</label>
                     <select
-                        value={assignment}
-                        onChange={(e) => setAssignment(e.target.value)}
+                        value={result}
+                        onChange={(e) => setResult(e.target.value)}
                     >
-                        <option value="">Select Assignment type</option>
-                        <option key="Research Paper" value="Research Paper">
-                                Research Paper
+                        <option value="">Enter Result for</option>
+                        <option key="IA1" value="IA1">
+                                IA1
                             </option>
-                            <option key="Capstone Project" value="Capstone Project">
-                                Capstone Project
+                            <option key="IA2" value="IA2">
+                                IA2
+                            </option>
+                            <option key="Model exam" value="Model exam">
+                                Model exam
+                            </option>
+                            <option key="Semester" value="Semester">
+                                Semester
                             </option>
                     </select>
                 </div>
-                <p>please ensure the given sheet is accessible to all as viewer and ensure the right sheet is as the link</p>
+                <p>please ensure the given sheet is accessible to all as viewer and ensure the right sub-sheet is as the link</p>
                 <div className="form-group">
                     <label>Progress sheet link</label>
                     <input
@@ -172,4 +178,4 @@ const FacultyAddAssignment = () => {
     );
 };
 
-export default FacultyAddAssignment;
+export default FacultyAddResult;

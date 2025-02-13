@@ -2,11 +2,13 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import HandlingSupervisorTable from '../../Handling/Table/SupervisorTable';
 
 
 const CreationSupervisorTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedOption, setSelectedOption] = useState(null);
+  const [overallView,setOverallView] = useState("creation");
   const [selectedYear, setSelectedYear] = useState(0);
   const [courseList,setCourseList] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(1);
@@ -131,7 +133,11 @@ const CreationSupervisorTable = () => {
   return (
     <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
       <HandlingSidebar />
-    <div className="HFTtable-container">
+      <div>
+        <button className="HFTbutton-1" onClick={()=>setOverallView("creation")}>Creation</button>
+        <button className="HFTbutton-1" onClick={()=>setOverallView("handling")}>Handling</button>
+      </div>
+    {overallView==="creation" && <div className="HFTtable-container">
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents
@@ -209,7 +215,9 @@ const CreationSupervisorTable = () => {
           )}
         </tbody>
       </table>
-    </div>
+    </div>}{
+      overallView==="handling" && <HandlingSupervisorTable />
+    }
     </div>
   );
 };
