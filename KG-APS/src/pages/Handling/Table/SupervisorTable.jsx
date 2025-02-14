@@ -53,7 +53,7 @@ const HandlingSupervisorTable = () => {
     };
 
     fetchCourses();
-  }, [selectedClass,department_id]);
+  }, [selectedClass]);
 
   const fetchTableData = async () => {
     if (!selectedOption) return;
@@ -99,6 +99,23 @@ const HandlingSupervisorTable = () => {
     {tableView === "assignments" && fetchAssignmentTableData();}
   }, [selectedOption,tableView]);
 
+  useEffect(() => {
+    const resetData = () => {
+      setFilteredData([]);
+      setAssignmentTableData([]);
+    };
+    resetData();}
+    ,[selectedClass]);
+  useEffect(() => {
+      const resetAllData = () => {
+        setFilteredData([]);
+        setAssignmentTableData([]);
+        setSelectedClass("");
+        setSelectedOption("");
+        setFacultyCourses([]);
+      };
+      resetAllData();}
+      ,[department_id]);
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
     setSelectedOption(selected);
@@ -232,7 +249,7 @@ const HandlingSupervisorTable = () => {
             </option>
             {FacultyCourses.map((option, index) => (
               <option key={index} value={JSON.stringify(option)}>
-                {option.course_code + " - " + option.course_name}
+                {option.course_code + " - " + option.course_name + " - "  + option.handler_name}
               </option>
             ))}
           </select>

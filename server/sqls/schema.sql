@@ -21,7 +21,6 @@ CREATE TABLE t_course_details (
   course_name VARCHAR(48) NOT NULL
 );
 
-
 -- Create the t_users table
 CREATE TABLE t_users (
   uid INT PRIMARY KEY,
@@ -70,6 +69,14 @@ CREATE TABLE t_class (
   id INT NOT NULL PRIMARY KEY
 );
 
+-- Create the t_class_attendance table
+CREATE TABLE t_class_attendance (
+  class_id INT NOT NULL,
+  attendance INT DEFAULT 0,
+  FOREIGN KEY (class_id) REFERENCES t_class(id)
+);
+
+
 -- Create the t_handling_hours table 
 CREATE TABLE t_handling_hours (
   topic_id INT NOT NULL,
@@ -93,6 +100,8 @@ CREATE TABLE l_class_course (
   FOREIGN KEY (class_id) REFERENCES t_class(id),
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code)
 );
+
+
 
 -- Create the t_hours_completed table
 CREATE TABLE t_complete_status (  

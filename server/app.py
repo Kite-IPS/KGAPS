@@ -1149,68 +1149,6 @@ def all_department_overall_progress():
     print({'overall_progress':overall_progress})
     return json.dumps({'overall_progress':overall_progress})
 
-# used to generate data for progress of a year for a department (not added yet)
-@app.route('/api/department_year_progress', methods=['POST', 'GET'])
-def department_year_progress():
-    department_id = request.json['department_id']
-    q = sqlalchemy.text(f"""
-        SELECT 
-        SUBSTRING(all_courses.class_id::TEXT FROM 1 FOR 2) AS department_year, -- Extract first two digits
-        SUM(COALESCE(active_courses.hours_completed, 0)) AS total_hours_completed,
-        SUM(COALESCE(active_courses.total_hours, 0)) AS total_hours
-        FROM (
-        SELECT DISTINCT course_code, uid, class_id 
-        FROM faculty_table_handling 
-        WHERE class_id::TEXT SIMILAR TO '{department_id}1%' OR class_id::TEXT SIMILAR TO '{department_id}2%' OR class_id::TEXT SIMILAR TO '{department_id}3%' OR class_id::TEXT SIMILAR TO '{department_id}4%'
-        ) AS all_courses
-        LEFT JOIN (
-        SELECT 
-            course_code, 
-            uid, 
-            SUM(hours_completed) AS hours_completed, 
-            SUM(total_hours) AS total_hours, 
-            class_id 
-        FROM faculty_table_handling 
-        WHERE status_code = 5 AND (class_id::TEXT SIMILAR TO '{department_id}1%' OR class_id::TEXT SIMILAR TO '{department_id}2%' OR class_id::TEXT SIMILAR TO '{department_id}3%' OR class_id::TEXT SIMILAR TO '{department_id}4%')
-        GROUP BY course_code, uid, class_id
-        ) AS active_courses 
-        ON all_courses.course_code = active_courses.course_code 
-        AND all_courses.uid = active_courses.uid 
-        AND all_courses.class_id = active_courses.class_id
-        JOIN t_users t ON all_courses.uid = t.uid
-        JOIN t_course_details cd ON all_courses.course_code = cd.course_code
-        GROUP BY SUBSTRING(all_courses.class_id::TEXT FROM 1 FOR 2)
-        order by department_year;
-    """)
-    r = conn.execute(q).fetchall()
-    course_data_current = []
-    for i in r:
-        temp={'year':str(i[0])[1],'completed_hours':i[1],'total_hours':i[2],'bar_color':progress_color(i[1],i[2])}
-        course_data_current.append(temp)
-    q = sqlalchemy.text(f"""
-        SELECT  
-        SUBSTRING(f.class_id::TEXT FROM 1 FOR 2) AS department_year,
-        COUNT(*) AS total_topics_assigned, 
-        SUM(CASE WHEN f.status_code = 5 THEN 1 ELSE 0 END) AS topics_completed
-        FROM 
-        faculty_table_handling f 
-        JOIN 
-        t_users t ON t.uid = f.uid 
-        JOIN 
-        t_course_details cd ON f.course_code = cd.course_code 
-        WHERE 
-        f.class_id::TEXT SIMILAR TO '{department_id}%'
-        GROUP BY 
-        SUBSTRING(f.class_id::TEXT FROM 1 FOR 2) order by department_year; 
-
-    """)
-    r = conn.execute(q).fetchall()
-    course_data_overall = []
-    for i in r:
-        temp={'year':str(i[0])[1],'count':i[2],'total_count':i[1]}
-        course_data_overall.append(temp)
-    print({'course_data_overall':course_data_overall,'course_data_current':course_data_current})
-    return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current}) 
 
 if __name__ == '__main__':
     try:
