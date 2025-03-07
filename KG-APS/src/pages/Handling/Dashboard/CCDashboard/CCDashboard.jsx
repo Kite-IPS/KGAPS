@@ -140,7 +140,7 @@ function HandlingCCDashboard() {
           Topics
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>
-          Assignments
+          Assessments
         </button>
         </div>
         {viewMode==="topics" && courseDataOverall.length>0 && courseDataCurrent.length>0?(

@@ -13,6 +13,7 @@ const HandlingDMTable = () => {
   const [FacultyCourses, setFacultyCourses] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [viewMode, setViewMode] = useState("all");
+  const [resultTableData, setResultTableData] = useState([]);
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -65,6 +66,9 @@ const HandlingDMTable = () => {
         });
         if (courseResponse.data) {
           console.log(courseResponse.data);
+          courseResponse.data.forEach((yearData) => {
+            yearData.courses.sort((a, b) => a.course_code.localeCompare(b.course_code));
+          });
           setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);
@@ -84,6 +88,7 @@ const HandlingDMTable = () => {
     const filteredCourse = courseList.filter((item) => {
       if (item.year == parseInt(selectedYear) + 1) return item;
     });
+    
     setFacultyCourses(filteredCourse[0].courses);
     setSelectedOption(filteredCourse[0].courses[0]);
   }, [courseList, selectedYear]);
@@ -126,9 +131,27 @@ const HandlingDMTable = () => {
     }
   };
 
+  const fetchResultTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+        course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setResultTableData(res.data);
+      } else {
+        setResultTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
   useEffect(() => {
     {tableView === "topics" && fetchTableData();}
     {tableView === "assignments" && fetchAssignmentTableData();}
+    {tableView === "results" && fetchResultTableData();}
   }, [selectedOption,tableView]);
 
   const handleSelectChange = (event) => {
@@ -171,7 +194,10 @@ const HandlingDMTable = () => {
           Topics
         </button>
         <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
-          Assignments
+          Assessments
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("results")}>
+          Results
         </button>
       {tableView === "topics" && <table>
         <thead>
@@ -246,6 +272,25 @@ const HandlingDMTable = () => {
                 rel="noopener noreferrer">View</a></td>
                 <td>{item.progress}</td>
           </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+          </tbody></table>}
+          {tableView === "results" && <table>
+        <thead>
+          <tr>
+            <th>Result</th>
+            <th>link</th>
+            <th>Pass Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+        {resultTableData && resultTableData.length > 0 ? (
+            resultTableData.map((item) => (
+        <tr key={item.result_id}>
+                <td>{item.result}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.pass_percentage}</td>
+                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
           </tbody></table>}
     </div>
     

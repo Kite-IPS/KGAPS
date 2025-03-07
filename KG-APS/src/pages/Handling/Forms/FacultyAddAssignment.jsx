@@ -110,7 +110,7 @@ const FacultyAddAssignment = () => {
         <div className="form-container">
             {AssignmentCourse && (
                 <>
-                <h1>Add Assignment</h1>
+                <h1>Add Assessment</h1>
                 
             <form className="topic-form" onSubmit={handleSubmit}>
             <div className="form-group">
@@ -142,12 +142,12 @@ const FacultyAddAssignment = () => {
                     </select>
                 </div>}
                 <div className="form-group">
-                    <label>Assignment</label>
+                    <label>Assessment</label>
                     <select
                         value={assignment}
                         onChange={(e) => setAssignment(e.target.value)}
                     >
-                        <option value="">Select Assignment type</option>
+                        <option value="">Select Assessment type</option>
                         <option key="Research Paper" value="Research Paper">
                                 Research Paper
                             </option>

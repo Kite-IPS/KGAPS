@@ -15,6 +15,7 @@ const HandlingFacultyTable = () => {
   const [tableData, setTableData] = useState([]);
   const [filteredData, setFilteredData] = useState([]); // Initialize as an empty array
   const [assignmentTableData, setAssignmentTableData] = useState([]);
+  const [resultTableData, setResultTableData] = useState([]);
   const [viewMode, setViewMode] = useState("all");
   const [tableView, setTableView] = useState("topics");
 
@@ -115,9 +116,28 @@ const HandlingFacultyTable = () => {
     }
   };
 
+  const fetchResultTableData = async () => {
+    if (!selectedOption) return;
+    try {
+      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+        course_code: selectedOption.course_code,
+        class_id: selectedOption.class_id,
+      });
+      if (res.data && !('response' in res.data)) {
+        console.log(res.data);
+        setResultTableData(res.data);
+      } else {
+        setResultTableData([]);
+      }
+    } catch (error) {
+      console.error("Error fetching table data:", error);
+    }
+  };
+
   useEffect(() => {
     {tableView === "topics" && fetchTableData();}
     {tableView === "assignments" && fetchAssignmentTableData();}
+    {tableView === "results" && fetchResultTableData();}
   }, [selectedOption,tableView]);
 
   const handleSelectChange = (event) => {
@@ -168,7 +188,7 @@ const HandlingFacultyTable = () => {
       <HandlingSidebar />
       <div>
         
-        <button className="button" onClick={() => setAddView("assignments")}>Assignments</button>
+        <button className="button" onClick={() => setAddView("assignments")}>Assessments</button>
         <button className="button" onClick={() => setAddView("results")}>Results</button>
              {addView=="assignments" && <FacultyAddAssignment />}
              {addView=="results" && <FacultyAddResult />}
@@ -193,7 +213,10 @@ const HandlingFacultyTable = () => {
           Topics
         </button>
         <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
-          Assignments
+          Assessments
+        </button>
+        <button className="HFTbutton-2" onClick={() => setTableView("results")}>
+          Results
         </button>
       {tableView === "topics" && <table>
         <thead>
@@ -253,7 +276,7 @@ const HandlingFacultyTable = () => {
       {tableView === "assignments" && <table>
         <thead>
           <tr>
-            <th>Assignment</th>
+            <th>Assessment</th>
             <th>link</th>
             <th>Progress</th>
           </tr>
@@ -269,8 +292,26 @@ const HandlingFacultyTable = () => {
                 <td>{item.progress}</td>
                 </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
           </tbody></table>}
+          {tableView === "results" && <table>
+        <thead>
+          <tr>
+            <th>Result</th>
+            <th>link</th>
+            <th>Pass Percentage</th>
+          </tr>
+        </thead>
+        <tbody>
+        {resultTableData && resultTableData.length > 0 ? (
+            resultTableData.map((item) => (
+        <tr key={item.result_id}>
+                <td>{item.result}</td>
+                <td><a href={item.link}
+                target="_blank"
+                rel="noopener noreferrer">View</a></td>
+                <td>{item.pass_percentage}</td>
+                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+          </tbody></table>}
     </div>
-    
     </div>
   );
 };

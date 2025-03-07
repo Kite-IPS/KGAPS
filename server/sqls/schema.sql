@@ -154,7 +154,7 @@ CREATE TABLE t_course_results(
   result VARCHAR(48) NOT NULL,
   link VARCHAR(255) NOT NULL,
   result_id INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
-  progress int DEFAULT 0,
+  pass_percentage int DEFAULT 0,
   avg_marks int DEFAULT 0,
   FOREIGN KEY (course_code) REFERENCES t_course_details(course_code),
   FOREIGN KEY (class_id) REFERENCES t_class(id)
@@ -195,10 +195,10 @@ and c.course_code=d.course_code and t.topic_id=c.topic_id and a.class_id=c.class
 
 --view for assignments table for handling part
 create view assignment_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.assignment,c.link,c.assignment_id,a.handler_id,c.progress,c.avg_marks 
-from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id;
+from l_class_course a,t_course_assignments c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id and c.course_code=a.course_code;
 
 --view for results table for handling part
-create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result,c.progress,c.avg_marks 
+create view result_table_handling as select distinct a.class_id,c.course_code,d.course_name,c.link,a.handler_id,c.result,c.pass_percentage,c.avg_marks 
 from l_class_course a,t_course_results c,t_course_details d where c.course_code=d.course_code and a.class_id=c.class_id and c.course_code=a.course_code;
 
 --

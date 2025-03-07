@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify
 import sqlalchemy
 import os
+import re
 import requests
 import pandas as pd
 import json
-import atexit
 from io import StringIO
 from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@172.16.30.25/kgaps")
+    "postgresql://admin:admin@172.24.96.1/kgaps")
 conn = engine.connect()
 
 # helper functions
@@ -371,15 +371,24 @@ def add_result():
                     csv_url = f"{base_url}/export?format=csv&gid={gid}"  # Build CSV export link
         else:
             return json.dumps({"response":"Invalid Google Sheets URL. Make sure it includes a GID."})
-        response = requests.get(csv_url)
-        df = pd.read_csv(StringIO(response.text), skiprows=5)
-        extracted_column = df['Completion']  # Extract the 'Completion' column
 
-        # Count occurrences of "Y" and "y"
-        yes_count = extracted_column.str.strip().str.lower().value_counts().get("y", 0)
-        no_count = extracted_column.str.strip().str.lower().value_counts().get("n", 0)
-        print(f"YES: {yes_count} | NO: {no_count} | Progress: {int((yes_count/(yes_count + no_count))*100)}")
-        q = sqlalchemy.text(f"update t_course_results set progress={int((yes_count/(yes_count + no_count))*100)} where link='{link}';")
+        # Read Google Sheets as CSV
+        df = pd.read_csv(csv_url, header=None, dtype=str)  # Read as string to avoid NaN issues
+        print(df.to_string())  # Print full CSV structure for debugging
+
+        # Search for "PASS PERCENTAGE" in the whole DataFrame
+        pass_percentage = None
+        for i in range(len(df)):
+            row_str = " ".join(str(val).strip() for val in df.iloc[i] if pd.notna(val))  # Join non-empty values
+            match = re.search(r"PASS PERCENTAGE\s*,*\s*(\d+(\.\d+)?)", row_str, re.IGNORECASE)  # Find numeric value
+            if match:
+                pass_percentage = float(match.group(1))
+                break
+
+        if pass_percentage is None:
+            raise ValueError("Pass Percentage not found or invalid!")
+        print(f"Pass Percentage ({pass_percentage}%) stored successfully!")
+        q = sqlalchemy.text(f"update t_course_results set pass_percentage={int(pass_percentage)} where link='{link}';")
         r = conn.execute(q)
         conn.commit()
         print("Table updated successfully!")
@@ -417,7 +426,7 @@ def handling_faculty_assignments():
 def handling_faculty_results():
     course_code=request.json['course_code']
     class_id = request.json['class_id']
-    q = sqlalchemy.text(f"SELECT * FROM assignment_table_handling WHERE course_code='{course_code}' and class_id='{class_id}';")
+    q = sqlalchemy.text(f"SELECT * FROM result_table_handling WHERE course_code='{course_code}' and class_id='{class_id}';")
     if (conn.execute(q).fetchall()):
         r = conn.execute(q).fetchall()
         data = [dict(i._mapping) for i in r]
@@ -869,8 +878,29 @@ def facultyprogress():
     for i in r:
         temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'avg_progress':i[3]}
         assignment_data.append(temp)
-    print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data})
-    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data}) 
+    q = sqlalchemy.text(f"""
+        SELECT 
+            a.class_id,
+            c.course_code,
+            d.course_name,
+            COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_results c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+        WHERE
+            a.handler_id = '{handler_id}'
+        GROUP BY 
+            a.class_id, c.course_code, d.course_name, a.handler_id;""")
+    result_data = []
+    r = conn.execute(q).fetchall()
+    for i in r:
+        temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'avg_pass_percentage':i[3]}
+        result_data.append(temp)
+    print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'result_data':result_data})
+    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'result_data':result_data}) 
 
 # used to generate data for progress of a course
 @app.route('/api/course_progress', methods=['POST', 'GET'])

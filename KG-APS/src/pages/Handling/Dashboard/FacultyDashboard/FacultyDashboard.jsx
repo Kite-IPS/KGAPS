@@ -8,6 +8,7 @@ function HandlingFacultyDashboard() {
   const [facultyDetails, setFacultyDetails] = useState(data); 
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
   const [assignmentData,setAssignmentData] = useState([]);
+  const [resultsData,setResultsData] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -45,6 +46,7 @@ function HandlingFacultyDashboard() {
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
           setAssignmentData(res.data.assignment_data);
+          setResultsData(res.data.result_data);
         }
       }catch (error) {
         console.error('Error fetching data:', error);
@@ -121,7 +123,10 @@ function HandlingFacultyDashboard() {
           Topics
         </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>
-          Assignments
+          Assessments
+        </button>
+        <button className="HFTbutton-2" onClick={() => setViewMode("results")}>
+          Results
         </button>
           </div>
           {loading ? (
@@ -193,6 +198,28 @@ function HandlingFacultyDashboard() {
               </div>
           </>
           ): viewMode==="assignments" && (<h1>No progress!</h1>)}
+           {viewMode === "results" && resultsData.length > 0 ? ( <>
+            <div className="handlingfaculty-dashboard-card-container">
+                {resultsData.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      <span className="grid-item">{item.course_code}</span>
+                      <span className="grid-item">{item.course_name}</span>
+                      <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                      <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                      <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>Average pass percentage: {item.avg_pass_percentage}%</p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div style={{ width: `${item.avg_pass_percentage}%`, backgroundColor: 'green' }} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+          </>
+          ): viewMode==="results" && (<h1>No progress!</h1>)}
         </div>
       </div>
     </>
