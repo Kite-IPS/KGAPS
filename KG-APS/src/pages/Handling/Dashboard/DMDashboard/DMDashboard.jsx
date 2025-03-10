@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./DMDashboard.css";
 import axios from "axios";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
 function HandlingDMDashboard() {
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
@@ -15,12 +16,25 @@ function HandlingDMDashboard() {
   const [contentViewMode, setContentViewMode] = useState("topics");
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
+  const [facultyDetails, setFacultyDetails] = useState(data); 
   const value = (current, total) => {
     if (total === 0 || current === 0 || current > total) {
       return 100;
     }
     return (current / total) * 100;
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -163,9 +177,15 @@ function HandlingDMDashboard() {
   const convertToClass3 = (item) => sectionMap[item.toString()[2]];
   return (
     <>
-      <HandlingSidebar />
-      <div className="dashboard-container">
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
+      <div className="DMDASH dashboard-container">
+      <div className="handlingfaculty-dashboard-nametext">
+            <div className="handlingfaculty-dashboard-welcome-box">
+              <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
+            </div>
+      </div>
         <div className="dashboard-content">
+
           <div className="">
             <div className="course-selector">
               <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>

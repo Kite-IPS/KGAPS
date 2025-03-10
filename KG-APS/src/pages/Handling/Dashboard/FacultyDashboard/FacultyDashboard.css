@@ -1,9 +1,17 @@
 /* Ensure the body and html take up the full height */
-html, body {
+.handlingfaculty-dashboard-container {
   height: 100%;
   margin-left: 10px;
   display: flex;
   flex-direction: column;
+  padding-top: 10vh;
+}
+
+@media (max-width:1500px){
+  .handlingfaculty-dashboard-container{
+    padding-top: 0px;
+    padding-left: 5vw;
+  }
 }
 
 .handlingfaculty-dashboard-container {

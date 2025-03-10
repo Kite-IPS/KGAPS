@@ -122,12 +122,6 @@
 }
 
 
-/* Ensure content below navbar is visible */
-body {
-  padding-top: 80px; /* Height of navbar + some spacing */
-}
-
-
 
 /* Responsive Design */
 @media (max-width: 768px) {
@@ -235,10 +229,6 @@ body {
   font-weight: bold;
 }
 
-/* Ensure content below navbar is visible */
-body {
-  padding-top: 80px; /* Adjusted for navbar height */
-}
 
 /* Responsive Design */
 @media (max-width: 768px) {

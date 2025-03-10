@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './FacultyDashboard.css';
 import axios from 'axios';
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../HandlingSidebar2/HandlingSidebar2.jsx';
 
 function HandlingFacultyDashboard() {
   const data = JSON.parse(sessionStorage.getItem('userData'));
@@ -35,6 +36,19 @@ function HandlingFacultyDashboard() {
         return null;
     }
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,7 +126,7 @@ function HandlingFacultyDashboard() {
 
   return (
     <>
-      <HandlingSidebar /> 
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
       <div className="handlingfaculty-dashboard-container">
         <div className="handlingfaculty-dashboard-content">
           <div className="handlingfaculty-dashboard-nametext">
@@ -120,8 +134,8 @@ function HandlingFacultyDashboard() {
               <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
             </div>
             <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>
-          Topics
-        </button>
+              Topics
+            </button>
         <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>
           Assessments
         </button>

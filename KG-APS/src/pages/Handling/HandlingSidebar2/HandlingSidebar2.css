@@ -1,0 +1,215 @@
+/* Full page container */
+.page-cover {
+    display: flex;
+    width: 100%;
+    height: 100vh; /* Ensure the container takes up the full viewport height */
+    overflow: hidden; /* Ensures no extra scrolling on the container itself */
+  }
+  
+/* Sidebar container */
+.handling-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px;
+  background-color: #1e1e2f;
+  color: white;
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(-200px); /* Initially off-screen */
+  z-index: 1000; /* Ensure sidebar is above other content */
+}
+
+/* When the sidebar is open */
+.handling-sidebar.open {
+  transform: translateX(0); /* Bring it fully into view */
+}
+
+  
+  /* Sidebar Toggle Button */
+  .handling-sidebar-toggle-button {
+    position: absolute;
+    top: 20px;
+    right: -20px;
+    background-color: #fe370f;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+  }
+  
+  .handling-sidebar-content {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 100px);
+  }
+  
+  .handling-sidebar-content h3 {
+    color: #fe370f;
+  }
+  
+  .handling-sidebar-content ul {
+    list-style: none;
+    padding: 0;
+    flex-grow: 1;
+  }
+  
+  .handling-sidebar-content ul li {
+    margin: 15px 0;
+  }
+  
+  .handling-sidebar-content ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  .handling-sidebar-content ul li a:hover {
+    color: #fe370f;
+  }
+  
+  .handling-sidebar-info {
+    margin-top: 1vh;
+    margin-bottom: -10vh;
+    height: 5vh;
+    text-align: center;
+    padding: 10px;
+    background-color: #2e2e4f;
+    cursor: pointer;
+    position: relative;
+  }
+  
+  .handling-sidebar-name {
+    margin-bottom: 2vh;
+  }
+  
+  .handling-sidebar-info:hover {
+    background-color: #3e3e5f;
+  }
+  
+  .handling-sidebar-dropup-content {
+    position: absolute;
+    bottom: 8vh;
+    left: 0;
+    width: 98%;
+    background-color: #1e1e2f;
+    padding: 10px;
+    text-align: left;
+    z-index: 1;
+  }
+  
+  .handling-sidebar-dropup-content img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .handling-sidebar-dropup-content p {
+    margin: 5px 0;
+    color: white;
+  }
+  
+  .handling-sidebar-dropup-content p strong {
+    color: #fe370f;
+  }
+  
+  /* Main dashboard container */
+  .handlingfaculty-dashboard-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+  
+  /* Content area with scroll */
+  .handlingfaculty-dashboard-content {
+    flex-grow: 1; /* Ensure the content area takes remaining space */
+    overflow-y: auto; /* Enables scrolling */
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Adjust welcome box margins and alignment */
+  .handlingfaculty-dashboard-welcome-box {
+    background-color: #fe370f;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    margin-top: 20px;
+    width: fit-content;
+    max-width: 90%;
+  }
+  
+  /* Card container for better alignment */
+  .handlingfaculty-dashboard-card-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  /* Individual card styling */
+  .handlingfaculty-dashboard-card {
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Header styling for cards */
+  .handlingfaculty-dashboard-card-header {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* Five equally spaced columns */
+    gap: 0; /* No gap for consistent vertical borders */
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    align-items: center; /* Align text vertically in the center */
+    border: 2px solid #ff8c00; /* Orange border around the entire header */
+    border-radius: 8px; /* Rounded corners for the header */
+    padding: 10px; /* Inner padding for the header */
+    background-color: #fff4e6; /* Light orange background */
+    color: #003366; /* Dark blue text */
+  }
+  
+  /* Styling grid items */
+  .grid-item {
+    text-align: center;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: normal;
+    color: #003366;
+    background-color: #fff4e6;
+    border-right: 2px solid #ff8c00; /* Orange vertical border */
+  }
+  
+  /* Remove border for the last grid item */
+  .grid-item:last-child {
+    border-right: none;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 1024px) {
+    .handlingfaculty-dashboard-card-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .handlingfaculty-dashboard-card-container {
+      grid-template-columns: 1fr;
+    }
+  
+    /* Stack content on smaller screens */
+    .page-cover {
+      flex-direction: column;
+    }
+  
+    .handlingfaculty-dashboard-container {
+      margin-left: 0;
+    }
+  }

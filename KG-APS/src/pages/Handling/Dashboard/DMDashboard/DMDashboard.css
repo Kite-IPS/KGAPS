@@ -1,3 +1,16 @@
+@media (max-width:1500px){
+  .dashboard-container{
+    padding-left: 12vw;
+  }
+}
+
+@media (min-width: 1500px) {
+  .DMDASH.dashboard-container {
+    padding-top: 12vh !important;
+  }
+}
+
+
 .handlingfaculty-dashboard-container {
   display: flex;
   height: 100vh;
