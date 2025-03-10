@@ -169,7 +169,7 @@
     font-weight: bold;
     margin-bottom: 10px;
     align-items: center; /* Align text vertically in the center */
-    border: 2px solid #ff8c00; /* Orange border around the entire header */
+    /* border: 2px solid #ff8c00; Orange border around the entire header */
     border-radius: 8px; /* Rounded corners for the header */
     padding: 10px; /* Inner padding for the header */
     background-color: #fff4e6; /* Light orange background */

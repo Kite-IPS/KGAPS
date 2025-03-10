@@ -143,106 +143,118 @@ function HandlingCCDashboard() {
   const convertToClass2 = (item) => departmentMap[item.toString()[0]];
   const convertToClass3 = (item) => sectionMap[item.toString()[2]];
   return (
-    <>
-    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
-    <div className="handlingfaculty-dashboard-container">
-      <div className="handlingfaculty-dashboard-content">
-        <div className="handlingfaculty-dashboard-nametext">
-          <div className="handlingfaculty-dashboard-welcome-box">
-            <p className="handlingfaculty-dashboard-greeting">Welcome Coordinator - {data.name}</p>
-          </div>
-          <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>
-          Topics
-        </button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>
-          Assessments
-        </button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("results")}>
-          Results
-        </button>
+<>
+  {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
+  <div className="handlingfaculty-dashboard-container">
+    <div className="handlingfaculty-dashboard-content">
+      <div className="handlingfaculty-dashboard-nametext">
+        <div className="handlingfaculty-dashboard-welcome-box">
+          <p className="handlingfaculty-dashboard-greeting">Welcome Coordinator - {data.name}</p>
         </div>
-        {viewMode==="topics" && courseDataOverall.length>0 && courseDataCurrent.length>0?(
-        <>  
-        <h1>Course {courseDataOverall[0].course_code+" - "+courseDataOverall[0].course_name}</h1>
-        <div className="handlingfaculty-dashboard-aggregate">
-          <p>Aggregate Progress</p>
-          <div className="handlingfaculty-dashboard-aggregate-content">
-          <p>Overall Progress: {(aggregateData()[0].topic_count*100).toFixed(0)}%</p>
-          <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                  <div style={{ width: `${(aggregateData()[0].topic_count*100).toFixed(2)}%`, backgroundColor: 'purple' }} />
-          </div>
-            <p>Average Status: {(aggregateData()[0].comment)}</p>
-
-          </div>
-        </div>  
-        <div className="handlingfaculty-dashboard-card-container">
-          {courseDataCurrent.map((item, i) => (
-            <div className="handlingfaculty-dashboard-card" key={i}>
-              <div className="handlingfaculty-dashboard-card-header"> Faculty {item.uid+" "+item.name}  {convertToClass(item.class_id)}</div>
-              <div className="handlingfaculty-dashboard-card-content">
-                <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
-                <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                  <div style={{ width: `${value(item.completed_hours,item.total_hours).toFixed(2)}%`, backgroundColor: item.bar_color }} />
-                </div>
-                <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
-                <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                  <div style={{ width: `${((courseDataOverall[i].count/courseDataOverall[i].total_count)*100).toFixed(2)}%`, backgroundColor: 'green' }} />
-                </div>
-                <div className="handlingfaculty-dashboard-colorcomment">
-                  {renderColorComment(item.bar_color)}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div></>): viewMode==="topics" && (<h1>No progress!</h1>)}
-        {
-          viewMode === "assignments" && assignmentData.length > 0? (<>
-          <div className="handlingfaculty-dashboard-card-container">
-                {assignmentData.map((item, i) => (
-                  <div className="handlingfaculty-dashboard-card" key={i}>
-                    <div className="handlingfaculty-dashboard-card-header">
-                      <span className="grid-item">{item.course_code}</span>
-                      <span className="grid-item">{item.course_name}</span>
-                      <span className="grid-item">{convertToClass1(item.class_id)}</span>
-                      <span className="grid-item">{convertToClass2(item.class_id)}</span>
-                      <span className="grid-item">{convertToClass3(item.class_id)}</span>
-                    </div>
-                    <div className="handlingfaculty-dashboard-card-content">
-                      <p>Overall Progress for Assignment: {item.avg_progress}%</p>
-                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                        <div style={{ width: `${item.avg_progress}%`, backgroundColor: 'green' }} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-          </>) : viewMode === "assignments" && (<h1>No assignments!</h1>)
-        }
-         {viewMode === "results" && resultsData.length > 0 ? ( <>
-         <h1>Result Data</h1>
-            <div className="handlingfaculty-dashboard-card-container">
-                {resultsData.map((item, i) => (
-                  <div className="handlingfaculty-dashboard-card" key={i}>
-                    <div className="handlingfaculty-dashboard-card-header">
-                      <span className="grid-item">{item.course_code}</span>
-                      <span className="grid-item">{item.course_name}</span>
-                      <span className="grid-item">{convertToClass1(item.class_id)}</span>
-                      <span className="grid-item">{convertToClass2(item.class_id)}</span>
-                      <span className="grid-item">{convertToClass3(item.class_id)}</span>
-                    </div>
-                    <div className="handlingfaculty-dashboard-card-content">
-                      <p>Average pass percentage: {item.avg_pass_percentage}%</p>
-                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                        <div style={{ width: `${item.avg_pass_percentage}%`, backgroundColor: 'green' }} />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-          </>
-          ): viewMode==="results" && (<h1>No progress!</h1>)}
+        <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>Topics</button>
+        <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>Assessments</button>
+        <button className="HFTbutton-2" onClick={() => setViewMode("results")}>Results</button>
       </div>
-    </div></>
+
+      {viewMode === "topics" && courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (
+        <>
+          <h1>Course {courseDataOverall[0].course_code + " - " + courseDataOverall[0].course_name}</h1>
+          <div className="handlingfaculty-dashboard-aggregate">
+            <p>Aggregate Progress</p>
+            <div className="handlingfaculty-dashboard-aggregate-content">
+              <p>Overall Progress: {(aggregateData()[0].topic_count * 100).toFixed(0)}%</p>
+              <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                <div style={{ width: `${(aggregateData()[0].topic_count * 100).toFixed(2)}%`, backgroundColor: 'purple' }} />
+              </div>
+              <p>Average Status: {aggregateData()[0].comment}</p>
+            </div>
+          </div>
+
+          <div className="handlingfaculty-dashboard-card-container">
+            {courseDataCurrent.map((item, i) => (
+              <div className="handlingfaculty-dashboard-card" key={i}>
+                <div className="handlingfaculty-dashboard-card-header">
+                  <span className="grid-item">Faculty {item.uid}</span>
+                  <span className='grid-item'>{item.name}</span>
+                  <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                  <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                  <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                </div>
+                <div className="handlingfaculty-dashboard-card-content">
+                  <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div style={{ width: `${value(item.completed_hours, item.total_hours).toFixed(2)}%`, backgroundColor: item.bar_color }} />
+                  </div>
+                  <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div style={{ width: `${((courseDataOverall[i].count / courseDataOverall[i].total_count) * 100).toFixed(2)}%`, backgroundColor: 'green' }} />
+                  </div>
+                  <div className="handlingfaculty-dashboard-colorcomment">
+                    {renderColorComment(item.bar_color)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      ) : viewMode === "topics" && <h1>No progress!</h1>}
+
+      {viewMode === "assignments" && (
+        assignmentData.length > 0 ? (
+          <>
+            <div className="handlingfaculty-dashboard-card-container">
+              {assignmentData.map((item, i) => (
+                <div className="handlingfaculty-dashboard-card" key={i}>
+                  <div className="handlingfaculty-dashboard-card-header">
+                    <span className="grid-item">{item.course_code}</span>
+                    <span className="grid-item">{item.course_name}</span>
+                    <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                    <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                    <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                  </div>
+                  <div className="handlingfaculty-dashboard-card-content">
+                    <p>Overall Progress for Assignment: {item.avg_progress}%</p>
+                    <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                      <div style={{ width: `${item.avg_progress}%`, backgroundColor: 'green' }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : <h1>No assignments!</h1>
+      )}
+
+      {viewMode === "results" && (
+        resultsData.length > 0 ? (
+          <>
+            <h1>Result Data</h1>
+            <div className="handlingfaculty-dashboard-card-container">
+              {resultsData.map((item, i) => (
+                <div className="handlingfaculty-dashboard-card" key={i}>
+                  <div className="handlingfaculty-dashboard-card-header">
+                    <span className="grid-item">{item.course_code}</span>
+                    <span className="grid-item">{item.course_name}</span>
+                    <span className="grid-item">{convertToClass1(item.class_id)}</span>
+                    <span className="grid-item">{convertToClass2(item.class_id)}</span>
+                    <span className="grid-item">{convertToClass3(item.class_id)}</span>
+                  </div>
+                  <div className="handlingfaculty-dashboard-card-content">
+                    <p>Average pass percentage: {item.avg_pass_percentage}%</p>
+                    <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                      <div style={{ width: `${item.avg_pass_percentage}%`, backgroundColor: 'green' }} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
+        ) : <h1>No progress!</h1>
+      )}
+    </div>
+  </div>
+</>
+
   );
 }
 
