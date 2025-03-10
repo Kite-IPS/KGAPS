@@ -894,13 +894,13 @@ def facultyprogress():
             a.handler_id = '{handler_id}'
         GROUP BY 
             a.class_id, c.course_code, d.course_name, a.handler_id;""")
-    result_data = []
+    results_data = []
     r = conn.execute(q).fetchall()
     for i in r:
         temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'avg_pass_percentage':i[3]}
-        result_data.append(temp)
-    print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'result_data':result_data})
-    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'result_data':result_data}) 
+        results_data.append(temp)
+    print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data})
+    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data}) 
 
 # used to generate data for progress of a course
 @app.route('/api/course_progress', methods=['POST', 'GET'])
@@ -949,7 +949,7 @@ def course_progress():
         JOIN 
             t_course_details d ON c.course_code = d.course_code
         WHERE
-            c.course_code = '{course_code}'
+            c.course_code = '{course_code}' and a.handler_id !=0
         GROUP BY 
             a.class_id, c.course_code, d.course_name, a.handler_id;""")
     assignment_data = []
@@ -957,8 +957,30 @@ def course_progress():
     for i in r:
         temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'handler_id':i[3],'avg_progress':i[4]}
         assignment_data.append(temp)
+    q = sqlalchemy.text(f"""
+        SELECT 
+            a.class_id,
+            c.course_code,
+            d.course_name,
+            a.handler_id,
+            COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_results c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+        WHERE
+            c.course_code = '{course_code}' and a.handler_id !=0
+        GROUP BY 
+            a.class_id, c.course_code, d.course_name, a.handler_id;""")
+    results_data = []
+    r = conn.execute(q).fetchall()
+    for i in r:
+        temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'handler_id':i[3],'avg_pass_percentage':i[4]}
+        results_data.append(temp)
     print({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})
-    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})   
+    return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data,'results_data':results_data})   
 
 # used to generate data for progress of a course
 @app.route('/api/class_progress', methods=['POST', 'GET'])
@@ -1010,8 +1032,30 @@ def class_progress():
     for i in r:
         temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'handler_id':i[3],'avg_progress':i[4]}
         assignment_data.append(temp)
+    q = sqlalchemy.text(f"""
+        SELECT 
+            a.class_id,
+            c.course_code,
+            d.course_name,
+            a.handler_id,
+            COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_results c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+        WHERE
+            a.class_id = '{class_id}' and a.handler_id !=0
+        GROUP BY 
+            a.class_id, c.course_code, d.course_name, a.handler_id;""")
+    results_data = []
+    r = conn.execute(q).fetchall()
+    for i in r:
+        temp={'class_id':i[0],'course_code':i[1],'course_name':i[2],'handler_id':i[3],'avg_pass_percentage':i[4]}
+        results_data.append(temp)
     print({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})
-    return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data})
+    return json.dumps({'course_data_overall':course_data_overall,'course_data_current':course_data_current,'assignment_data':assignment_data,'results_data':results_data})
 
 # used to generate data for progress of a department
 @app.route('/api/department_overall_progress', methods=['POST', 'GET'])
@@ -1086,14 +1130,32 @@ def department_overall_progress():
 		JOIN 
 			l_course_departments l ON a.course_code=l.course_code
 		WHERE 
-			l.department_id={department_id}""")
+			l.department_id={department_id} and a.handler_id!=0""")
     assignment_data = []
     r = conn.execute(q).fetchall()
     for i in r:
         temp={'department_id':department_id,'avg_progress':i[0]}
         assignment_data.append(temp)
+    q = sqlalchemy.text(f"""
+        SELECT 
+            COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_results c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+		JOIN 
+			l_course_departments l ON a.course_code=l.course_code
+		WHERE 
+			l.department_id={department_id} and a.handler_id!=0""")
+    results_data = []
+    r = conn.execute(q).fetchall()
+    for i in r:
+        temp={'department_id':department_id,'avg_pass_percentage':i[0]}
+        results_data.append(temp)
     print(assignment_data,codes,mdata,mcolor)
-    return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'assignment_data':assignment_data})
+    return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'assignment_data':assignment_data,'results_data':results_data})
 
 # used to generate data for progress of all departments
 @app.route('/api/all_department_overall_progress', methods=['POST', 'GET'])
@@ -1169,13 +1231,31 @@ def all_department_overall_progress():
             JOIN 
                 l_course_departments l ON a.course_code=l.course_code
             WHERE 
-                l.department_id={department_id}""")
+                l.department_id={department_id} and a.handler_id!=0""")
         assignment_data = []
         r = conn.execute(q).fetchall()
         for i in r:
             temp={'department_id':department_id,'avg_progress':i[0]}
             assignment_data.append(temp)
-        overall_progress.append({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor}})
+        q = sqlalchemy.text(f"""
+        SELECT 
+            COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
+        FROM 
+            l_class_course a
+        JOIN 
+            t_course_results c ON a.class_id = c.class_id 
+        JOIN 
+            t_course_details d ON c.course_code = d.course_code
+		JOIN 
+			l_course_departments l ON a.course_code=l.course_code
+		WHERE 
+			l.department_id={department_id} and a.handler_id!=0""")
+        results_data = []
+        r = conn.execute(q).fetchall()
+        for i in r:
+            temp={'department_id':department_id,'avg_pass_percentage':i[0]}
+            results_data.append(temp)
+        overall_progress.append({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'results_data':results_data})
     print({'overall_progress':overall_progress})
     return json.dumps({'overall_progress':overall_progress})
 

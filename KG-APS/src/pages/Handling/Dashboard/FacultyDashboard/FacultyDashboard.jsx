@@ -46,7 +46,7 @@ function HandlingFacultyDashboard() {
           setCourseDataCurrent(res.data.course_data_current);
           setCourseDataOverall(res.data.course_data_overall);
           setAssignmentData(res.data.assignment_data);
-          setResultsData(res.data.result_data);
+          setResultsData(res.data.results_data);
         }
       }catch (error) {
         console.error('Error fetching data:', error);
