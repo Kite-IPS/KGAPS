@@ -18,6 +18,7 @@ function HandlingHODDashboard() {
   const [facultyList, setFacultyList] = useState([]);
   const [facultyData, setFacultyData] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
+  const [resultsData, setResultsData] = useState([]);
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const [viewMode, setViewMode] = useState("course");
@@ -94,6 +95,7 @@ function HandlingHODDashboard() {
       setCourseDataCurrent(res.data.course_data_current);
       setCourseDataOverall(res.data.course_data_overall);
       setAssignmentData(res.data.assignment_data);
+      setResultsData(res.data.results_data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -112,6 +114,7 @@ function HandlingHODDashboard() {
       setCourseDataCurrent(res.data.course_data_current);
       setCourseDataOverall(res.data.course_data_overall);
       setAssignmentData(res.data.assignment_data);
+      setResultsData(res.data.results_data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -129,6 +132,7 @@ function HandlingHODDashboard() {
         setCourseDataCurrent(res.data.course_data_current);
         setCourseDataOverall(res.data.course_data_overall);
         setAssignmentData(res.data.assignment_data);
+        setResultsData(res.data.results_data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -136,6 +140,7 @@ function HandlingHODDashboard() {
   };
   const UpdateChart = async (option) => {
     console.log(option);
+    setSelectedOption(option);
     if ("course_code" in option) {
       await fetchChartDataCourse(option);
     } else if ("uid" in option) {
@@ -151,9 +156,10 @@ function HandlingHODDashboard() {
       setCourseDataCurrent([]);
       setCourseDataOverall([]);
       setAssignmentData([]);
+      setResultsData([]);
     };
     resetData();
-  },[viewMode]);
+  }, [viewMode]);
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -279,10 +285,10 @@ function HandlingHODDashboard() {
                   Status:{" "}
                   {departmentProgressCurrent[0].completed_hours -
                     departmentProgressCurrent[0].total_hours >
-                  0 ? (
+                    0 ? (
                     <span style={{ color: "red" }}>Delayed</span>
                   ) : departmentProgressCurrent[0].completed_hours -
-                      departmentProgressCurrent[0].total_hours <
+                    departmentProgressCurrent[0].total_hours <
                     0 ? (
                     <span style={{ color: "lightgreen" }}>Ahead of time</span>
                   ) : (
@@ -553,9 +559,8 @@ function HandlingHODDashboard() {
                   {DomainCourses.map((yearOption, yearIndex) => (
                     <div key={yearIndex} className="year-section">
                       <div
-                        className={`year-card ${
-                          selectedYear === yearIndex ? "expanded" : ""
-                        }`}
+                        className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
+                          }`}
                         onClick={async () => {
                           setSelectedYear(yearIndex);
                           setSelectedCard(0);
@@ -569,9 +574,8 @@ function HandlingHODDashboard() {
                             (courseOption, courseIndex) => (
                               <div
                                 key={courseIndex}
-                                className={`course-card ${
-                                  selectedCard === courseIndex ? "expanded" : ""
-                                }`}
+                                className={`course-card ${selectedCard === courseIndex ? "expanded" : ""
+                                  }`}
                                 onClick={async () => {
                                   setSelectedCard(courseIndex);
                                   UpdateChart(courseOption);
@@ -606,9 +610,8 @@ function HandlingHODDashboard() {
                 facultyList.map((faculty, index) => (
                   <div
                     key={index}
-                    className={`course-card ${
-                      selectedCard === faculty.uid ? "expanded" : ""
-                    }`}
+                    className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
+                      }`}
                     onClick={async () => {
                       setSelectedCard(faculty.uid);
                       console.log(faculty);
@@ -665,14 +668,20 @@ function HandlingHODDashboard() {
             >
               Assignments
             </button>
+            <button
+              className="HFTbutton-1"
+              onClick={() => setContentViewMode("results")}
+            >
+              Results
+            </button>
           </div>
           <br></br>
           <hr></hr>
           <br></br>
           {/* Course Data Display */}
           {contentViewMode === "topics" &&
-          courseDataOverall.length > 0 &&
-          courseDataCurrent.length > 0 ? (
+            courseDataOverall.length > 0 &&
+            courseDataCurrent.length > 0 ? (
             <>
               {viewMode === "course" && (
                 <h1>
@@ -712,23 +721,23 @@ function HandlingHODDashboard() {
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
                     <div className="handlingfaculty-dashboard-card-header">
-                    <p>
+                      <p>
                         {(viewMode === "course" || viewMode === "class") && (
                           <span>
                             Faculty - {item.uid} - {item.name}
                           </span>
                         )}{" "}
-                        {convertToClass(item.class_id)} 
+                        {convertToClass(item.class_id)}
                         {(viewMode === "class" || viewMode === "faculty") && (
                           <p>
-                        {" "}
-                        Course - {item.course_code} - {item.course_name}
+                            {" "}
+                            Course - {item.course_code} - {item.course_name}
                           </p>
-                    )}
+                        )}
                       </p>
 
                     </div>
-                
+
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
                         Hours Completed: {item.completed_hours} /{" "}
@@ -809,6 +818,45 @@ function HandlingHODDashboard() {
             </>
           ) : (
             contentViewMode === "assignments" && <h1>No assignments!</h1>
+          )}
+          {contentViewMode === "results" && resultsData.length > 0 ? (
+            <>
+              <h1>Result Data</h1>
+              <div className="handlingfaculty-dashboard-card-container">
+                {resultsData.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      <span className="grid-item">{item.course_code}</span>
+                      <span className="grid-item">{item.course_name}</span>
+                      <span className="grid-item">
+                        {convertToClass1(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass2(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass3(item.class_id)}
+                      </span>
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>
+                        Average pass percentage: {item.avg_pass_percentage}%
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${item.avg_pass_percentage}%`,
+                            backgroundColor: "green",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            contentViewMode === "results" && <h1>No Results!</h1>
           )}
         </div>
       </div>

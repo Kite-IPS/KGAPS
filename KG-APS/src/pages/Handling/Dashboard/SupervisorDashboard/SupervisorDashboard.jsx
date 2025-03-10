@@ -16,6 +16,7 @@ function HandlingSupervisorDashboard() {
     []
   );
   const [assignmentData, setAssignmentData] = useState([]);
+  const [resultsData, setResultsData] = useState([]);
   const [selectedOption, setSelectedOption] = useState({});
   const [facultyData, setFacultyData] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
@@ -99,6 +100,7 @@ function HandlingSupervisorDashboard() {
       setCourseDataCurrent(res.data.course_data_current);
       setCourseDataOverall(res.data.course_data_overall);
       setAssignmentData(res.data.assignment_data);
+      setResultsData(res.data.results_data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -117,6 +119,7 @@ function HandlingSupervisorDashboard() {
       setCourseDataCurrent(res.data.course_data_current);
       setCourseDataOverall(res.data.course_data_overall);
       setAssignmentData(res.data.assignment_data);
+      setResultsData(res.data.results_data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -134,6 +137,7 @@ function HandlingSupervisorDashboard() {
         setCourseDataCurrent(res.data.course_data_current);
         setCourseDataOverall(res.data.course_data_overall);
         setAssignmentData(res.data.assignment_data);
+        setResultsData(res.data.results_data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -156,9 +160,10 @@ function HandlingSupervisorDashboard() {
       setCourseDataCurrent([]);
       setCourseDataOverall([]);
       setAssignmentData([]);
+      setResultsData([]);
     };
     resetData();
-  },[viewMode]);
+  },[viewMode,department_id]);
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -259,9 +264,7 @@ function HandlingSupervisorDashboard() {
               <select
                 onChange={(e) => {
                   setDepartment_id(e.target.value);
-                  setAssignmentData([]);
-                  setCourseDataCurrent([]);
-                  setCourseDataOverall([]);
+
                 }}
               >
                 {Object.keys(departmentMap).map((departmentKey) => (
@@ -715,7 +718,12 @@ function HandlingSupervisorDashboard() {
               className="HFTbutton-2"
               onClick={() => setContentViewMode("assignments")}
             >
-              Assignments
+              Assessments
+            </button>
+            <button
+              className="HFTbutton-1"
+              onClick={() => setContentViewMode("results")}
+            > Results
             </button>
           </div>
           {contentViewMode === "topics" &&
@@ -832,7 +840,7 @@ function HandlingSupervisorDashboard() {
                     </div>
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
-                        Overall Progress for Assignment: {item.avg_progress}%
+                        Overall Progress for Assessment: {item.avg_progress}%
                       </p>
                       <div className="handlingfaculty-dashboard-progressbar-horizontal">
                         <div
@@ -848,7 +856,46 @@ function HandlingSupervisorDashboard() {
               </div>
             </>
           ) : (
-            contentViewMode === "assignments" && <h1>No assignments!</h1>
+            contentViewMode === "assignments" && <h1>No assessments!</h1>
+          )}
+          {contentViewMode === "results" && resultsData.length > 0 ? (
+            <>
+              <h1>Result Data</h1>
+              <div className="handlingfaculty-dashboard-card-container">
+                {resultsData.map((item, i) => (
+                  <div className="handlingfaculty-dashboard-card" key={i}>
+                    <div className="handlingfaculty-dashboard-card-header">
+                      <span className="grid-item">{item.course_code}</span>
+                      <span className="grid-item">{item.course_name}</span>
+                      <span className="grid-item">
+                        {convertToClass1(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass2(item.class_id)}
+                      </span>
+                      <span className="grid-item">
+                        {convertToClass3(item.class_id)}
+                      </span>
+                    </div>
+                    <div className="handlingfaculty-dashboard-card-content">
+                      <p>
+                        Average pass percentage: {item.avg_pass_percentage}%
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${item.avg_pass_percentage}%`,
+                            backgroundColor: "green",
+                          }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            contentViewMode === "results" && <h1>No Results!</h1>
           )}
         </div>
       </div>
