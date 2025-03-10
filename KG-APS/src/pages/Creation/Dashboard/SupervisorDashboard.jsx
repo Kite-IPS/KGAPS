@@ -295,15 +295,32 @@ const CreationSupervisorDashboard = () => {
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
                     Overall Course Assessment Progress :
-                    {(!item.assignment_data.avg_progress && <span>0%</span>) ||
-                      (item.assignment_data.avg_progress > 0 && (
-                        <span>{item.assignment_data.avg_progress}%</span>
+                    {(!item.assignment_data[0].avg_progress && <span>0%</span>) ||
+                      (item.assignment_data[0].avg_progress > 0 && (
+                        <span>{item.assignment_data[0].avg_progress}%</span>
                       ))}
                   </p>
                   <div className="handlingfaculty-dashboard-progressbar-horizontal">
                     <div
                       style={{
-                        width: `${item.assignment_data.avg_progress}%`,
+                        width: `${item.assignment_data[0].avg_progress}%`,
+                        backgroundColor: "darkblue",
+                      }}
+                    />
+                  </div>
+                </div>
+                <div className="handlingfaculty-dashboard-aggregate-content">
+                  <p>
+                    Overall Course Result Progress :
+                    {(!item.results_data[0].avg_pass_percentage && <span>0%</span>) ||
+                      (item.results_data[0].avg_pass_percentage > 0 && (
+                        <span>{item.results_data[0].avg_pass_percentage}%</span>
+                      ))}
+                  </p>
+                  <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                    <div
+                      style={{
+                        width: `${item.results_data[0].avg_pass_percentage}%`,
                         backgroundColor: "darkblue",
                       }}
                     />
