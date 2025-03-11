@@ -179,11 +179,7 @@ function HandlingDMDashboard() {
     <>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
       <div className="DMDASH dashboard-container">
-      <div className="handlingfaculty-dashboard-nametext">
-            <div className="handlingfaculty-dashboard-welcome-box">
-              <p className="handlingfaculty-dashboard-greeting">Welcome Faculty - {facultyDetails.name}</p>
-            </div>
-      </div>
+      
         <div className="dashboard-content">
 
           <div className="">
