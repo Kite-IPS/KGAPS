@@ -207,34 +207,25 @@ function HandlingDMDashboard() {
                             <h3>{yearMap[yearOption.year]}</h3>
                           </div>
                           {selectedYear === yearIndex && (
-                            <div className="courses-container">
-                              {yearOption.courses.map(
-                                (courseOption, courseIndex) => (
-                                  <div
-                                    key={courseIndex}
-                                    className={`course-card ${
-                                      selectedCard === courseIndex
-                                        ? "expanded"
-                                        : ""
-                                    }`}
-                                    onClick={async () => {
-                                      setSelectedCard(courseIndex);
-                                      UpdateChart(courseOption);
-                                    }}
-                                  >
-                                    <h3>{courseOption.course_name}</h3>
-                                    {selectedCard === courseIndex && (
-                                      <div className="card-details">
-                                        <p>
-                                          Course Code:{" "}
-                                          {courseOption.course_code}
-                                        </p>
-                                      </div>
-                                    )}
+                            <div className="courses-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
+                            {yearOption.courses.map((courseOption, courseIndex) => (
+                              <div
+                                key={courseIndex}
+                                className={`course-card ${selectedCard === courseIndex ? "expanded" : ""}`}
+                                onClick={async () => {
+                                  setSelectedCard(courseIndex);
+                                  UpdateChart(courseOption);
+                                }}
+                              >
+                                <h3>{courseOption.course_name}</h3>
+                                {selectedCard === courseIndex && (
+                                  <div className="card-details">
+                                    <p>Course Code: {courseOption.course_code}</p>
                                   </div>
-                                )
-                              )}
-                            </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
                           )}
                         </div>
                       ))}
