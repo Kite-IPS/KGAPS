@@ -31,13 +31,18 @@
   padding: 0;
   align-items: flex-start;
   float:left;
-  margin-left:-1000px;
+  margin-right: auto;
 }
 
 /* Link items */
 .handling-navbar-links li {
   margin: 0 20px;
 }
+.highlighted-name {
+  color: #fe370f; /* Green color for better visibility */
+  font-weight: bold;
+}
+
 
 /* Default link styles */
 .nav-button {
