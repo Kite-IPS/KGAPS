@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
-import HandlingSidebar2 from '../HandlingSidebar/HandlingSidebar2';
+import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2';
 import FacultyAddAssignment from '../Forms/FacultyAddAssignment';
 import FacultyAddResult from '../Forms/FacultyAddResult';
 
