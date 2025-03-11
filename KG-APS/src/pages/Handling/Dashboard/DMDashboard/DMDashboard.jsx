@@ -283,7 +283,8 @@ function HandlingDMDashboard() {
           courseDataCurrent.length > 0 ? (
             <>
 
-              <div className="handlingfaculty-dashboard-aggregate">
+              <div className="handlingfaculty-dashboard-aggregate" style={{ maxWidth: "40vw", width: "40vw" }}
+>
                 <p>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>

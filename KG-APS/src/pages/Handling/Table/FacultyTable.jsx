@@ -2,6 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
 import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
+import HandlingSidebar2 from '../HandlingSidebar/HandlingSidebar2';
 import FacultyAddAssignment from '../Forms/FacultyAddAssignment';
 import FacultyAddResult from '../Forms/FacultyAddResult';
 
@@ -18,6 +19,18 @@ const HandlingFacultyTable = () => {
   const [resultTableData, setResultTableData] = useState([]);
   const [viewMode, setViewMode] = useState("all");
   const [tableView, setTableView] = useState("topics");
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+  
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const getBoxColor = (status_code) => {
     switch (status_code) {
@@ -184,15 +197,25 @@ const HandlingFacultyTable = () => {
   };
 
   return (
-    <div className="page-cover" style={{display:'flex', gap:'5vw'}}>
-      <HandlingSidebar />
-      <div>
+    <div className="page-cover" style={{display:'flex'}}>
+      {/* Pass addView and setAddView as props */}
+      {windowWidth > 1500 ? (
+        <HandlingSidebar addView={addView} setAddView={setAddView} />
+      ) : (
+        <HandlingSidebar2 addView={addView} setAddView={setAddView} />
+      )}
+      <div className="HFTtable-container">
+        {addView === "assignments" && <FacultyAddAssignment />}
+        {addView === "results" && <FacultyAddResult />}
+      </div> 
+      {/* <div>
         
         <button className="button" onClick={() => setAddView("assignments")}>Assessments</button>
         <button className="button" onClick={() => setAddView("results")}>Results</button>
              {addView=="assignments" && <FacultyAddAssignment />}
              {addView=="results" && <FacultyAddResult />}
-      </div>   <div className="HFTtable-container">
+      </div>    */}
+      <div className="HFTtable-container">
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
           All contents

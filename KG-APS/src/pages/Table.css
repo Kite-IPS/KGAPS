@@ -211,6 +211,14 @@ tr:hover {
     }
 }
 
+@media screen and (min-width:1500px) {
+    .page-cover{
+        /* padding-top: 7vh; */
+        padding: 10vh;
+        height: auto;
+    }
+}
+
 /* Styles for Edit, Upload, and Cancel buttons */
 /* .HFTbutton-edit, .HFTbutton-upload, .HFTbutton-cancel {
     background-color: #007bff; 
