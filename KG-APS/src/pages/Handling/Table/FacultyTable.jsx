@@ -204,17 +204,19 @@ const HandlingFacultyTable = () => {
       ) : (
         <HandlingSidebar2 addView={addView} setAddView={setAddView} />
       )}
-      <div className="HFTtable-container">
+
         {addView === "assignments" && <FacultyAddAssignment />}
         {addView === "results" && <FacultyAddResult />}
-      </div> 
-      {/* <div>
-        
-        <button className="button" onClick={() => setAddView("assignments")}>Assessments</button>
-        <button className="button" onClick={() => setAddView("results")}>Results</button>
-             {addView=="assignments" && <FacultyAddAssignment />}
-             {addView=="results" && <FacultyAddResult />}
-      </div>    */}
+
+      {/* 
+        <div>
+          <button className="button" onClick={() => setAddView("assignments")}>Assessments</button>
+          <button className="button" onClick={() => setAddView("results")}>Results</button>
+               {addView=="assignments" && <FacultyAddAssignment />}
+               {addView=="results" && <FacultyAddResult />}
+        </div> 
+      */}
+
       <div className="HFTtable-container">
       <div className="HFTbutton-group">
         <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
