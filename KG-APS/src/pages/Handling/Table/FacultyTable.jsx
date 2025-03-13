@@ -197,7 +197,8 @@ const HandlingFacultyTable = () => {
   };
 
   return (
-    <div className="page-cover" style={{display:'flex'}}>
+    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+
       {/* Pass addView and setAddView as props */}
       {windowWidth > 1500 ? (
         <HandlingSidebar addView={addView} setAddView={setAddView} />

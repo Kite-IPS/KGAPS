@@ -251,3 +251,26 @@ tr:hover {
 .HFTbutton-cancel:hover {
     background-color: #c82333; 
 } */
+
+
+.HFTgrid-container {
+    display: grid;
+    grid-template-columns: 250px auto; /* Sidebar + Main Content */
+    gap: 20px;
+    padding: 20px;
+    width: 90%;
+    margin-top: 10vh;
+  
+    /* Center the container */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 1024px) {
+    .HFTgrid-container {
+      grid-template-columns: 1fr; /* Single column for small screens */
+      margin-top: 0vh;
+    }
+  }
+  
