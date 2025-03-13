@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
-import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 
 const CreationDMTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -28,6 +29,17 @@ const CreationDMTable = () => {
       console.error("Error approving topic:", error);
     }
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
 
   const handleDisapproval = async (topic_id) => {
     const message = prompt("Please enter a reason for disapproval:");
@@ -147,8 +159,8 @@ const CreationDMTable = () => {
   }, [viewMode, tableData]);
 
   return (
-    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
-      <HandlingSidebar />
+    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
         <div className="HFTbutton-group">
           <button className="HFTbutton-1" onClick={() => setViewMode("all")}>

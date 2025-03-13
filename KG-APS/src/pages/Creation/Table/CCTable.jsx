@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import "../../Table.css";
 import axios from 'axios';
-import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import CreationTopicAddForm from './CCAddTopicForm';
 
 const CreationCCTable = () => {
@@ -27,6 +28,17 @@ const CreationCCTable = () => {
         return "white";
     }
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
 
   const handleLinkInput = (e, item) => {
     setUpdatedLink(e.target.value);
@@ -109,8 +121,8 @@ const CreationCCTable = () => {
   }, []);
 
   return (
-    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
-      <HandlingSidebar />
+    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       {course && (
         <>
           <CreationTopicAddForm />

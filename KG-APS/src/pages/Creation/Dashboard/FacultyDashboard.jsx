@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
-import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import "../../Table.css";
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -20,6 +21,17 @@ const CreationFacultyDashboard = () => {
       },
     ],
   });
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -86,8 +98,8 @@ const CreationFacultyDashboard = () => {
 
   return (
     <>
-      <div className="page-cover">
-        <HandlingSidebar />
+    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
         <div className="dashboard-contents">
           <div className="overall-progress-section">
             <h3>Overall Progress</h3>
