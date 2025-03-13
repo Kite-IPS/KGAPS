@@ -270,6 +270,12 @@ tr:hover {
   @media screen and (max-width: 1024px) {
     .HFTgrid-container {
       grid-template-columns: 1fr; /* Single column for small screens */
+    }
+  }
+
+  @media screen and (max-width: 1500px) {
+    .HFTgrid-container {
+      grid-template-columns: 1fr; /* Single column for small screens */
       margin-top: 0vh;
     }
   }

@@ -88,7 +88,10 @@ function HandlingSidebar({ setAddView, addView }) {
           </ul>
 
           <div className="handling-navbar-info" onClick={() => setIsDropdownOpen(!isDropdownOpen)} role="button">
-          <span className="welcome-message">Welcome Mentor - <span className="highlighted-name">{facultyDetails.name}</span></span>
+          <span className="welcome-message">
+  Welcome {roleMapping[facultyDetails.role_id]} - 
+  <span className="highlighted-name">{facultyDetails.name}</span>
+</span>
             <FaUserCircle className="handling-navbar-icon" />
             {isDropdownOpen && (
               <div className="handling-navbar-dropdown">
