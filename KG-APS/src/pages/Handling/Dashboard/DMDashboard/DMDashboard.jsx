@@ -6,7 +6,7 @@ import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
 function HandlingDMDashboard() {
-  const smoothScrollTo = (element, duration = 700) => {
+  const smoothScrollTo = (element, duration = 50) => {
     const targetY = element.getBoundingClientRect().top + window.scrollY;
     const startY = window.scrollY;
     const distance = targetY - startY;
@@ -336,7 +336,7 @@ function HandlingDMDashboard() {
                     <div className="handlingfaculty-dashboard-card-header">
                       <span className="grid-item">Faculty</span>
                       <span className="grid-item">{item.uid}</span>
-                      <span className="grid-item">{convertToClass1(item.name)}</span>
+                      <span className="grid-item">{item.name}</span>
                       <span className="grid-item">{convertToClass(item.class_id)}</span>
                     </div>
 
