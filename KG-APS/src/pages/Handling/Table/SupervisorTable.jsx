@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from 'react';
 import "../../Table.css";
-import HandlingSidebar from "../HandlingSidebar/HandlingSidebar";
+import HandlingSidebar from "../HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2.jsx';
 import axios from 'axios';
 
 const HandlingSupervisorTable = () => {
@@ -26,6 +27,18 @@ const HandlingSupervisorTable = () => {
         return "white";
     }
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -232,8 +245,8 @@ const HandlingSupervisorTable = () => {
 
 
   return (
-    <div className="page-cover" style={{ display: "flex", gap: "5vw" }}>
-      <HandlingSidebar />
+    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
         <div className="HFTbutton-group">
           <button className="HFTbutton-1">
