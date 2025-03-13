@@ -33,7 +33,7 @@ function HandlingDMDashboard() {
       smoothScrollTo(courseSelectionRef.current, 50); // Scroll back up
     }
   };
-  
+
 
 
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
@@ -332,11 +332,14 @@ function HandlingDMDashboard() {
               <div className="handlingfaculty-dashboard-card-container">
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
+
                     <div className="handlingfaculty-dashboard-card-header">
-                      {" "}
-                      Faculty - {item.uid} - {item.name} -{" "}
-                      {convertToClass(item.class_id)}
+                      <span className="grid-item">Faculty</span>
+                      <span className="grid-item">{item.uid}</span>
+                      <span className="grid-item">{convertToClass1(item.name)}</span>
+                      <span className="grid-item">{convertToClass(item.class_id)}</span>
                     </div>
+
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
                         Hours Completed: {item.completed_hours} /{" "}

@@ -84,10 +84,20 @@ html {
 }
 
 .handlingfaculty-dashboard-card-header {
+  display: flex; /* Change grid to flex for proper horizontal alignment */
+  justify-content: space-between; /* Space items evenly */
+  align-items: center; /* Center vertically */
+  gap: 15px; /* Space between items */
   font-size: 1.25rem;
   font-weight: bold;
   margin-bottom: 10px;
+  border-radius: 8px;
+  padding: 10px;
+  background-color: #fff4e6;
+  color: #003366;
+  white-space: nowrap; /* Prevent items from wrapping */
 }
+
 
 .handlingfaculty-dashboard-card-content {
   flex-grow: 1;
