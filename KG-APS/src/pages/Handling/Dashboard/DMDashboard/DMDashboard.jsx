@@ -1,10 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useRef } from "react";
 import "./DMDashboard.css";
 import axios from "axios";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
 function HandlingDMDashboard() {
+  const smoothScrollTo = (element, duration = 700) => {
+    const targetY = element.getBoundingClientRect().top + window.scrollY;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Smooth ease-out effect
+
+    const scrollStep = (currentTime) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1); // Cap progress at 1
+      const easeProgress = easeOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * easeProgress);
+
+      if (elapsedTime < duration) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  };
+  const scrollToCourseCard = () => {
+    if (courseSelectionRef.current) {
+      smoothScrollTo(courseSelectionRef.current, 50); // Scroll back up
+    }
+  };
+  
+
+
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
@@ -16,7 +47,10 @@ function HandlingDMDashboard() {
   const [contentViewMode, setContentViewMode] = useState("topics");
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
-  const [facultyDetails, setFacultyDetails] = useState(data); 
+  const progressSectionRef = useRef(null);
+  const courseSelectionRef = useRef(null); // Reference for the course card section
+
+  const [facultyDetails, setFacultyDetails] = useState(data);
   const value = (current, total) => {
     if (total === 0 || current === 0 || current > total) {
       return 100;
@@ -29,7 +63,7 @@ function HandlingDMDashboard() {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
-  
+
     window.addEventListener("resize", handleResize);
     return () => {
       window.removeEventListener("resize", handleResize);
@@ -83,7 +117,13 @@ function HandlingDMDashboard() {
     console.log(option);
     setSelectedOption(option);
     await fetchChartData(option);
+
+    if (progressSectionRef.current) {
+      smoothScrollTo(progressSectionRef.current, 50);
+    }
   };
+
+
   const renderColorComment = (barColor) => {
     switch (barColor) {
       case "black":
@@ -177,13 +217,14 @@ function HandlingDMDashboard() {
   const convertToClass3 = (item) => sectionMap[item.toString()[2]];
   return (
     <>
-      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="DMDASH dashboard-container">
-      
+
         <div className="dashboard-content">
 
           <div className="">
-            <div className="course-selector">
+            <div className="course-selector" ref={courseSelectionRef}>
+
               <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               <p className="HFTbutton-1">Course wise</p>
               {DomainCourses.length > 0 ? (
@@ -196,9 +237,8 @@ function HandlingDMDashboard() {
                       {DomainCourses.map((yearOption, yearIndex) => (
                         <div key={yearIndex} className="year-section">
                           <div
-                            className={`year-card ${
-                              selectedYear === yearIndex ? "expanded" : ""
-                            }`}
+                            className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
+                              }`}
                             onClick={async () => {
                               setSelectedYear(yearIndex);
                               setSelectedCard(0);
@@ -208,24 +248,24 @@ function HandlingDMDashboard() {
                           </div>
                           {selectedYear === yearIndex && (
                             <div className="courses-container" style={{ maxHeight: '300px', overflowY: 'auto' }}>
-                            {yearOption.courses.map((courseOption, courseIndex) => (
-                              <div
-                                key={courseIndex}
-                                className={`course-card ${selectedCard === courseIndex ? "expanded" : ""}`}
-                                onClick={async () => {
-                                  setSelectedCard(courseIndex);
-                                  UpdateChart(courseOption);
-                                }}
-                              >
-                                <h3>{courseOption.course_name}</h3>
-                                {selectedCard === courseIndex && (
-                                  <div className="card-details">
-                                    <p>Course Code: {courseOption.course_code}</p>
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
+                              {yearOption.courses.map((courseOption, courseIndex) => (
+                                <div
+                                  key={courseIndex}
+                                  className={`course-card ${selectedCard === courseIndex ? "expanded" : ""}`}
+                                  onClick={async () => {
+                                    setSelectedCard(courseIndex);
+                                    UpdateChart(courseOption);
+                                  }}
+                                >
+                                  <h3>{courseOption.course_name}</h3>
+                                  {selectedCard === courseIndex && (
+                                    <div className="card-details">
+                                      <p>Course Code: {courseOption.course_code}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           )}
                         </div>
                       ))}
@@ -239,7 +279,7 @@ function HandlingDMDashboard() {
               )}
             </div>
           </div>
-          <div>
+          <p style={{ fontSize: "20px", textAlign: "center" }}>
             <button
               className="HFTbutton-1"
               onClick={() => setContentViewMode("topics")}
@@ -258,20 +298,18 @@ function HandlingDMDashboard() {
             >
               Results
             </button>
-          </div>
-          <h1>
-                Course{" "}
-                {selectedOption.course_code +
-                  " - " +
-                 selectedOption.course_name}
-              </h1>
+          </p>
+          <h1 ref={progressSectionRef}>
+            Course {selectedOption.course_code + " - " + selectedOption.course_name}
+          </h1>
+
           {contentViewMode === "topics" &&
-          courseDataOverall.length > 0 &&
-          courseDataCurrent.length > 0 ? (
+            courseDataOverall.length > 0 &&
+            courseDataCurrent.length > 0 ? (
             <>
 
               <div className="handlingfaculty-dashboard-aggregate" style={{ maxWidth: "40vw", width: "40vw" }}
->
+              >
                 <p>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
@@ -421,6 +459,10 @@ function HandlingDMDashboard() {
             contentViewMode === "results" && <h1>No Results!</h1>
           )}
         </div>
+        <button className="scroll-up-button" onClick={scrollToCourseCard}>
+          Back to Course
+        </button>
+
       </div>
     </>
   );
