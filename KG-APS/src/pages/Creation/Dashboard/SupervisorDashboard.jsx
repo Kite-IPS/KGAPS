@@ -3,7 +3,8 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import HandlingSupervisorDashboard from "../../Handling/Dashboard/SupervisorDashboard/SupervisorDashboard";
 Chart.register(ArcElement, Tooltip, Legend);
 
@@ -29,6 +30,17 @@ const CreationSupervisorDashboard = () => {
       },
     ],
   });
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -212,8 +224,8 @@ const CreationSupervisorDashboard = () => {
   };
   return (
     <div>
-      <HandlingSidebar />
-      <div className="overall-progress-container">
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
+      <div className="overall-progress-container-1"  style={{ maxHeight: '700px', overflowY: 'auto', marginTop: '10vh'}}>
         {overallProgress.map(
           (item) =>
             item.department_overall && (
@@ -330,7 +342,7 @@ const CreationSupervisorDashboard = () => {
             )
         )}
       </div>
-      <div>
+      <div className="super">
         <button
           className="HFTbutton-1"
           onClick={() => setOverallView("creation")}

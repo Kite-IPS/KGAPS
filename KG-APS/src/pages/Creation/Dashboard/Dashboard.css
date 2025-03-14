@@ -204,3 +204,9 @@
     grid-template-columns: repeat(5, 1fr);  /* Limit to exactly 5 columns */
     gap: 20px;  /* Spacing between items */
   }
+
+  .overall-progress-container-1 {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);  /* Limit to exactly 5 columns */
+    gap: 20px;  /* Spacing between items */
+  }

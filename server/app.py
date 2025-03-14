@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@192.168.130.252/kgaps")
+    "postgresql://admin:admin@172.16.30.19/kgaps")
 conn = engine.connect()
 
 # helper functions
