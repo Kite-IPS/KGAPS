@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
-import HandlingSidebar from '../../Handling/HandlingSidebar/HandlingSidebar';
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationCCDashboard = () => {
@@ -19,6 +20,17 @@ const CreationCCDashboard = () => {
       },
     ],
   });
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+  const handleResize = () => {
+    setWindowWidth(window.innerWidth);
+  };
+  window.addEventListener("resize", handleResize);
+  return () => {
+    window.removeEventListener("resize", handleResize);
+  };
+  }, []);
   
   console.log(data);
 
@@ -87,9 +99,9 @@ const CreationCCDashboard = () => {
   }, []); // Run only once when the component mounts
 
   return (
-    <div className="page-cover" style={{ display: 'flex', gap: '5vw' }}>
-      <HandlingSidebar className="custom-sidebar-class"/>
-      <div style={{ width: '80vw' }}>
+    <div className="chf-grid-container" style={{ display: 'flex', gap: '5vw' }}>
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
+      <div className="chf-dashboard-contents">
       
         {showStuff ? (
           <>
