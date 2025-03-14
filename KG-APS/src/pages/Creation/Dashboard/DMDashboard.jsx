@@ -97,7 +97,7 @@ const CreationDMDashboard = () => {
         <div className="dashboard-content">
           <div className="">
             <div className="course-selector">
-              <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
+              <h1 style={{marginTop:"70px"}}>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               {DomainCourses.length > 0 ?(
                 <>
                 <label className="dropdown-label">
