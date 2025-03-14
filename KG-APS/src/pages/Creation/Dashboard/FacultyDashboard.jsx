@@ -98,25 +98,31 @@ const CreationFacultyDashboard = () => {
 
   return (
     <>
-    <div className="HFTgrid-container" style={{ display: 'flex' }}>
-    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-        <div className="dashboard-contents">
-          <div className="overall-progress-section">
-            <h3>Overall Progress</h3>
-            <div className="overall-progress-chart">
-              <Pie data={MainChartData} />
-            </div>
-          </div>
-          <div className="sub-progress-section" style={{ width: "100vw" }}>
-            {ChartData.map((chartData, index) => (
-              <div key={index} className="sub-progress-chart">
-                <h3>{chartData.datasets[0].label}</h3>
-                <Pie data={chartData} />
-              </div>
-            ))}
-          </div>
-        </div>
+<div className="chf-grid-container">
+  {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
+
+  <div className="chf-dashboard-contents">
+    {/* Centered Main Chart */}
+    <div className="chf-overall-progress-section">
+      <h3>Overall Progress</h3>
+      <div className="chf-overall-progress-chart">
+        <Pie data={MainChartData} />
       </div>
+    </div>
+
+    {/* Dynamically Aligned Sub Charts */}
+    <div className="chf-sub-progress-section">
+      {ChartData.map((chartData, index) => (
+        <div key={index} className="chf-sub-progress-chart">
+          <h3>{chartData.datasets[0].label}</h3>
+          <Pie data={chartData} />
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+
     </>
   );
 };
