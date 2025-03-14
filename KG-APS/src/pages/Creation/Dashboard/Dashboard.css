@@ -209,13 +209,19 @@
   }
   
   .courses-container {
-    display: none;
-    margin-left: 20px;
-    margin-top: 10px;
+    max-height: 300px; /* Adjust height based on preference */
+    overflow-y: auto;  /* Enables vertical scrolling */
+    overflow-x: hidden; /* Prevents horizontal scrolling */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: column; /* Ensures courses are stacked vertically */
+    gap: 10px; /* Adds spacing between course cards */
   }
+  
+  
   
   .year-card.expanded + .courses-container {
     display: flex;
