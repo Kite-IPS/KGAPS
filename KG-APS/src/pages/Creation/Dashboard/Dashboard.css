@@ -126,6 +126,57 @@
     max-width: 100%;
     max-height: 100%;
   }
+  .scrollable-cards-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 #f1f1f1;
+  }
+  
+  .scrollable-cards-container::-webkit-scrollbar {
+    height: 8px;
+  }
+  
+  .scrollable-cards-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  .scrollable-cards-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .scrollable-cards-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  .year-section {
+    min-width: 250px;
+    margin-right: 15px;
+  }
+  
+  .courses-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  
+  .course-card {
+    min-width: 200px;
+    padding: 10px;
+    margin-right: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .course-card.expanded {
+    background: #f0f0f0;
+  }
+  
   
 
   @media (max-width: 768px) {

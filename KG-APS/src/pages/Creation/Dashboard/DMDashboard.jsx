@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
@@ -13,6 +13,7 @@ const CreationDMDashboard = () => {
   const [selectedOption, setSelectedOption] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
+  const courseSelectionRef = useRef(null);
   const [MainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
@@ -103,7 +104,7 @@ const CreationDMDashboard = () => {
                 <label className="dropdown-label">
                 Select a course to view progress:
               </label>
-              <div className="cards-container">
+              <div className="scrollable-cards-container" ref={courseSelectionRef}>
                 {DomainCourses.map((yearOption, yearIndex) => (
                   <div key={yearIndex} className="year-section">
                     <div
