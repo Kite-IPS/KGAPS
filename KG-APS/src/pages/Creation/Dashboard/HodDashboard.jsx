@@ -133,7 +133,7 @@ const CreationHodDashboard = () => {
     }
   };
   const UpdateChart = async (option) => {
-    console.log(option,creationViewMode);
+    console.log(option, creationViewMode);
     if (creationViewMode === "course") {
       await fetchChartData(option);
     }
@@ -145,31 +145,33 @@ const CreationHodDashboard = () => {
 
   useEffect(() => {
     const fetchFaculty = async () => {
-    try {
-    const faculty = await axios.post(
-      "http://localhost:8000/api/faculty_info",
-      { department_id: data.department_id },
-      {
-        headers: { "Content-Type": "application/json" },
+      try {
+        const faculty = await axios.post(
+          "http://localhost:8000/api/faculty_info",
+          { department_id: data.department_id },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(faculty.data);
+        setFacultyList(faculty.data);
+        setMainChartData({
+          labels: [],
+          datasets: [
+            {
+              label: "",
+              data: [],
+              backgroundColor: [],
+            },
+          ],
+        });
+        setChartsData([]);
+      } catch (error) {
+        console.error("Error fetching faculty data:", error);
       }
-    );
-    console.log(faculty.data);
-    setFacultyList(faculty.data);
-    setMainChartData({labels: [],
-      datasets: [
-        {
-          label: "",
-          data: [],
-          backgroundColor: [],
-        },
-      ],
-    });
-    setChartsData([]);
-  } catch (error) {
-    console.error("Error fetching faculty data:", error);
-  }}
-  fetchFaculty();
-}, [creationViewMode]);
+    }
+    fetchFaculty();
+  }, [creationViewMode]);
 
   const departmentMap = {
     1: "CSE",
@@ -189,120 +191,120 @@ const CreationHodDashboard = () => {
     4: "4th Year",
   };
   return (
-    <div style={{marginTop:"100px" , overflowX:"hidden"}}>
-      <HandlingSidebar />
-      <h1>Department of {departmentMap[data.department_id]}</h1>
-      <button style={{margin:"10px"}}
-              className="HFTbutton-1"
-              onClick={() => setCreationViewMode("course")}
-            >
-              Course wise
-            </button>
-            <button
-              className="HFTbutton-2"
-              onClick={() => setCreationViewMode("faculty")}
-            >
-              Faculty wise
-            </button>
+    <div className="dashboard-container" style={{ marginTop: "40px" }}>
+      <div className="dashboard-content">
+        <HandlingSidebar />
+        <h1>Department of {departmentMap[data.department_id]}</h1>
+        <button style={{ margin: "10px" }}
+          className="HFTbutton-1"
+          onClick={() => setCreationViewMode("course")}
+        >
+          Course wise
+        </button>
+        <button
+          className="HFTbutton-2"
+          onClick={() => setCreationViewMode("faculty")}
+        >
+          Faculty wise
+        </button>
         {creationViewMode === "course" && <><label className="dropdown-label">
-          
+
           Select a course to view progress:
         </label>
-        <div style={{marginLeft:"10px"}} className="cards-container">
-          {DomainCourses.map((yearOption, yearIndex) => (
-            <div key={yearIndex} className="year-section">
-              <div
-                className={`year-card ${
-                  selectedYear === yearIndex ? "expanded" : ""
-                }`}
-                onClick={async () => {
-                  setSelectedYear(yearIndex);
-                  setSelectedCard(0);
-                }}
-              >
-                <h3>{yearMap[yearOption.year]}</h3>
-              </div>
-              {selectedYear === yearIndex && (
-                <div className="courses-container">
-                  {yearOption.courses.map((courseOption, courseIndex) => (
-                    <div
-                      key={courseIndex}
-                      className={`course-card ${
-                        selectedCard === courseIndex ? "expanded" : ""
-                      }`}
-                      onClick={async () => {
-                        setSelectedCard(courseIndex);
-                        UpdateChart(courseOption);
-                      }}
-                    >
-                      <h3>{courseOption.course_name}</h3>
-                      {selectedCard === courseIndex && (
-                        <div className="card-details">
-                          <p>Course Code: {courseOption.course_code}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
+          <div style={{ marginLeft: "10px" }} className="cards-container">
+            {DomainCourses.map((yearOption, yearIndex) => (
+              <div key={yearIndex} className="year-section">
+                <div
+                  className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
+                    }`}
+                  onClick={async () => {
+                    setSelectedYear(yearIndex);
+                    setSelectedCard(0);
+                  }}
+                >
+                  <h3>{yearMap[yearOption.year]}</h3>
                 </div>
-              )}
-            </div>
-          ))}
-        </div>
-      <h3>Progress</h3>
-      {MainChartData.labels.length > 0 ? (
-        <div className="chart-grid">
-          <div className="chart-container">
-            <Pie data={MainChartData} />
-          </div>
-        </div>
-      ) : (
-        <h1>No progress yet</h1>
-      )}{" "}</>}
-      {creationViewMode === "faculty" && (
-        <>
-        <p>Faculty view</p>
-          {facultyList.length > 0 &&
-            facultyList.map((faculty, index) => (
-              <div
-                key={index}
-                className={`course-card ${
-                  selectedCard === faculty.uid ? "expanded" : ""
-                }`}
-                onClick={async () => {
-                  setSelectedCard(faculty.uid);
-                  UpdateChart(faculty);
-                }}
-              >
-                <h3>{faculty.name}</h3>
-                {selectedCard === faculty.uid && (
-                  <div className="card-details">
-                    <p>Faculty ID: {faculty.uid}</p>
+                {selectedYear === yearIndex && (
+                  <div className="courses-container">
+                    {yearOption.courses.map((courseOption, courseIndex) => (
+                      <div
+                        key={courseIndex}
+                        className={`course-card ${selectedCard === courseIndex ? "expanded" : ""
+                          }`}
+                        onClick={async () => {
+                          setSelectedCard(courseIndex);
+                          UpdateChart(courseOption);
+                        }}
+                      >
+                        <h3>{courseOption.course_name}</h3>
+                        {selectedCard === courseIndex && (
+                          <div className="card-details">
+                            <p>Course Code: {courseOption.course_code}</p>
+                          </div>
+                        )}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>
             ))}
-
-          {ChartData.length > 0 && (
-            <>
-              <div className="chart-grid">
-                <div className="chart-container">
-                  <Pie data={MainChartData} />
+          </div>
+          <h3>Progress</h3>
+          {MainChartData.labels.length > 0 ? (
+            <div className="chart-grid">
+              <div className="chart-container">
+                <Pie data={MainChartData} />
+              </div>
+            </div>
+          ) : (
+            <h1>No progress yet</h1>
+          )}{" "}</>}
+        {creationViewMode === "faculty" && (
+          <>
+            <p>Faculty view</p>
+            {facultyList.length > 0 &&
+              facultyList.map((faculty, index) => (
+                <div
+                  key={index}
+                  className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
+                    }`}
+                  onClick={async () => {
+                    setSelectedCard(faculty.uid);
+                    UpdateChart(faculty);
+                  }}
+                >
+                  <h3>{faculty.name}</h3>
+                  {selectedCard === faculty.uid && (
+                    <div className="card-details">
+                      <p>Faculty ID: {faculty.uid}</p>
+                    </div>
+                  )}
                 </div>
-              </div>
-              <div className="sub-progress-section" style={{ width: "100vw" }}>
-                {ChartData.map((chartData, index) => (
-                  <div key={index} className="sub-progress-chart">
-                    <h3>{chartData.datasets[0].label}</h3>
-                    <Pie data={chartData} />
+              ))}
+
+            {ChartData.length > 0 && (
+              <>
+                <div className="chart-grid">
+                  <div className="chart-container">
+                    <Pie data={MainChartData} />
                   </div>
-                ))}
-              </div>
-            </>
-          )}
-        </>
-      )}
+                </div>
+                <div className="sub-progress-section" style={{ width: "100vw" }}>
+                  {ChartData.map((chartData, index) => (
+                    <div key={index} className="sub-progress-chart">
+                      <h3>{chartData.datasets[0].label}</h3>
+                      <Pie data={chartData} />
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
     </div>
-  );
+      );
+   
 };
 
 export default CreationHodDashboard;
