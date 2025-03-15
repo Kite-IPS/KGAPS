@@ -189,10 +189,10 @@ const CreationHodDashboard = () => {
     4: "4th Year",
   };
   return (
-    <div>
+    <div style={{marginTop:"100px" , overflowX:"hidden"}}>
       <HandlingSidebar />
       <h1>Department of {departmentMap[data.department_id]}</h1>
-      <button
+      <button style={{margin:"10px"}}
               className="HFTbutton-1"
               onClick={() => setCreationViewMode("course")}
             >
@@ -208,7 +208,7 @@ const CreationHodDashboard = () => {
           
           Select a course to view progress:
         </label>
-        <div className="cards-container">
+        <div style={{marginLeft:"10px"}} className="cards-container">
           {DomainCourses.map((yearOption, yearIndex) => (
             <div key={yearIndex} className="year-section">
               <div
