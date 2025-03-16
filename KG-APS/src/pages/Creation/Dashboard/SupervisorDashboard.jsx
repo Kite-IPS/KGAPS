@@ -231,10 +231,13 @@ const CreationSupervisorDashboard = () => {
         className="overall-progress-wrapper"
         style={{
           display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "center",
-          gap: "20px",
-          marginTop: "15vh"
+          overflowX: "auto",  // Enables horizontal scrolling
+          whiteSpace: "nowrap",  // Prevents wrapping to a new row
+          padding: "10px",
+          gap: "15px", // Adds space between containers
+          marginTop: "10vh",
+          scrollbarWidth: "thin", // For Firefox scrollbar styling
+          scrollbarColor: "#888 #f1f1f1" // Scrollbar color
         }}
       >
         {overallProgress.map(
@@ -244,22 +247,23 @@ const CreationSupervisorDashboard = () => {
                 key={item.department_id}
                 className="overall-progress-container-1"
                 style={{
-                  maxHeight: "200px",
-                  overflowY: "auto",
-                  width: "30%",  // Each container takes 30% of the width to fit 3 in a row
-                  padding: "15px",
-                  borderRadius: "10px",
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                  minWidth: "250px",  // Ensures fixed width for horizontal scrolling
+                  maxWidth: "350px",  // Restricts max width
+                  maxHeight: "600px", // Keeps container small
+                  overflowY: "auto", // Makes individual containers scrollable if needed
+                  padding: "10px",
+                  borderRadius: "8px",
+                  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                   textAlign: "center",
                   backgroundColor: "#fff",
-                  minHeight: "600px"  // Ensures uniform height
+                  flexShrink: 0 // Prevents containers from shrinking
                 }}
               >
                 <h1>Department of {departmentMap[item.department_id]}</h1>
                 {item.creation && (
                   <>
                     <h3>Overall Course Materials</h3>
-                    <div className="overall-progress-chart" style={{height: "200px" , marginLeft: "auto", marginRight: "auto"}}>
+                    <div className="overall-progress-chart" style={{ height: "200px", marginLeft: "auto", marginRight: "auto" }}>
                       <Pie
                         data={{
                           labels: item.creation.status_code,
