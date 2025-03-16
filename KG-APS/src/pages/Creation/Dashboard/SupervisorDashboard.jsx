@@ -33,13 +33,13 @@ const CreationSupervisorDashboard = () => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
-  window.addEventListener("resize", handleResize);
-  return () => {
-    window.removeEventListener("resize", handleResize);
-  };
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   useEffect(() => {
@@ -60,7 +60,7 @@ const CreationSupervisorDashboard = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-      
+
       try {
         const progress = await axios.post(
           "http://localhost:8000/api/all_department_overall_progress",
@@ -84,31 +84,33 @@ const CreationSupervisorDashboard = () => {
 
   useEffect(() => {
     const fetchFaculty = async () => {
-    try {
-    const faculty = await axios.post(
-      "http://localhost:8000/api/faculty_info",
-      { department_id: selectedDepartment },
-      {
-        headers: { "Content-Type": "application/json" },
+      try {
+        const faculty = await axios.post(
+          "http://localhost:8000/api/faculty_info",
+          { department_id: selectedDepartment },
+          {
+            headers: { "Content-Type": "application/json" },
+          }
+        );
+        console.log(faculty.data);
+        setFacultyList(faculty.data);
+        setMainChartData({
+          labels: [],
+          datasets: [
+            {
+              label: "",
+              data: [],
+              backgroundColor: [],
+            },
+          ],
+        });
+        setChartsData([]);
+      } catch (error) {
+        console.error("Error fetching faculty data:", error);
       }
-    );
-    console.log(faculty.data);
-    setFacultyList(faculty.data);
-    setMainChartData({labels: [],
-      datasets: [
-        {
-          label: "",
-          data: [],
-          backgroundColor: [],
-        },
-      ],
-    });
-    setChartsData([]);
-  } catch (error) {
-    console.error("Error fetching faculty data:", error);
-  }}
-  fetchFaculty();
-}, [creationViewMode]);
+    }
+    fetchFaculty();
+  }, [creationViewMode]);
 
   const fetchChartData = async (selectedCourse) => {
     try {
@@ -195,7 +197,7 @@ const CreationSupervisorDashboard = () => {
     }
   };
   const UpdateChart = async (option) => {
-    console.log(option,creationViewMode);
+    console.log(option, creationViewMode);
     if (creationViewMode === "course") {
       await fetchChartData(option);
     }
@@ -225,19 +227,39 @@ const CreationSupervisorDashboard = () => {
   return (
     <div>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-      <div className="overall-progress-container-1"  style={{ maxHeight: '700px', overflowY: 'auto', marginTop: '10vh'}}>
+      <div
+        className="overall-progress-wrapper"
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "20px",
+          marginTop: "15vh"
+        }}
+      >
         {overallProgress.map(
           (item) =>
             item.department_overall && (
               <div
                 key={item.department_id}
-                className="handlingfaculty-dashboard-aggregate"
+                className="overall-progress-container-1"
+                style={{
+                  maxHeight: "200px",
+                  overflowY: "auto",
+                  width: "30%",  // Each container takes 30% of the width to fit 3 in a row
+                  padding: "15px",
+                  borderRadius: "10px",
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
+                  textAlign: "center",
+                  backgroundColor: "#fff",
+                  minHeight: "600px"  // Ensures uniform height
+                }}
               >
                 <h1>Department of {departmentMap[item.department_id]}</h1>
                 {item.creation && (
                   <>
                     <h3>Overall Course Materials</h3>
-                    <div className="overall-progress-chart">
+                    <div className="overall-progress-chart" style={{height: "200px" , marginLeft: "auto", marginRight: "auto"}}>
                       <Pie
                         data={{
                           labels: item.creation.status_code,
@@ -290,16 +312,16 @@ const CreationSupervisorDashboard = () => {
                     {item.department_current[0].completed_hours -
                       item.department_current[0].total_hours <
                       0 && (
-                      <span style={{ color: "lightgreen" }}>Ahead of time</span>
-                    )}
+                        <span style={{ color: "lightgreen" }}>Ahead of time</span>
+                      )}
                     {!item.department_current[0].completed_hours == null &&
                       item.department_current[0].completed_hours -
-                        item.department_current[0].total_hours ===
-                        0 && <span style={{ color: "green" }}>On time</span>}
+                      item.department_current[0].total_hours ===
+                      0 && <span style={{ color: "green" }}>On time</span>}
                     {item.department_current[0].completed_hours == null &&
                       item.department_current[0].completed_hours -
-                        item.department_current[0].total_hours ===
-                        0 && (
+                      item.department_current[0].total_hours ===
+                      0 && (
                         <span style={{ color: "black" }}>Not yet started</span>
                       )}
                   </p>
@@ -356,167 +378,168 @@ const CreationSupervisorDashboard = () => {
           Handling
         </button>
       </div>
-      {overallView === "creation" && (
-        <>
-        
-        <div className="dashboard-container">
-        <div className="dashboard-content">
-        
-          <h1>Creation Section</h1>
-          <div className="course-selector">
-            <button
-              className="HFTbutton-1"
-              onClick={() => setCreationViewMode("course")}
-            >
-              Course wise
-            </button>
-            <button
-              className="HFTbutton-2"
-              onClick={() => setCreationViewMode("faculty")}
-            >
-              Faculty wise
-            </button>
-            <div className="department-selector">
-              <label className="dropdown-label">Select a department:</label>
-              <select onChange={(e) => setSelectedDepartment(e.target.value)}>
-                {Object.keys(departmentMap).map((departmentKey) => (
-                  <option key={departmentKey} value={departmentKey}>
-                    {departmentMap[departmentKey]}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {creationViewMode === "course" && (
-              <>
-                <label className="dropdown-label">
-                  Select a course to view progress:
-                </label>
-                <div className="cards-container">
-                  {DomainCourses.length > 0 ? (
-                    DomainCourses.map((yearOption, yearIndex) => (
-                      <div key={yearIndex} className="year-section">
-                        <div
-                          className={`year-card ${
-                            selectedYear === yearIndex ? "expanded" : ""
-                          }`}
-                          onClick={async () => {
-                            setSelectedYear(yearIndex);
-                            setSelectedCard(0);
-                          }}
-                        >
-                          <h3>{yearMap[yearOption.year]}</h3>
-                        </div>
-                        {selectedYear === yearIndex && (
-                          <div className="courses-container">
-                            {yearOption.courses.map(
-                              (courseOption, courseIndex) => (
-                                <div
-                                  key={courseIndex}
-                                  className={`course-card ${
-                                    selectedCard === courseIndex
-                                      ? "expanded"
-                                      : ""
+      {
+        overallView === "creation" && (
+          <>
+
+            <div className="dashboard-container">
+              <div className="dashboard-content">
+
+                <h1>Creation Section</h1>
+                <div className="course-selector">
+                  <button
+                    className="HFTbutton-1"
+                    onClick={() => setCreationViewMode("course")}
+                  >
+                    Course wise
+                  </button>
+                  <button
+                    className="HFTbutton-2"
+                    onClick={() => setCreationViewMode("faculty")}
+                  >
+                    Faculty wise
+                  </button>
+                  <div className="department-selector">
+                    <label className="dropdown-label">Select a department:</label>
+                    <select onChange={(e) => setSelectedDepartment(e.target.value)}>
+                      {Object.keys(departmentMap).map((departmentKey) => (
+                        <option key={departmentKey} value={departmentKey}>
+                          {departmentMap[departmentKey]}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  {creationViewMode === "course" && (
+                    <>
+                      <label className="dropdown-label">
+                        Select a course to view progress:
+                      </label>
+                      <div className="cards-container">
+                        {DomainCourses.length > 0 ? (
+                          DomainCourses.map((yearOption, yearIndex) => (
+                            <div key={yearIndex} className="year-section">
+                              <div
+                                className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
                                   }`}
-                                  onClick={async () => {
-                                    setSelectedCard(courseIndex);
-                                    UpdateChart(courseOption);
-                                  }}
-                                >
-                                  <h3>{courseOption.course_name}</h3>
-                                  {selectedCard === courseIndex && (
-                                    <div className="card-details">
-                                      <p>
-                                        Course Code: {courseOption.course_code}
-                                      </p>
-                                    </div>
+                                onClick={async () => {
+                                  setSelectedYear(yearIndex);
+                                  setSelectedCard(0);
+                                }}
+                              >
+                                <h3>{yearMap[yearOption.year]}</h3>
+                              </div>
+                              {selectedYear === yearIndex && (
+                                <div className="courses-container">
+                                  {yearOption.courses.map(
+                                    (courseOption, courseIndex) => (
+                                      <div
+                                        key={courseIndex}
+                                        className={`course-card ${selectedCard === courseIndex
+                                          ? "expanded"
+                                          : ""
+                                          }`}
+                                        onClick={async () => {
+                                          setSelectedCard(courseIndex);
+                                          UpdateChart(courseOption);
+                                        }}
+                                      >
+                                        <h3>{courseOption.course_name}</h3>
+                                        {selectedCard === courseIndex && (
+                                          <div className="card-details">
+                                            <p>
+                                              Course Code: {courseOption.course_code}
+                                            </p>
+                                          </div>
+                                        )}
+                                      </div>
+                                    )
                                   )}
                                 </div>
-                              )
-                            )}
-                          </div>
+                              )}
+                            </div>
+                          ))
+                        ) : (
+                          <h1>No courses yet</h1>
                         )}
                       </div>
-                    ))
-                  ) : (
-                    <h1>No courses yet</h1>
+
+                      {DomainCourses.length > 0 ? (
+                        MainChartData.labels.length > 0 ? (
+                          <>
+                            {selectedOption && (
+                              <h3>
+                                Progress for {selectedOption.course_code} -{" "}
+                                {selectedOption.course_name}
+                              </h3>
+                            )}
+                            <div className="chart-grid">
+                              <div className="chart-container">
+                                <Pie data={MainChartData} />
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <h1>No progress yet</h1>
+                        )
+                      ) : null}
+                    </>
+                  )}
+                  {creationViewMode === "faculty" && (
+                    <>
+                      {facultyList.length > 0 &&
+                        facultyList.map((faculty, index) => (
+                          <div
+                            key={index}
+                            className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
+                              }`}
+                            onClick={async () => {
+                              setSelectedCard(faculty.uid);
+                              UpdateChart(faculty);
+                            }}
+                          >
+                            <h3>{faculty.name}</h3>
+                            {selectedCard === faculty.uid && (
+                              <div className="card-details">
+                                <p>Faculty ID: {faculty.uid}</p>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+
+                      {ChartData.length > 0 && <>
+                        <div className="chart-grid">
+                          <div className="chart-container">
+                            <Pie data={MainChartData} />
+                          </div>
+                        </div>
+                        <div className="sub-progress-section" style={{ width: "100vw" }}>
+                          {ChartData.map((chartData, index) => (
+                            <div key={index} className="sub-progress-chart">
+                              <h3>{chartData.datasets[0].label}</h3>
+                              <Pie data={chartData} />
+                            </div>
+                          ))}
+                        </div></>}
+                    </>
                   )}
                 </div>
+              </div>
+            </div>
+          </>
+        )
+      }
 
-                {DomainCourses.length > 0 ? (
-                  MainChartData.labels.length > 0 ? (
-                    <>
-                      {selectedOption && (
-                        <h3>
-                          Progress for {selectedOption.course_code} -{" "}
-                          {selectedOption.course_name}
-                        </h3>
-                      )}
-                      <div className="chart-grid">
-                        <div className="chart-container">
-                          <Pie data={MainChartData} />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <h1>No progress yet</h1>
-                  )
-                ) : null}
-              </>
-            )}
-            {creationViewMode === "faculty" && (
-              <>
-                {facultyList.length > 0 && 
-                  facultyList.map((faculty, index) => (
-                    <div
-                      key={index}
-                      className={`course-card ${
-                        selectedCard === faculty.uid ? "expanded" : ""
-                      }`}
-                      onClick={async () => {
-                        setSelectedCard(faculty.uid);
-                        UpdateChart(faculty);
-                      }}
-                    >
-                      <h3>{faculty.name}</h3>
-                      {selectedCard === faculty.uid && (
-                        <div className="card-details">
-                          <p>Faculty ID: {faculty.uid}</p>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-
-                  {ChartData.length>0 && <>
-                    <div className="chart-grid">
-                        <div className="chart-container">
-                          <Pie data={MainChartData} />
-                        </div>
-                      </div>
-                  <div className="sub-progress-section" style={{ width: "100vw" }}>
-                              {ChartData.map((chartData, index) => (
-                                <div key={index} className="sub-progress-chart">
-                                  <h3>{chartData.datasets[0].label}</h3>
-                                  <Pie data={chartData} />
-                                </div>
-                              ))}
-                            </div></>}
-              </>
-            )}
-          </div>
-          </div>
-          </div>
-        </>
-      )}
-
-      {overallView === "handling" && (
-        <>
-          <h1>Handling Section</h1>
-          <div className="handling-container">
-            <HandlingSupervisorDashboard />
-          </div>
-        </>
-      )}
-    </div>
+      {
+        overallView === "handling" && (
+          <>
+            <h1>Handling Section</h1>
+            <div className="handling-container">
+              <HandlingSupervisorDashboard />
+            </div>
+          </>
+        )
+      }
+    </div >
   );
 };
 
