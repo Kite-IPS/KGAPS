@@ -3,7 +3,8 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from "../../Handling/HandlingSidebar2/HandlingSidebar2.jsx";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationHodDashboard = () => {
@@ -46,6 +47,18 @@ const CreationHodDashboard = () => {
     };
 
     fetchData();
+  }, []);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const fetchChartData = async (selectedCourse) => {
@@ -191,9 +204,9 @@ const CreationHodDashboard = () => {
     4: "4th Year",
   };
   return (
-    <div className="dashboard-container" style={{ marginTop: "10vh" }}>
+    <div className="dashboard-container">
       <div className="dashboard-content">
-        <HandlingSidebar />
+      {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
         <h1>Department of {departmentMap[data.department_id]}</h1>
         <button 
           className="HFTbutton-1"

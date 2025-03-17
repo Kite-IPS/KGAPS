@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./HODDashboard.css";
 import axios from "axios";
-import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar";
+import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
 function HandlingHODDashboard() {
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
@@ -65,6 +66,19 @@ function HandlingHODDashboard() {
 
     fetchData();
   }, []);
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
@@ -290,8 +304,7 @@ function HandlingHODDashboard() {
 
   return (
     <>
-      <HandlingSidebar />
-
+      {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
       <div className="dashboard-container">
         <div className="dashboard-content">
           <h1 style={{ marginTop: "70px" }}>Head of department Dashboard</h1>

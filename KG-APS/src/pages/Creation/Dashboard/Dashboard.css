@@ -253,8 +253,6 @@
     font-size: 14px;
     color: #555;
   }
-  
- 
 
   .overall-progress-container {
     display: grid;
@@ -267,3 +265,9 @@
     grid-template-columns: repeat(1, 1fr);  /* Limit to exactly 5 columns */
     gap: 20px;  /* Spacing between items */
   }
+
+@media (min-width:1500px){
+  .dashboard-container{
+    margin-top: 10vh;
+  }
+}
