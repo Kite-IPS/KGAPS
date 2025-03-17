@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
@@ -7,6 +7,38 @@ import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationHodDashboard = () => {
+  const smoothScrollTo = (element, duration = 50) => {
+    const targetY = element.getBoundingClientRect().top + window.scrollY;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Smooth ease-out effect
+
+    const scrollStep = (currentTime) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1); // Cap progress at 1
+      const easeProgress = easeOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * easeProgress);
+
+      if (elapsedTime < duration) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  };
+  const scrollToCourseCard = () => {
+    if (courseSelectionRef.current) {
+      console.log("Scrolling to course selection section...");
+      smoothScrollTo(courseSelectionRef.current, 50); // Increase duration for smoother scrolling
+    } else {
+      console.log("courseSelectionRef is not available");
+    }
+  };
+  
+
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedCard, setSelectedCard] = useState(0);
   const [selectedYear, setSelectedYear] = useState(0);
@@ -14,6 +46,8 @@ const CreationHodDashboard = () => {
   const [creationViewMode, setCreationViewMode] = useState("course");
   const [facultyList, setFacultyList] = useState([]);
   const [ChartData, setChartsData] = useState([]);
+  const progressSectionRef = useRef(null);
+  const courseSelectionRef = useRef(null); // Reference for the course card section
   const [MainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
@@ -134,6 +168,7 @@ const CreationHodDashboard = () => {
   };
   const UpdateChart = async (option) => {
     console.log(option, creationViewMode);
+
     if (creationViewMode === "course") {
       await fetchChartData(option);
     }
@@ -141,7 +176,16 @@ const CreationHodDashboard = () => {
       console.log("getting faculty progress");
       await fetchData(option);
     }
+
+    // Ensure the DOM has updated before scrolling
+    setTimeout(() => {
+      if (progressSectionRef.current) {
+        smoothScrollTo(progressSectionRef.current, 50);
+      }
+    });
   };
+
+
 
   useEffect(() => {
     const fetchFaculty = async () => {
@@ -195,7 +239,7 @@ const CreationHodDashboard = () => {
       <div className="dashboard-content">
         <HandlingSidebar />
         <h1>Department of {departmentMap[data.department_id]}</h1>
-        <button 
+        <button
           className="HFTbutton-1"
           onClick={() => setCreationViewMode("course")}
         >
@@ -211,7 +255,7 @@ const CreationHodDashboard = () => {
 
           Select a course to view progress:
         </label>
-          <div style={{ marginLeft: "10px" }} className="cards-container">
+          <div style={{ marginLeft: "10px" }} className="cards-container" ref={courseSelectionRef}>
             {DomainCourses.map((yearOption, yearIndex) => (
               <div key={yearIndex} className="year-section">
                 <div
@@ -249,7 +293,7 @@ const CreationHodDashboard = () => {
               </div>
             ))}
           </div>
-          <h3>Progress</h3>
+          <h3 ref={progressSectionRef}>Progress</h3>
           {MainChartData.labels.length > 0 ? (
             <div className="chart-grid">
               <div className="chart-container">
@@ -261,7 +305,7 @@ const CreationHodDashboard = () => {
           )}{" "}</>}
         {creationViewMode === "faculty" && (
           <>
-            <p>Faculty view</p>
+            <p style={{margin:"10px"}} ref={courseSelectionRef}>Faculty view :</p>
             {facultyList.length > 0 &&
               facultyList.map((faculty, index) => (
                 <div
@@ -284,7 +328,7 @@ const CreationHodDashboard = () => {
 
             {ChartData.length > 0 && (
               <>
-                <div className="chart-grid">
+                <div className="chart-grid" ref={progressSectionRef}>
                   <div className="chart-container">
                     <Pie data={MainChartData} />
                   </div>
@@ -302,9 +346,12 @@ const CreationHodDashboard = () => {
           </>
         )}
       </div>
+      <button className="scroll-up-button" onClick={scrollToCourseCard}>
+        Back to Course
+      </button>
     </div>
-      );
-   
+  );
+
 };
 
 export default CreationHodDashboard;
