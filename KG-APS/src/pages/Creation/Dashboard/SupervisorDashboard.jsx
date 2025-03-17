@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
@@ -9,6 +9,36 @@ import HandlingSupervisorDashboard from "../../Handling/Dashboard/SupervisorDash
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationSupervisorDashboard = () => {
+  const smoothScrollTo = (element, duration = 50) => {
+    const targetY = element.getBoundingClientRect().top + window.scrollY;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Smooth ease-out effect
+
+    const scrollStep = (currentTime) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1); // Cap progress at 1
+      const easeProgress = easeOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * easeProgress);
+
+      if (elapsedTime < duration) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  };
+  const scrollToCourseCard = () => {
+    if (courseSelectionRef.current) {
+      console.log("Scrolling to course selection section...");
+      smoothScrollTo(courseSelectionRef.current, 50); // Increase duration for smoother scrolling
+    } else {
+      console.log("courseSelectionRef is not available");
+    }
+  };
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [overallView, setOverallView] = useState("creation");
   const [selectedCard, setSelectedCard] = useState(0);
@@ -20,6 +50,8 @@ const CreationSupervisorDashboard = () => {
   const [selectedOption, setSelectedOption] = useState({});
   const [DomainCourses, setDomainCourses] = useState([]);
   const [overallProgress, setOverallProgress] = useState([]);
+  const progressSectionRef = useRef(null);
+  const courseSelectionRef = useRef(null); // Reference for the course card section
   const [MainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
@@ -205,6 +237,12 @@ const CreationSupervisorDashboard = () => {
       console.log("getting faculty progress");
       await fetchData(option);
     }
+    // Ensure the DOM has updated before scrolling
+    setTimeout(() => {
+      if (progressSectionRef.current) {
+        smoothScrollTo(progressSectionRef.current, 50);
+      }
+    });
   };
 
   const departmentMap = {
@@ -368,7 +406,7 @@ const CreationSupervisorDashboard = () => {
             )
         )}
       </div>
-      <div className="super">
+      <div className="super" style={{ marginBottom: "-100px" }}>
         <button
           className="HFTbutton-1"
           onClick={() => setOverallView("creation")}
@@ -418,7 +456,7 @@ const CreationSupervisorDashboard = () => {
                       <label className="dropdown-label">
                         Select a course to view progress:
                       </label>
-                      <div className="cards-container">
+                      <div className="cards-container" ref={courseSelectionRef}>
                         {DomainCourses.length > 0 ? (
                           DomainCourses.map((yearOption, yearIndex) => (
                             <div key={yearIndex} className="year-section">
@@ -471,7 +509,7 @@ const CreationSupervisorDashboard = () => {
                         MainChartData.labels.length > 0 ? (
                           <>
                             {selectedOption && (
-                              <h3>
+                              <h3 ref={progressSectionRef}>
                                 Progress for {selectedOption.course_code} -{" "}
                                 {selectedOption.course_name}
                               </h3>
@@ -492,7 +530,7 @@ const CreationSupervisorDashboard = () => {
                     <>
                       {facultyList.length > 0 &&
                         facultyList.map((faculty, index) => (
-                          <div
+                          <div ref={progressSectionRef} 
                             key={index}
                             className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
                               }`}
@@ -503,8 +541,8 @@ const CreationSupervisorDashboard = () => {
                           >
                             <h3>{faculty.name}</h3>
                             {selectedCard === faculty.uid && (
-                              <div className="card-details">
-                                <p>Faculty ID: {faculty.uid}</p>
+                              <div className="card-details" >
+                                <p ref={courseSelectionRef}>Faculty ID: {faculty.uid}</p>
                               </div>
                             )}
                           </div>
@@ -543,6 +581,9 @@ const CreationSupervisorDashboard = () => {
           </>
         )
       }
+      <button className="scroll-up-button" onClick={scrollToCourseCard}>
+        Back to Course
+      </button>
     </div >
   );
 };
