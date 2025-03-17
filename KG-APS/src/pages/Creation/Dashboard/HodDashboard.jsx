@@ -191,11 +191,11 @@ const CreationHodDashboard = () => {
     4: "4th Year",
   };
   return (
-    <div className="dashboard-container" style={{ marginTop: "40px" }}>
+    <div className="dashboard-container" style={{ marginTop: "10vh" }}>
       <div className="dashboard-content">
         <HandlingSidebar />
         <h1>Department of {departmentMap[data.department_id]}</h1>
-        <button style={{ margin: "10px" }}
+        <button 
           className="HFTbutton-1"
           onClick={() => setCreationViewMode("course")}
         >

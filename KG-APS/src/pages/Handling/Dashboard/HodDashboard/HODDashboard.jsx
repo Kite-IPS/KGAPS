@@ -341,7 +341,7 @@ function HandlingHODDashboard() {
           <br></br>
           <div>
             <button
-              className="HFTbutton-1"
+              className="HFTbutton-1" style={{margin:" 0 10px "}}
               onClick={() => setViewMode("course")}
             >
               Course wise
@@ -353,7 +353,7 @@ function HandlingHODDashboard() {
               Class wise
             </button>
             <button
-              className="HFTbutton-2"
+              className="HFTbutton-2" style={{margin:" 0 10px"}}
               onClick={() => setViewMode("faculty")}
             >
               Faculty wise
