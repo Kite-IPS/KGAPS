@@ -143,7 +143,7 @@ const CreationDMDashboard = () => {
         <div className="dashboard-content">
           <div className="">
             <div className="course-selector" ref={courseSelectionRef}>
-              <h1 style={{ marginTop: "70px" }}>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
+              <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               <p className="HFTbutton-1">Course wise</p>
               {DomainCourses.length > 0 ? (
                 <>

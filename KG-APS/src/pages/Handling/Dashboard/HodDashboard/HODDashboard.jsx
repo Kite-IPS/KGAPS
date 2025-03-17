@@ -307,7 +307,7 @@ function HandlingHODDashboard() {
       {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
       <div className="dashboard-container">
         <div className="dashboard-content">
-          <h1 style={{ marginTop: "70px" }}>Head of department Dashboard</h1>
+          <h1>Head of department Dashboard</h1>
 
           {/* Overall Department Progress - Centered */}
           {departmentProgressOverall.length > 0 && (
