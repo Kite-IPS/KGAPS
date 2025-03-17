@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar";
+import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
+import HandlingSidebar2 from "../../Handling/HandlingSidebar2/HandlingSidebar2.jsx";
 import "./Dashboard.css";
 
 Chart.register(ArcElement, Tooltip, Legend);
@@ -26,7 +27,7 @@ const CreationDMDashboard = () => {
       if (elapsedTime < duration) {
         requestAnimationFrame(scrollStep);
       }
-    };
+    }; 
 
     requestAnimationFrame(scrollStep);
   };
@@ -35,6 +36,18 @@ const CreationDMDashboard = () => {
       smoothScrollTo(courseSelectionRef.current, 50); // Scroll back up
     }
   };
+
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedYear, setSelectedYear] = useState(0);
@@ -125,12 +138,12 @@ const CreationDMDashboard = () => {
   };
   return (
     <>
-      <HandlingSidebar className="custom-sidebar-class" />
+      {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
       <div className="dashboard-container">
         <div className="dashboard-content">
           <div className="">
             <div className="course-selector" ref={courseSelectionRef}>
-              <h1 style={{ marginTop: "70px" }}>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
+              <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               <p className="HFTbutton-1">Course wise</p>
               {DomainCourses.length > 0 ? (
                 <>
