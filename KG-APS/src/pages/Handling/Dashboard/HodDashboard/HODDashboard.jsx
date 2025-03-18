@@ -352,9 +352,9 @@ function HandlingHODDashboard() {
             </div>
           )}
           <br></br>
-          <div>
-            <button
-              className="HFTbutton-1" style={{margin:" 0 10px "}}
+          <div className="button-container">
+            <button 
+              className="HFTbutton-1"
               onClick={() => setViewMode("course")}
             >
               Course wise
@@ -366,242 +366,97 @@ function HandlingHODDashboard() {
               Class wise
             </button>
             <button
-              className="HFTbutton-2" style={{margin:" 0 10px"}}
+              className="HFTbutton-2"
               onClick={() => setViewMode("faculty")}
             >
               Faculty wise
             </button>
           </div>
 
-          {/* Class Section */}
-          {viewMode === "class" &&
-            (data.department_id === 6 ? (
-              <>
-                <div ref={progressSectionRef}>
-                  <div className="class-section-container">
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(111);
-                        fetchChartDataClass(111);
-                      }}
-                    >
-                      1st Year - CSE A
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(112);
-                        fetchChartDataClass(112);
-                      }}
-                    >
-                      1st Year - CSE B
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(211);
-                        fetchChartDataClass(211);
-                      }}
-                    >
-                      1st Year - AI&DS A
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(212);
-                        fetchChartDataClass(212);
-                      }}
-                    >
-                      1st Year - AI&DS B
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(311);
-                        fetchChartDataClass(311);
-                      }}
-                    >
-                      1st Year - ECE A
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(312);
-                        fetchChartDataClass(312);
-                      }}
-                    >
-                      1st Year - ECE B
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(411);
-                        fetchChartDataClass(411);
-                      }}
-                    >
-                      1st Year - CSBS
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(511);
-                        fetchChartDataClass(511);
-                      }}
-                    >
-                      1st Year - IT
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(711);
-                        fetchChartDataClass(711);
-                      }}
-                    >
-                      1st Year - MECH
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(811);
-                        fetchChartDataClass(811);
-                      }}
-                    >
-                      1st Year - CYS
-                    </button>
-                    <button
-                      className="class-section"
-                      onClick={() => {
-                        setSelectedOption(911);
-                        fetchChartDataClass(911);
-                      }}
-                    >
-                      1st Year - AI&ML
-                    </button>
-                  </div>
-                </div>
-              </>
-            ) : data.department_id === 1 ||
-              data.department_id === 2 ||
-              data.department_id === 3 ? (
-              <>
-                <div className="class-section-container">
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 11);
-                      fetchChartDataClass(data.department_id * 100 + 11);
-                    }}
-                  >
-                    1st Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 12);
-                      fetchChartDataClass(data.department_id * 100 + 12);
-                    }}
-                  >
-                    1st Year - {departmentMap[data.department_id]} B
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 21);
-                      fetchChartDataClass(data.department_id * 100 + 21);
-                    }}
-                  >
-                    2nd Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 22);
-                      fetchChartDataClass(data.department_id * 100 + 22);
-                    }}
-                  >
-                    2nd Year - {departmentMap[data.department_id]} B
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 31);
-                      fetchChartDataClass(data.department_id * 100 + 31);
-                    }}
-                  >
-                    3rd Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 32);
-                      fetchChartDataClass(data.department_id * 100 + 32);
-                    }}
-                  >
-                    3rd Year - {departmentMap[data.department_id]} B
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 41);
-                      fetchChartDataClass(data.department_id * 100 + 41);
-                    }}
-                  >
-                    4th Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 42);
-                      fetchChartDataClass(data.department_id * 100 + 42);
-                    }}
-                  >
-                    4th Year - {departmentMap[data.department_id]} B
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="class-section-container">
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 11);
-                      fetchChartDataClass(data.department_id * 100 + 11);
-                    }}
-                  >
-                    1st Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 21);
-                      fetchChartDataClass(data.department_id * 100 + 21);
-                    }}
-                  >
-                    2nd Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 31);
-                      fetchChartDataClass(data.department_id * 100 + 31);
-                    }}
-                  >
-                    3rd Year - {departmentMap[data.department_id]} A
-                  </button>
-                  <button
-                    className="class-section"
-                    onClick={() => {
-                      setSelectedOption(data.department_id * 100 + 41);
-                      fetchChartDataClass(data.department_id * 100 + 41);
-                    }}
-                  >
-                    4th Year - {departmentMap[data.department_id]} A
-                  </button>
-                </div>
-              </>
-            ))}
+          {viewMode === "class" && (
+            <div ref={progressSectionRef}>
+              <div className="class-section-container">
+                {data.department_id === 6 ? (
+                  // Science and Humanities department classes
+                  <>
+                    {[
+                      { id: 111, name: "1st Year - CSE A" },
+                      { id: 112, name: "1st Year - CSE B" },
+                      { id: 211, name: "1st Year - AI&DS A" },
+                      { id: 212, name: "1st Year - AI&DS B" },
+                      { id: 311, name: "1st Year - ECE A" },
+                      { id: 312, name: "1st Year - ECE B" },
+                      { id: 411, name: "1st Year - CSBS" },
+                      { id: 511, name: "1st Year - IT" },
+                      { id: 711, name: "1st Year - MECH" },
+                      { id: 811, name: "1st Year - CYS" },
+                      { id: 911, name: "1st Year - AI&ML" },
+                    ].map((classItem) => (
+                      <button
+                        key={classItem.id}
+                        className={`class-section ${selectedOption === classItem.id ? "selected" : ""}`}
+                        onClick={() => {
+                          setSelectedOption(classItem.id);
+                          fetchChartDataClass(classItem.id);
+                        }}
+                      >
+                        {classItem.name}
+                      </button>
+                    ))}
+                  </>
+                ) : data.department_id === 1 || data.department_id === 2 || data.department_id === 3 ? (
+                  // Departments with A & B sections
+                  <>
+                    {[
+                      { year: 1, section: "A" },
+                      { year: 1, section: "B" },
+                      { year: 2, section: "A" },
+                      { year: 2, section: "B" },
+                      { year: 3, section: "A" },
+                      { year: 3, section: "B" },
+                      { year: 4, section: "A" },
+                      { year: 4, section: "B" },
+                    ].map((classItem) => {
+                      const classId = data.department_id * 100 + classItem.year * 10 + (classItem.section === "A" ? 1 : 2);
+                      return (
+                        <button
+                          key={classId}
+                          className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                          onClick={() => {
+                            setSelectedOption(classId);
+                            fetchChartDataClass(classId);
+                          }}
+                        >
+                          {`${yearMap[classItem.year]} - ${departmentMap[data.department_id]} ${classItem.section}`}
+                        </button>
+                      );
+                    })}
+                  </>
+                ) : (
+                  // Other departments with only A section
+                  <>
+                    {[1, 2, 3, 4].map((year) => {
+                      const classId = data.department_id * 100 + year * 10 + 1;
+                      return (
+                        <button
+                          key={classId}
+                          className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                          onClick={() => {
+                            setSelectedOption(classId);
+                            fetchChartDataClass(classId);
+                          }}
+                        >
+                          {`${yearMap[year]} - ${departmentMap[data.department_id]} A`}
+                        </button>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+
+
 
           {/* Domain Courses */}
           {DomainCourses.length > 0 ? (
@@ -662,28 +517,31 @@ function HandlingHODDashboard() {
           ) : (
             <h1>No courses available</h1>
           )}
-          {viewMode === "faculty" && (
-            <>
-              {facultyList.length > 0 &&
-                facultyList.map((faculty, index) => (
-                  <div
-                    key={index}
-                    className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
-                      }`}
-                    onClick={async () => {
-                      setSelectedCard(faculty.uid);
-                      console.log(faculty);
-                      UpdateChart(faculty);
-                    }}
-                  >
-                    <h3>{faculty.name}</h3>
-                    {selectedCard === faculty.uid && (
-                      <div className="card-details">
-                        <p>Faculty ID: {faculty.uid}</p>
+              {viewMode === "faculty" && (
+                <div className="faculty-list-container">
+                  {facultyList.length > 0 ? (
+                    facultyList.map((faculty) => (
+                      <div
+                        key={faculty.uid}
+                        className={`faculty-card ${selectedCard === faculty.uid ? "selected" : ""}`}
+                        onClick={() => {
+                          setSelectedCard(faculty.uid);
+                          UpdateChart(faculty);
+                        }}
+                      >
+                        <h3>{faculty.name}</h3>
+                        {selectedCard === faculty.uid && (
+                          <div className="card-details">
+                            <p>Faculty ID: {faculty.uid}</p>
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                ))}
+                    ))
+                  ) : (
+                    <p>No faculty members found</p>
+                  )}
+                </div>
+              )}
               {viewMode === "topics" && courseDataOverall.length > 0 ? (
                 <>
                   <div ref={progressSectionRef}>
@@ -713,10 +571,8 @@ function HandlingHODDashboard() {
               ) : (
                 viewMode === "topics" && <h1>No progress!</h1>
               )}
-
-            </>
-          )}
-          <div>
+          {/* Content view mode buttons */}
+          <div className="content-view-buttons">
             <button
               className="HFTbutton-1"
               onClick={() => setContentViewMode("topics")}
@@ -780,61 +636,73 @@ function HandlingHODDashboard() {
                   </span>
                 )}
                 <div className="handlingfaculty-dashboard-card-container">
-                  {courseDataCurrent.map((item, i) => (
+                {courseDataCurrent.map((item, i) => (
                     <div className="handlingfaculty-dashboard-card" key={i}>
-                      <div className="handlingfaculty-dashboard-card-header">
-                        <p>
-                          {(viewMode === "course" || viewMode === "class") && (
-                            <span>
-                              Faculty - {item.uid} - {item.name}
-                            </span>
-                          )}{" "}
-                          {convertToClass(item.class_id)}
-                          {(viewMode === "class" || viewMode === "faculty") && (
-                            <p>
-                              {" "}
-                              Course - {item.course_code} - {item.course_name}
-                            </p>
-                          )}
-                        </p>
-
+                      <div className="faculty-info-header">
+                        {viewMode === "course" && (
+                          <>
+                            <div className="faculty-info-section">Faculty {item.uid}</div>
+                            <div className="faculty-info-section">{item.name}</div>
+                            <div className="faculty-info-section">{convertToClass1(item.class_id)}</div>
+                            <div className="faculty-info-section">{convertToClass2(item.class_id)}</div>
+                            <div className="faculty-info-section">{convertToClass3(item.class_id)}</div>
+                          </>
+                        )}
+                        {viewMode === "class" && (
+                          <>
+                            <div className="faculty-info-section">Faculty {item.uid}</div>
+                            <div className="faculty-info-section">{item.name}</div>
+                            <div className="faculty-info-section">{item.course_code}</div>
+                            <div className="faculty-info-section">{item.course_name}</div>
+                          </>
+                        )}
+                        {viewMode === "faculty" && (
+                          <>
+                            <div className="faculty-info-section">{item.course_code}</div>
+                            <div className="faculty-info-section">{item.course_name}</div>
+                            <div className="faculty-info-section">{convertToClass1(item.class_id)}</div>
+                            <div className="faculty-info-section">{convertToClass2(item.class_id)}</div>
+                            <div className="faculty-info-section">{convertToClass3(item.class_id)}</div>
+                          </>
+                        )}
                       </div>
 
                       <div className="handlingfaculty-dashboard-card-content">
-                        <p>
-                          Hours Completed: {item.completed_hours} /{" "}
-                          {item.total_hours}
-                        </p>
+                        {/* Hours Completed */}
+                        <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                         <div className="handlingfaculty-dashboard-progressbar-horizontal">
                           <div
                             style={{
-                              width: `${value(
-                                item.completed_hours,
-                                item.total_hours
-                              ).toFixed(2)}%`,
-                              backgroundColor: item.bar_color,
+                              width: `${value(item.completed_hours, item.total_hours).toFixed(2)}%`,
+                              backgroundColor: item.completed_hours < item.total_hours ? '#1a8754' : 
+                                              item.completed_hours > item.total_hours ? '#dc3545' : '#0d6efd',
                             }}
                           />
                         </div>
-                        <p>
-                          Topics Completed: {courseDataOverall[i].count}/
-                          {courseDataOverall[i].total_count}
-                        </p>
+
+                        {/* Topics Completed */}
+                        <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
                         <div className="handlingfaculty-dashboard-progressbar-horizontal">
                           <div
                             style={{
-                              width: `${(
-                                (courseDataOverall[i].count /
-                                  courseDataOverall[i].total_count) *
-                                100
-                              ).toFixed(2)}%`,
-                              backgroundColor: "green",
+                              width: `${((courseDataOverall[i].count / courseDataOverall[i].total_count) * 100).toFixed(2)}%`,
+                              backgroundColor: '#1a8754',
                             }}
                           />
                         </div>
-                        <div className="handlingfaculty-dashboard-colorcomment">
-                          {renderColorComment(item.bar_color)}
-                        </div>
+
+                        {/* Status */}
+                        <p className="progress-status">
+                          {item.completed_hours < item.total_hours ? (
+                            <span className="status-ahead">Ahead of time</span>
+                          ) : item.completed_hours > item.total_hours ? (
+                            <span className="status-delayed">Delayed</span>
+                          ) : item.completed_hours === 0 && item.total_hours === 0 ? (
+                            <span className="status-notstarted">Not yet started</span>
+                          ) : (
+                            <span className="status-ontime">On time</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   ))}
