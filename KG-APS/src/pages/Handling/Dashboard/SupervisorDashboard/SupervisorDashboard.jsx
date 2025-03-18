@@ -1,9 +1,39 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./SupervisorDashboard.css";
 import axios from "axios";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar";
 
 function HandlingSupervisorDashboard() {
+  const smoothScrollTo = (element, duration = 50) => {
+    const targetY = element.getBoundingClientRect().top + window.scrollY;
+    const startY = window.scrollY;
+    const distance = targetY - startY;
+    const startTime = performance.now();
+
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Smooth ease-out effect
+
+    const scrollStep = (currentTime) => {
+      const elapsedTime = currentTime - startTime;
+      const progress = Math.min(elapsedTime / duration, 1); // Cap progress at 1
+      const easeProgress = easeOutCubic(progress);
+
+      window.scrollTo(0, startY + distance * easeProgress);
+
+      if (elapsedTime < duration) {
+        requestAnimationFrame(scrollStep);
+      }
+    };
+
+    requestAnimationFrame(scrollStep);
+  };
+  const scrollToCourseCard = () => {
+    if (courseSelectionRef.current) {
+      console.log("Scrolling to course selection section...");
+      smoothScrollTo(courseSelectionRef.current, 50); // Increase duration for smoother scrolling
+    } else {
+      console.log("courseSelectionRef is not available");
+    }
+  };
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
   const [facultyList, setFacultyList] = useState([]);
@@ -22,6 +52,8 @@ function HandlingSupervisorDashboard() {
   const [DomainCourses, setDomainCourses] = useState([]);
   const [selectedCard, setSelectedCard] = useState(0);
   const [viewMode, setViewMode] = useState("course");
+  const progressSectionRef = useRef(null);
+  const courseSelectionRef = useRef(null); // Reference for the course card section
   const [contentViewMode, setContentViewMode] = useState("topics");
   const value = (current, total) => {
     if (total === 0 || current === 0 || current > total) {
@@ -153,8 +185,14 @@ function HandlingSupervisorDashboard() {
     } else {
       await fetchChartDataClass(option);
     }
+    // Ensure the DOM has updated before scrolling
+    setTimeout(() => {
+      if (progressSectionRef.current) {
+        smoothScrollTo(progressSectionRef.current, 50);
+      }
+    });
   };
-  
+
   useEffect(() => {
     const resetData = () => {
       setCourseDataCurrent([]);
@@ -163,7 +201,7 @@ function HandlingSupervisorDashboard() {
       setResultsData([]);
     };
     resetData();
-  },[viewMode,department_id]);
+  }, [viewMode, department_id]);
 
   const renderColorComment = (barColor) => {
     switch (barColor) {
@@ -275,7 +313,7 @@ function HandlingSupervisorDashboard() {
               </select>
             </div>
             {departmentProgressOverall.length > 0 && (
-              <div className="handlingfaculty-dashboard-aggregate">
+              <div className="handlingfaculty-dashboard-aggregate" ref={progressSectionRef}>
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
                     Overall Department Progress:
@@ -313,16 +351,16 @@ function HandlingSupervisorDashboard() {
                     {departmentProgressCurrent[0].completed_hours -
                       departmentProgressCurrent[0].total_hours <
                       0 && (
-                      <span style={{ color: "lightgreen" }}>Ahead of time</span>
-                    )}
+                        <span style={{ color: "lightgreen" }}>Ahead of time</span>
+                      )}
                     {!departmentProgressCurrent[0].completed_hours == null &&
                       departmentProgressCurrent[0].completed_hours -
-                        departmentProgressCurrent[0].total_hours ===
-                        0 && <span style={{ color: "green" }}>On time</span>}
+                      departmentProgressCurrent[0].total_hours ===
+                      0 && <span style={{ color: "green" }}>On time</span>}
                     {departmentProgressCurrent[0].completed_hours == null &&
                       departmentProgressCurrent[0].completed_hours -
-                        departmentProgressCurrent[0].total_hours ===
-                        0 && (
+                      departmentProgressCurrent[0].total_hours ===
+                      0 && (
                         <span style={{ color: "black" }}>Not yet started</span>
                       )}
                   </p>
@@ -352,7 +390,7 @@ function HandlingSupervisorDashboard() {
                 (department_id == 6 ? (
                   <>
                     <div className="cards-container">
-                      <div>
+                      <div ref={courseSelectionRef}>
                         <button
                           className="class-section"
                           onClick={() => {
@@ -599,13 +637,12 @@ function HandlingSupervisorDashboard() {
                     <label className="dropdown-label">
                       Select a course to view progress:
                     </label>
-                    <div className="cards-container">
+                    <div className="cards-container" ref={courseSelectionRef}>
                       {DomainCourses.map((yearOption, yearIndex) => (
                         <div key={yearIndex} className="year-section">
                           <div
-                            className={`year-card ${
-                              selectedYear === yearIndex ? "expanded" : ""
-                            }`}
+                            className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
+                              }`}
                             onClick={async () => {
                               setSelectedYear(yearIndex);
                               setSelectedCard(0);
@@ -619,11 +656,10 @@ function HandlingSupervisorDashboard() {
                                 (courseOption, courseIndex) => (
                                   <div
                                     key={courseIndex}
-                                    className={`course-card ${
-                                      selectedCard === courseIndex
-                                        ? "expanded"
-                                        : ""
-                                    }`}
+                                    className={`course-card ${selectedCard === courseIndex
+                                      ? "expanded"
+                                      : ""
+                                      }`}
                                     onClick={async () => {
                                       setSelectedCard(courseIndex);
                                       UpdateChart(courseOption);
@@ -657,11 +693,10 @@ function HandlingSupervisorDashboard() {
                 <>
                   {facultyList.length > 0 &&
                     facultyList.map((faculty, index) => (
-                      <div
+                      <div ref={courseSelectionRef}
                         key={index}
-                        className={`course-card ${
-                          selectedCard === faculty.uid ? "expanded" : ""
-                        }`}
+                        className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
+                          }`}
                         onClick={async () => {
                           setSelectedCard(faculty.uid);
                           console.log(faculty);
@@ -678,7 +713,7 @@ function HandlingSupervisorDashboard() {
                     ))}
                   {viewMode === "topics" && courseDataOverall.length > 0 ? (
                     <>
-                      <div className="handlingfaculty-dashboard-aggregate">
+                      <div className="handlingfaculty-dashboard-aggregate" ref={progressSectionRef}>
                         <p>Aggregate Progress</p>
                         <div className="handlingfaculty-dashboard-aggregate-content">
                           <p>
@@ -727,8 +762,8 @@ function HandlingSupervisorDashboard() {
             </button>
           </div>
           {contentViewMode === "topics" &&
-          courseDataOverall.length > 0 &&
-          courseDataCurrent.length > 0 ? (
+            courseDataOverall.length > 0 &&
+            courseDataCurrent.length > 0 ? (
             <>
               {viewMode === "course" && (
                 <h1>
@@ -738,10 +773,10 @@ function HandlingSupervisorDashboard() {
                     courseDataOverall[0].course_name}
                 </h1>
               )}
-              <div className="handlingfaculty-dashboard-aggregate">
-                <p>Aggregate Progress</p>
+              <div className="handlingfaculty-dashboard-aggregate" ref={progressSectionRef}>
+                <p ref={progressSectionRef}>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
-                  <p>
+                  <p ref={progressSectionRef}>
                     Overall Progress:{" "}
                     {(aggregateData()[0].topic_count * 100).toFixed(0)}%
                   </p>
@@ -767,7 +802,7 @@ function HandlingSupervisorDashboard() {
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
                     <div className="handlingfaculty-dashboard-card-header">
-                      <p>
+                      <p ref={progressSectionRef}>
                         {(viewMode === "course" || viewMode === "class") && (
                           <span>
                             Faculty - {item.uid} - {item.name}
@@ -898,6 +933,9 @@ function HandlingSupervisorDashboard() {
             contentViewMode === "results" && <h1>No Results!</h1>
           )}
         </div>
+        <button className="scroll-up-button" onClick={scrollToCourseCard}>
+          Back to Course
+        </button>
       </div>
     </>
   );
