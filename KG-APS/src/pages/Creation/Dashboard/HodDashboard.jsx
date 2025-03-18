@@ -309,7 +309,7 @@ const CreationHodDashboard = () => {
           <h3 ref={progressSectionRef}>Progress</h3>
           {MainChartData.labels.length > 0 ? (
             <div className="chart-grid">
-              <div className="chart-container">
+              <div className="chart-container" style={{paddingBottom:"40px"}}>
                 <Pie data={MainChartData} />
               </div>
             </div>

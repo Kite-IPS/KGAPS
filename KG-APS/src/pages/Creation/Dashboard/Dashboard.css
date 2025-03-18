@@ -3,7 +3,7 @@
     display: flex;
     overflow: hidden;
     /* background-color: #f0f4f8;  */
-    margin-left: -15vw;
+    margin-left: -20vw;
   }
   
   .dashboard-content {
@@ -107,6 +107,7 @@
   .chart-container {
     background-color: white;
     padding: 20px;
+    margin-bottom: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -238,7 +239,7 @@
   }
   
   .course-card.expanded {
-    transform: scale(1.05);
+    /* transform: scale(1.05); */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     background-color: #f9f9ff;
   }

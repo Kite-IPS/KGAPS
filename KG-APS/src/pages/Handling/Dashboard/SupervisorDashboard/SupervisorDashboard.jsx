@@ -275,7 +275,7 @@ function HandlingSupervisorDashboard() {
               </select>
             </div>
             {departmentProgressOverall.length > 0 && (
-              <div className="handlingfaculty-dashboard-aggregate">
+              <div className="handlingfaculty-dashboard-aggregate" style={{ width:'90%' }}>
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
                     Overall Department Progress:
@@ -678,7 +678,7 @@ function HandlingSupervisorDashboard() {
                     ))}
                   {viewMode === "topics" && courseDataOverall.length > 0 ? (
                     <>
-                      <div className="handlingfaculty-dashboard-aggregate">
+                      <div className="handlingfaculty-dashboard-aggregate" style={{ width:'90%' }}>
                         <p>Aggregate Progress</p>
                         <div className="handlingfaculty-dashboard-aggregate-content">
                           <p>
@@ -738,7 +738,7 @@ function HandlingSupervisorDashboard() {
                     courseDataOverall[0].course_name}
                 </h1>
               )}
-              <div className="handlingfaculty-dashboard-aggregate">
+              <div className="handlingfaculty-dashboard-aggregate" style={{ width:'90%' }}>
                 <p>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
                   <p>
