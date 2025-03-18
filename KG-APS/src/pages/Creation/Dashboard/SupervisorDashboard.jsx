@@ -406,7 +406,7 @@ const CreationSupervisorDashboard = () => {
             )
         )}
       </div>
-      <div className="super" style={{ marginBottom: "-100px" }}>
+      <div className="super">
         <button
           className="HFTbutton-1"
           onClick={() => setOverallView("creation")}
@@ -423,11 +423,11 @@ const CreationSupervisorDashboard = () => {
       {
         overallView === "creation" && (
           <>
-
+          <h1>Creation Section</h1>
             <div className="dashboard-container">
               <div className="dashboard-content">
 
-                <h1>Creation Section</h1>
+                <h1>Supervisor Dashboard</h1>
                 <div className="course-selector">
                   <button
                     className="HFTbutton-1"
