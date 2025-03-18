@@ -78,7 +78,28 @@
   width: 100%;
   padding: 10px;
   box-sizing: border-box;
-  margin-left: 0px; /* Adjust the value for how much you want it to move left */
+  max-height: 400px; 
+  overflow-y: auto; 
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.courses-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.courses-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.courses-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.courses-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 /* Styles for year cards */
@@ -112,7 +133,7 @@
   background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
-
+  padding: 15px;
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -122,11 +143,13 @@
 .course-card:hover {
   background-color: #f4f4f4;
   transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
 }
 
 .course-card.expanded {
   background-color: #e9f7fe;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid #007bff;
 }
 
 /* Details inside the expanded course card */
@@ -136,7 +159,7 @@
   color: #555;
 }
 
-/* Individual class section styles */
+/* Class-wise Section */
 .class-section-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -147,6 +170,7 @@
   box-sizing: border-box;
 }
 
+/* Class section styles - improved selected state */
 .class-section {
   padding: 15px;
   background-color: #007bff;
@@ -157,15 +181,307 @@
   font-size: 14px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
 }
 
 .class-section:hover {
   background-color: #0056b3;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.class-section.selected {
+  background-color: #0056b3;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  border: 2px solid #003d80;
+}
+
+.class-section.selected::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Centering the buttons */
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+/* Centering the content view mode buttons */
+.content-view-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px; /* Space between buttons */
+  margin-top: 20px;
+}
+
+/* Faculty list container - improved layout */
+.faculty-list-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 1000px;
+  padding: 10px;
+  box-sizing: border-box;
+  max-height: 500px; /* Set a maximum height */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.faculty-list-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.faculty-list-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.faculty-list-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.faculty-list-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Faculty card styles - improved design */
+.faculty-card {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.faculty-card:hover {
+  background-color: #f4f4f4;
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.faculty-card.selected {
+  background-color: #e9f7fe;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  border: 2px solid #007bff;
+}
+
+/* Subtle hover effect for faculty cards */
+.faculty-card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.faculty-card:hover::after {
+  opacity: 1;
+}
+
+.year-card:hover, .course-card:hover, .class-section:hover, .faculty-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Card container */
+.handlingfaculty-dashboard-card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 25px;
+  margin: 20px auto;
+  width: 100%;
+  padding: 15px;
+  box-sizing: border-box;
+  max-height: 80vh; /* Taller container for more content visibility */
+  overflow-y: auto; /* Vertical scrolling */
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+/* Scrollbar styling for card container */
+.handlingfaculty-dashboard-card-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.handlingfaculty-dashboard-card-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.handlingfaculty-dashboard-card-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.handlingfaculty-dashboard-card-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Ensure cards do not overlap */
+.handlingfaculty-dashboard-card {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  min-height: 200px; /* Set a minimum height for consistency */
+  box-sizing: border-box; /* Include padding in width calculation */
+  height: fit-content; /* Allow height to adjust to content */
+  break-inside: avoid; /* Prevent cards from breaking across columns */
+}
+
+/* Card header */
+.handlingfaculty-dashboard-card-header {
+  display: flex;
+  padding: 15px;
+  background-color: #fff8eb;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.handlingfaculty-dashboard-card-header p {
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.handlingfaculty-dashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Card header */
+.handlingfaculty-dashboard-card-header {
+  display: flex;
+  padding: 15px;
+  background-color: #fff8eb;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.handlingfaculty-dashboard-card-header p {
+  margin: 0;
+  font-weight: 500;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+/* Card content */
+.handlingfaculty-dashboard-card-content {
+  padding: 15px;
+  flex-grow: 1; /* Allow content to grow and fill remaining space */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Space out content evenly */
+}
+
+
+/* Progress bar styles */
+.handlingfaculty-dashboard-progressbar-horizontal {
+  width: 100%;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  height: 10px;
+  margin: 10px 0 15px;
+  overflow: hidden;
+}
+
+.handlingfaculty-dashboard-progressbar-horizontal > div {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* Status colors */
+.status-ahead {
+  color: #1a8754;
+}
+
+.status-delayed {
+  color: #dc3545;
+}
+
+.status-ontime {
+  color: #0d6efd;
+}
+
+.status-notstarted {
+  color: #000;
+}
+
+/* Faculty info header */
+.faculty-info-header {
+  display: flex;
+  background-color: #fff8eb;
+  padding: 15px;
+  border-radius: 8px 8px 0 0;
+  margin-bottom: 0;
+  font-weight: bold;
+  flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.faculty-info-section {
+  padding: 0 15px;
+  border-right: 2px solid #fd7e14;
+  display: flex;
+  align-items: center;
+}
+
+.faculty-info-section:last-child {
+  border-right: none;
+}
+
+/* Progress status */
+.progress-status {
+  font-weight: 500;
+  margin-top: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .faculty-list-container {
+    grid-template-columns: 1fr; 
+    max-height: 400px; 
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .faculty-list-container {
+    grid-template-columns: repeat(2, 1fr); 
+  }
 }
 
 /* Responsive Design */
@@ -181,6 +497,20 @@
     grid-template-columns: 1fr;
   }
 
+  @media (max-width: 768px) {
+    .courses-container {
+      grid-template-columns: 1fr; /* Single column for mobile */
+      max-height: 350px; /* Adjust height for mobile */
+    }
+  }
+  
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .courses-container {
+      grid-template-columns: repeat(2, 1fr); /* Two columns for tablets */
+    }
+  }
+  
+
   .dashboard-content {
     padding: 10px;
   }
@@ -189,5 +519,22 @@
   .course-card {
     font-size: 14px;
     padding: 10px;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .handlingfaculty-dashboard-card-container {
+    grid-template-columns: 1fr; /* Single column for mobile */
+  }
+
+  .handlingfaculty-dashboard-card {
+    min-height: auto; /* Allow cards to adjust height on mobile */
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .handlingfaculty-dashboard-card-container {
+    grid-template-columns: repeat(2, 1fr); /* Two columns for tablets */
   }
 }
