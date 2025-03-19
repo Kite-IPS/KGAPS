@@ -146,7 +146,7 @@ const CreationSupervisorTable = () => {
   return (
     <div className="HFTgrid-container" style={{ display: 'flex' }}>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-      <div>
+      <div style={{display:"flex",height:"50%"}}>
         <button className="HFTbutton-1" onClick={()=>setOverallView("creation")}>Creation</button>
         <button className="HFTbutton-1" onClick={()=>setOverallView("handling")}>Handling</button>
       </div>
