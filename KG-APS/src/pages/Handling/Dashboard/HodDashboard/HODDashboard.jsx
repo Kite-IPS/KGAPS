@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./HODDashboard.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
@@ -353,7 +355,7 @@ function HandlingHODDashboard() {
           )}
           <br></br>
           <div className="button-container">
-            <button 
+            <button
               className="HFTbutton-1"
               onClick={() => setViewMode("course")}
             >
@@ -374,8 +376,8 @@ function HandlingHODDashboard() {
           </div>
 
           {viewMode === "class" && (
-            <div ref={progressSectionRef}>
-              <div className="class-section-container">
+            <div>
+              <div className="class-section-container" ref={courseSelectionRef}>
                 {data.department_id === 6 ? (
                   // Science and Humanities department classes
                   <>
@@ -517,60 +519,60 @@ function HandlingHODDashboard() {
           ) : (
             <h1>No courses available</h1>
           )}
-              {viewMode === "faculty" && (
-                <div className="faculty-list-container">
-                  {facultyList.length > 0 ? (
-                    facultyList.map((faculty) => (
-                      <div
-                        key={faculty.uid}
-                        className={`faculty-card ${selectedCard === faculty.uid ? "selected" : ""}`}
-                        onClick={() => {
-                          setSelectedCard(faculty.uid);
-                          UpdateChart(faculty);
-                        }}
-                      >
-                        <h3>{faculty.name}</h3>
-                        {selectedCard === faculty.uid && (
-                          <div className="card-details">
-                            <p>Faculty ID: {faculty.uid}</p>
-                          </div>
-                        )}
+          {viewMode === "faculty" && (
+            <div className="faculty-list-container" ref={courseSelectionRef}>
+              {facultyList.length > 0 ? (
+                facultyList.map((faculty) => (
+                  <div
+                    key={faculty.uid}
+                    className={`faculty-card ${selectedCard === faculty.uid ? "selected" : ""}`}
+                    onClick={() => {
+                      setSelectedCard(faculty.uid);
+                      UpdateChart(faculty);
+                    }}
+                  >
+                    <h3>{faculty.name}</h3>
+                    {selectedCard === faculty.uid && (
+                      <div className="card-details">
+                        <p>Faculty ID: {faculty.uid}</p>
                       </div>
-                    ))
-                  ) : (
-                    <p>No faculty members found</p>
-                  )}
-                </div>
-              )}
-              {viewMode === "topics" && courseDataOverall.length > 0 ? (
-                <>
-                  <div ref={progressSectionRef}>
-                    <div className="handlingfaculty-dashboard-aggregate">
-                      <p>Aggregate Progress</p>
-                      <div className="handlingfaculty-dashboard-aggregate-content">
-                        <p>
-                          Overall Progress:{" "}
-                          {(aggregateData()[0].topic_count * 100).toFixed(0)}%
-                        </p>
-                        <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                          <div
-                            style={{
-                              width: `${(
-                                aggregateData()[0].topic_count * 100
-                              ).toFixed(2)}%`,
-                              backgroundColor: "purple",
-                            }}
-                          />
-                        </div>
-                        <p>Average Status: {aggregateData()[0].comment}</p>
-                      </div>
-                    </div>
+                    )}
                   </div>
-                  <br />
-                </>
+                ))
               ) : (
-                viewMode === "topics" && <h1>No progress!</h1>
+                <p>No faculty members found</p>
               )}
+            </div>
+          )}
+          {viewMode === "topics" && courseDataOverall.length > 0 ? (
+            <>
+              <div>
+                <div className="handlingfaculty-dashboard-aggregate">
+                  <p>Aggregate Progress</p>
+                  <div className="handlingfaculty-dashboard-aggregate-content">
+                    <p>
+                      Overall Progress:{" "}
+                      {(aggregateData()[0].topic_count * 100).toFixed(0)}%
+                    </p>
+                    <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                      <div
+                        style={{
+                          width: `${(
+                            aggregateData()[0].topic_count * 100
+                          ).toFixed(2)}%`,
+                          backgroundColor: "purple",
+                        }}
+                      />
+                    </div>
+                    <p>Average Status: {aggregateData()[0].comment}</p>
+                  </div>
+                </div>
+              </div>
+              <br />
+            </>
+          ) : (
+            viewMode === "topics" && <h1>No progress!</h1>
+          )}
           {/* Content view mode buttons */}
           <div className="content-view-buttons">
             <button
@@ -608,7 +610,7 @@ function HandlingHODDashboard() {
                     courseDataOverall[0].course_name}
                 </h1>
               )}
-              <div ref={progressSectionRef}>
+              <div>
                 <div className="handlingfaculty-dashboard-aggregate">
                   <p>Aggregate Progress</p>
                   <div className="handlingfaculty-dashboard-aggregate-content">
@@ -636,7 +638,7 @@ function HandlingHODDashboard() {
                   </span>
                 )}
                 <div className="handlingfaculty-dashboard-card-container">
-                {courseDataCurrent.map((item, i) => (
+                  {courseDataCurrent.map((item, i) => (
                     <div className="handlingfaculty-dashboard-card" key={i}>
                       <div className="faculty-info-header">
                         {viewMode === "course" && (
@@ -667,15 +669,15 @@ function HandlingHODDashboard() {
                         )}
                       </div>
 
-                      <div className="handlingfaculty-dashboard-card-content">
+                      <div className="handlingfaculty-dashboard-card-content" ref={progressSectionRef}>
                         {/* Hours Completed */}
                         <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                         <div className="handlingfaculty-dashboard-progressbar-horizontal">
                           <div
                             style={{
                               width: `${value(item.completed_hours, item.total_hours).toFixed(2)}%`,
-                              backgroundColor: item.completed_hours < item.total_hours ? '#1a8754' : 
-                                              item.completed_hours > item.total_hours ? '#dc3545' : '#0d6efd',
+                              backgroundColor: item.completed_hours < item.total_hours ? '#1a8754' :
+                                item.completed_hours > item.total_hours ? '#dc3545' : '#0d6efd',
                             }}
                           />
                         </div>
@@ -791,7 +793,7 @@ function HandlingHODDashboard() {
           )}
         </div>
         <button className="scroll-up-button" onClick={scrollToCourseCard}>
-          Back to Course
+          <FontAwesomeIcon icon={faCaretUp} />
         </button>
       </div>
     </>
