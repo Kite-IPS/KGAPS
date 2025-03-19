@@ -299,6 +299,9 @@ function HandlingDMDashboard() {
               Results
             </button>
           </p>
+          <br></br>
+          <hr></hr>
+          <br></br>
           <h1 ref={progressSectionRef}>
             Course {selectedOption.course_code + " - " + selectedOption.course_name}
           </h1>
