@@ -99,3 +99,29 @@
       padding: 10px;
   }
 }
+
+
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr); /* 2 columns */
+  gap: 10px; /* Space between buttons */
+  padding: 10px;
+}
+
+.class-section {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.class-section:hover {
+  background-color: #0056b3;
+}
+
+.class-section.selected {
+  background-color: #28a745;
+}

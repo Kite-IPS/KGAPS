@@ -427,7 +427,7 @@ const CreationSupervisorDashboard = () => {
               <div className="dashboard-content">
 
                 <h1>Supervisor Dashboard</h1>
-                <div className="course-selector">
+                <div className="course-selector ">
                   <button
                     className="HFTbutton-1"
                     onClick={() => setCreationViewMode("course")}

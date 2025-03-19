@@ -379,7 +379,7 @@ function HandlingHODDashboard() {
                 {data.department_id === 6 ? (
                   // Science and Humanities department classes
                   <>
-                    {[
+                    {[ 
                       { id: 111, name: "1st Year - CSE A" },
                       { id: 112, name: "1st Year - CSE B" },
                       { id: 211, name: "1st Year - AI&DS A" },

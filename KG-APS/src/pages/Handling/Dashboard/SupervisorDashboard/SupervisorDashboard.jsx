@@ -386,250 +386,83 @@ function HandlingSupervisorDashboard() {
               >
                 Faculty wise
               </button>
-              {viewMode === "class" &&
-                (department_id == 6 ? (
-                  <>
-                    <div className="cards-container">
-                      <div ref={courseSelectionRef}>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(111);
-                            fetchChartDataClass(111);
-                          }}
-                        >
-                          1st Year - CSE A
-                        </button>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(112);
-                            fetchChartDataClass(112);
-                          }}
-                        >
-                          1st Year - CSE B
-                        </button>
-                      </div>
-                      <div>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(211);
-                            fetchChartDataClass(211);
-                          }}
-                        >
-                          1st Year - AI&DS A
-                        </button>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(212);
-                            fetchChartDataClass(212);
-                          }}
-                        >
-                          1st Year - AI&DS B
-                        </button>
-                      </div>
-                      <div>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(311);
-                            fetchChartDataClass(311);
-                          }}
-                        >
-                          1st Year - ECE A
-                        </button>
-                        <button
-                          className="class-section"
-                          onClick={() => {
-                            setSelectedOption(312);
-                            fetchChartDataClass(312);
-                          }}
-                        >
-                          1st Year - ECE B
-                        </button>
-                      </div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(411);
-                          fetchChartDataClass(411);
-                        }}
-                      >
-                        1st Year - CSBS
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(511);
-                          fetchChartDataClass(511);
-                        }}
-                      >
-                        1st Year - IT
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(711);
-                          fetchChartDataClass(711);
-                        }}
-                      >
-                        1st Year - MECH
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(811);
-                          fetchChartDataClass(811);
-                        }}
-                      >
-                        1st Year - CYS
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(911);
-                          fetchChartDataClass(911);
-                        }}
-                      >
-                        1st Year - AI&ML
-                      </button>
-                    </div>
-                  </>
-                ) : department_id == 1 ||
-                  department_id == 2 ||
-                  department_id == 3 ? (
-                  <>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 11);
-                          fetchChartDataClass(department_id * 100 + 11);
-                        }}
-                      >
-                        1st Year - {departmentMap[department_id]} A
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 12);
-                          fetchChartDataClass(department_id * 100 + 12);
-                        }}
-                      >
-                        1st Year - {departmentMap[department_id]} B
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 21);
-                          fetchChartDataClass(department_id * 100 + 21);
-                        }}
-                      >
-                        2nd Year - {departmentMap[department_id]} A
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 22);
-                          fetchChartDataClass(department_id * 100 + 22);
-                        }}
-                      >
-                        2nd Year - {departmentMap[department_id]} B
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 31);
-                          fetchChartDataClass(department_id * 100 + 31);
-                        }}
-                      >
-                        3rd Year - {departmentMap[department_id]} A
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 32);
-                          fetchChartDataClass(department_id * 100 + 32);
-                        }}
-                      >
-                        3rd Year - {departmentMap[department_id]} B
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 41);
-                          fetchChartDataClass(department_id * 100 + 41);
-                        }}
-                      >
-                        4th Year - {departmentMap[department_id]} A
-                      </button>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 42);
-                          fetchChartDataClass(department_id * 100 + 42);
-                        }}
-                      >
-                        4th Year - {departmentMap[department_id]} B
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 11);
-                          fetchChartDataClass(department_id * 100 + 11);
-                        }}
-                      >
-                        1st Year - {departmentMap[department_id]} A
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 21);
-                          fetchChartDataClass(department_id * 100 + 21);
-                        }}
-                      >
-                        2nd Year - {departmentMap[department_id]} A
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 31);
-                          fetchChartDataClass(department_id * 100 + 31);
-                        }}
-                      >
-                        3rd Year - {departmentMap[department_id]} A
-                      </button>
-                    </div>
-                    <div>
-                      <button
-                        className="class-section"
-                        onClick={() => {
-                          setSelectedOption(department_id * 100 + 41);
-                          fetchChartDataClass(department_id * 100 + 41);
-                        }}
-                      >
-                        4th Year - {departmentMap[department_id]} A
-                      </button>
-                    </div>
-                  </>
-                ))}
+              {viewMode === "class" && (
+  <div ref={progressSectionRef}>
+    <div className="class-section-container">
+      {department_id === 6 ? (
+        // Science and Humanities department classes
+        <div className="grid-container">
+          {[
+            { id: 111, name: "1st Year - CSE A" },
+            { id: 112, name: "1st Year - CSE B" },
+            { id: 211, name: "1st Year - AI&DS A" },
+            { id: 212, name: "1st Year - AI&DS B" },
+            { id: 311, name: "1st Year - ECE A" },
+            { id: 312, name: "1st Year - ECE B" },
+            { id: 411, name: "1st Year - CSBS" },
+            { id: 511, name: "1st Year - IT" },
+            { id: 711, name: "1st Year - MECH" },
+            { id: 811, name: "1st Year - CYS" },
+            { id: 911, name: "1st Year - AI&ML" },
+          ].map((classItem) => (
+            <button
+              key={classItem.id}
+              className={`class-section ${selectedOption === classItem.id ? "selected" : ""}`}
+              onClick={() => {
+                setSelectedOption(classItem.id);
+                fetchChartDataClass(classItem.id);
+              }}
+            >
+              {classItem.name}
+            </button>
+          ))}
+        </div>
+      ) : [1, 2, 3].includes(department_id) ? (
+        // Departments with A & B sections
+        <div className="grid-container">
+          {[1, 2, 3, 4].map((year) =>
+            ["A", "B"].map((section) => {
+              const classId = department_id * 100 + year * 10 + (section === "A" ? 1 : 2);
+              return (
+                <button
+                  key={classId}
+                  className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                  onClick={() => {
+                    setSelectedOption(classId);
+                    fetchChartDataClass(classId);
+                  }}
+                >
+                  {`${yearMap[year]} - ${departmentMap[department_id]} ${section}`}
+                </button>
+              );
+            })
+          )}
+        </div>
+      ) : (
+        // Other departments with only A section
+        <div className="grid-container">
+          {[1, 2, 3, 4].map((year) => {
+            const classId = department_id * 100 + year * 10 + 1;
+            return (
+              <button
+                key={classId}
+                className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                onClick={() => {
+                  setSelectedOption(classId);
+                  fetchChartDataClass(classId);
+                }}
+              >
+                {`${yearMap[year]} - ${departmentMap[department_id]} A`}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  </div>
+)}
+
+
 
               {DomainCourses.length > 0 ? (
                 viewMode === "course" ? (
