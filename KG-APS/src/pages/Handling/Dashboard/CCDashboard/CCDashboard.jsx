@@ -147,10 +147,7 @@ function HandlingCCDashboard() {
   {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
   <div className="handlingfaculty-dashboard-container">
     <div className="handlingfaculty-dashboard-content">
-      <div className="handlingfaculty-dashboard-nametext">
-        <div className="handlingfaculty-dashboard-welcome-box">
-          <p className="handlingfaculty-dashboard-greeting">Welcome Coordinator - {data.name}</p>
-        </div>
+      <div className="handlingfaculty-dashboard-nametext" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' , marginTop: '20px'}}>
         <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>Topics</button>
         <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>Assessments</button>
         <button className="HFTbutton-2" onClick={() => setViewMode("results")}>Results</button>
