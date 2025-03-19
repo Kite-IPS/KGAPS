@@ -218,12 +218,12 @@ function HandlingDMDashboard() {
   return (
     <>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-      <div className="DMDASH dashboard-container">
+      <div className="DMDASH dashboard-container" style={{marginTop: "20px"}}>
 
         <div className="dashboard-content">
 
           <div className="">
-            <div className="course-selector" ref={courseSelectionRef}>
+            <div className="course-selector" ref={courseSelectionRef} style={{ marginTop: "-20px" }}>
 
               <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
               <p className="HFTbutton-1">Course wise</p>
@@ -308,7 +308,7 @@ function HandlingDMDashboard() {
             courseDataCurrent.length > 0 ? (
             <>
 
-              <div className="handlingfaculty-dashboard-aggregate" style={{ maxWidth: "40vw", width: "40vw" }}
+              <div className="handlingfaculty-dashboard-aggregate" 
               >
                 <p>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
