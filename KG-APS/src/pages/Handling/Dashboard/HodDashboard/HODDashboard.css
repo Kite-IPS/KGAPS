@@ -358,7 +358,7 @@
   flex-direction: column;
   min-height: 200px; /* Set a minimum height for consistency */
   box-sizing: border-box; /* Include padding in width calculation */
-  height: fit-content; /* Allow height to adjust to content */
+  height: max-content; /* Allow height to adjust to content */
   break-inside: avoid; /* Prevent cards from breaking across columns */
 }
 
