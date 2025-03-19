@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from "../../Handling/HandlingSidebar2/HandlingSidebar2.jsx";
@@ -27,7 +29,7 @@ const CreationDMDashboard = () => {
       if (elapsedTime < duration) {
         requestAnimationFrame(scrollStep);
       }
-    }; 
+    };
 
     requestAnimationFrame(scrollStep);
   };
@@ -201,7 +203,7 @@ const CreationDMDashboard = () => {
           )}
         </div>
         <button className="scroll-up-button" onClick={scrollToCourseCard}>
-          Back to Course
+          <FontAwesomeIcon icon={faCaretUp} />
         </button>
       </div>
     </>

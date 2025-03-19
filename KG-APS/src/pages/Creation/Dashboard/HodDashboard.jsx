@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
@@ -38,7 +40,7 @@ const CreationHodDashboard = () => {
       console.log("courseSelectionRef is not available");
     }
   };
-  
+
 
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [selectedCard, setSelectedCard] = useState(0);
@@ -250,7 +252,7 @@ const CreationHodDashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-content">
-      {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
+        {windowWidth > 1500 ? <HandlingSidebar className="custom-sidebar-class" /> : <HandlingSidebar2 className="custom-sidebar-class" />}
         <h1>Department of {departmentMap[data.department_id]}</h1>
         <button
           className="HFTbutton-1"
@@ -309,7 +311,7 @@ const CreationHodDashboard = () => {
           <h3 ref={progressSectionRef}>Progress</h3>
           {MainChartData.labels.length > 0 ? (
             <div className="chart-grid">
-              <div className="chart-container" style={{paddingBottom:"40px"}}>
+              <div className="chart-container" style={{ paddingBottom: "40px" }}>
                 <Pie data={MainChartData} />
               </div>
             </div>
@@ -318,7 +320,7 @@ const CreationHodDashboard = () => {
           )}{" "}</>}
         {creationViewMode === "faculty" && (
           <>
-            <p style={{margin:"10px"}} ref={courseSelectionRef}>Faculty view :</p>
+            <p style={{ margin: "10px" }} ref={courseSelectionRef}>Faculty view :</p>
             {facultyList.length > 0 &&
               facultyList.map((faculty, index) => (
                 <div
@@ -360,7 +362,7 @@ const CreationHodDashboard = () => {
         )}
       </div>
       <button className="scroll-up-button" onClick={scrollToCourseCard}>
-        Back to Course
+        <FontAwesomeIcon icon={faCaretUp} />
       </button>
     </div>
   );

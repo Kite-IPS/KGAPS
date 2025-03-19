@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./SupervisorDashboard.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar";
 
 function HandlingSupervisorDashboard() {
@@ -767,7 +769,7 @@ function HandlingSupervisorDashboard() {
           )}
         </div>
         <button className="scroll-up-button" onClick={scrollToCourseCard}>
-          Back to Course
+          <FontAwesomeIcon icon={faCaretUp} />
         </button>
       </div>
     </>

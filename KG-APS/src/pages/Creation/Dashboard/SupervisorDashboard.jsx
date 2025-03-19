@@ -3,6 +3,8 @@ import { Pie } from "react-chartjs-2";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import HandlingSupervisorDashboard from "../../Handling/Dashboard/SupervisorDashboard/SupervisorDashboard";
@@ -422,7 +424,7 @@ const CreationSupervisorDashboard = () => {
       {
         overallView === "creation" && (
           <>
-          <h1>Creation Section</h1>
+            <h1>Creation Section</h1>
             <div className="dashboard-container">
               <div className="dashboard-content">
 
@@ -529,7 +531,7 @@ const CreationSupervisorDashboard = () => {
                     <>
                       {facultyList.length > 0 &&
                         facultyList.map((faculty, index) => (
-                          <div ref={progressSectionRef} 
+                          <div ref={progressSectionRef}
                             key={index}
                             className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
                               }`}
@@ -581,7 +583,7 @@ const CreationSupervisorDashboard = () => {
         )
       }
       <button className="scroll-up-button" onClick={scrollToCourseCard}>
-        Back to Course
+        <FontAwesomeIcon icon={faCaretUp} />
       </button>
     </div >
   );

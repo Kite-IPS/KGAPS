@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import "./DMDashboard.css";
 import axios from "axios";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from "../../HandlingSidebar2/HandlingSidebar2.jsx";
 
@@ -218,7 +220,7 @@ function HandlingDMDashboard() {
   return (
     <>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-      <div className="DMDASH dashboard-container" style={{marginTop: "20px"}}>
+      <div className="DMDASH dashboard-container" style={{ marginTop: "20px" }}>
 
         <div className="dashboard-content">
 
@@ -299,6 +301,9 @@ function HandlingDMDashboard() {
               Results
             </button>
           </p>
+          <br></br>
+          <hr></hr>
+          <br></br>
           <h1 ref={progressSectionRef}>
             Course {selectedOption.course_code + " - " + selectedOption.course_name}
           </h1>
@@ -308,7 +313,7 @@ function HandlingDMDashboard() {
             courseDataCurrent.length > 0 ? (
             <>
 
-              <div className="handlingfaculty-dashboard-aggregate" 
+              <div className="handlingfaculty-dashboard-aggregate"
               >
                 <p>Aggregate Progress</p>
                 <div className="handlingfaculty-dashboard-aggregate-content">
@@ -463,7 +468,7 @@ function HandlingDMDashboard() {
           )}
         </div>
         <button className="scroll-up-button" onClick={scrollToCourseCard}>
-          Back to Course
+          <FontAwesomeIcon icon={faCaretUp} />
         </button>
 
       </div>
