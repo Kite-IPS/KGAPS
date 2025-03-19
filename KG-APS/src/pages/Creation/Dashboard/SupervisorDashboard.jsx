@@ -529,12 +529,12 @@ const CreationSupervisorDashboard = () => {
                   )}
                   {creationViewMode === "faculty" && (
                     <>
-                      {facultyList.length > 0 &&
-                        facultyList.map((faculty, index) => (
-                          <div ref={progressSectionRef}
-                            key={index}
-                            className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
-                              }`}
+                    {facultyList.length > 0 && (
+                      <div className="faculty-list-container" ref={progressSectionRef}>
+                        {facultyList.map((faculty) => (
+                          <div
+                            key={faculty.uid}
+                            className={`faculty-card ${selectedCard === faculty.uid ? "selected" : ""}`}
                             onClick={async () => {
                               setSelectedCard(faculty.uid);
                               UpdateChart(faculty);
@@ -542,12 +542,15 @@ const CreationSupervisorDashboard = () => {
                           >
                             <h3>{faculty.name}</h3>
                             {selectedCard === faculty.uid && (
-                              <div className="card-details" >
+                              <div className="card-details">
                                 <p ref={courseSelectionRef}>Faculty ID: {faculty.uid}</p>
                               </div>
                             )}
                           </div>
                         ))}
+                      </div>
+                    )}
+                    
 
                       {ChartData.length > 0 && <>
                         <div className="chart-grid">

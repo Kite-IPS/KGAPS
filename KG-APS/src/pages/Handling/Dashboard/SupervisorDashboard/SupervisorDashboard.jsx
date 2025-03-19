@@ -389,80 +389,80 @@ function HandlingSupervisorDashboard() {
                 Faculty wise
               </button>
               {viewMode === "class" && (
-  <div ref={progressSectionRef}>
-    <div className="class-section-container">
-      {department_id === 6 ? (
-        // Science and Humanities department classes
-        <div className="grid-container">
-          {[
-            { id: 111, name: "1st Year - CSE A" },
-            { id: 112, name: "1st Year - CSE B" },
-            { id: 211, name: "1st Year - AI&DS A" },
-            { id: 212, name: "1st Year - AI&DS B" },
-            { id: 311, name: "1st Year - ECE A" },
-            { id: 312, name: "1st Year - ECE B" },
-            { id: 411, name: "1st Year - CSBS" },
-            { id: 511, name: "1st Year - IT" },
-            { id: 711, name: "1st Year - MECH" },
-            { id: 811, name: "1st Year - CYS" },
-            { id: 911, name: "1st Year - AI&ML" },
-          ].map((classItem) => (
-            <button
-              key={classItem.id}
-              className={`class-section ${selectedOption === classItem.id ? "selected" : ""}`}
-              onClick={() => {
-                setSelectedOption(classItem.id);
-                fetchChartDataClass(classItem.id);
-              }}
-            >
-              {classItem.name}
-            </button>
-          ))}
-        </div>
-      ) : [1, 2, 3].includes(department_id) ? (
-        // Departments with A & B sections
-        <div className="grid-container">
-          {[1, 2, 3, 4].map((year) =>
-            ["A", "B"].map((section) => {
-              const classId = department_id * 100 + year * 10 + (section === "A" ? 1 : 2);
-              return (
-                <button
-                  key={classId}
-                  className={`class-section ${selectedOption === classId ? "selected" : ""}`}
-                  onClick={() => {
-                    setSelectedOption(classId);
-                    fetchChartDataClass(classId);
-                  }}
-                >
-                  {`${yearMap[year]} - ${departmentMap[department_id]} ${section}`}
-                </button>
-              );
-            })
-          )}
-        </div>
-      ) : (
-        // Other departments with only A section
-        <div className="grid-container">
-          {[1, 2, 3, 4].map((year) => {
-            const classId = department_id * 100 + year * 10 + 1;
-            return (
-              <button
-                key={classId}
-                className={`class-section ${selectedOption === classId ? "selected" : ""}`}
-                onClick={() => {
-                  setSelectedOption(classId);
-                  fetchChartDataClass(classId);
-                }}
-              >
-                {`${yearMap[year]} - ${departmentMap[department_id]} A`}
-              </button>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  </div>
-)}
+                <div ref={progressSectionRef}>
+                  <div className="class-section-container">
+                    {department_id === 6 ? (
+                      // Science and Humanities department classes
+                      <div className="grid-container">
+                        {[
+                          { id: 111, name: "1st Year - CSE A" },
+                          { id: 112, name: "1st Year - CSE B" },
+                          { id: 211, name: "1st Year - AI&DS A" },
+                          { id: 212, name: "1st Year - AI&DS B" },
+                          { id: 311, name: "1st Year - ECE A" },
+                          { id: 312, name: "1st Year - ECE B" },
+                          { id: 411, name: "1st Year - CSBS" },
+                          { id: 511, name: "1st Year - IT" },
+                          { id: 711, name: "1st Year - MECH" },
+                          { id: 811, name: "1st Year - CYS" },
+                          { id: 911, name: "1st Year - AI&ML" },
+                        ].map((classItem) => (
+                          <button
+                            key={classItem.id}
+                            className={`class-section ${selectedOption === classItem.id ? "selected" : ""}`}
+                            onClick={() => {
+                              setSelectedOption(classItem.id);
+                              fetchChartDataClass(classItem.id);
+                            }}
+                          >
+                            {classItem.name}
+                          </button>
+                        ))}
+                      </div>
+                    ) : [1, 2, 3].includes(department_id) ? (
+                      // Departments with A & B sections
+                      <div className="grid-container">
+                        {[1, 2, 3, 4].map((year) =>
+                          ["A", "B"].map((section) => {
+                            const classId = department_id * 100 + year * 10 + (section === "A" ? 1 : 2);
+                            return (
+                              <button
+                                key={classId}
+                                className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                                onClick={() => {
+                                  setSelectedOption(classId);
+                                  fetchChartDataClass(classId);
+                                }}
+                              >
+                                {`${yearMap[year]} - ${departmentMap[department_id]} ${section}`}
+                              </button>
+                            );
+                          })
+                        )}
+                      </div>
+                    ) : (
+                      // Other departments with only A section
+                      <div className="grid-container">
+                        {[1, 2, 3, 4].map((year) => {
+                          const classId = department_id * 100 + year * 10 + 1;
+                          return (
+                            <button
+                              key={classId}
+                              className={`class-section ${selectedOption === classId ? "selected" : ""}`}
+                              onClick={() => {
+                                setSelectedOption(classId);
+                                fetchChartDataClass(classId);
+                              }}
+                            >
+                              {`${yearMap[year]} - ${departmentMap[department_id]} A`}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
 
 
@@ -525,13 +525,12 @@ function HandlingSupervisorDashboard() {
                 <h1>No courses available</h1>
               )}
               {viewMode === "faculty" && (
-                <>
-                  {facultyList.length > 0 &&
-                    facultyList.map((faculty, index) => (
-                      <div ref={courseSelectionRef}
-                        key={index}
-                        className={`course-card ${selectedCard === faculty.uid ? "expanded" : ""
-                          }`}
+                <div className="faculty-list-container" ref={courseSelectionRef}>
+                  {facultyList.length > 0 ? (
+                    facultyList.map((faculty) => (
+                      <div
+                        key={faculty.uid}
+                        className={`faculty-card ${selectedCard === faculty.uid ? "selected" : ""}`}
                         onClick={async () => {
                           setSelectedCard(faculty.uid);
                           console.log(faculty);
@@ -545,36 +544,38 @@ function HandlingSupervisorDashboard() {
                           </div>
                         )}
                       </div>
-                    ))}
-                  {viewMode === "topics" && courseDataOverall.length > 0 ? (
-                    <>
-                      <div className="handlingfaculty-dashboard-aggregate" ref={progressSectionRef}>
-                        <p>Aggregate Progress</p>
-                        <div className="handlingfaculty-dashboard-aggregate-content">
-                          <p>
-                            Overall Progress:{" "}
-                            {(aggregateData()[0].topic_count * 100).toFixed(0)}%
-                          </p>
-                          <div className="handlingfaculty-dashboard-progressbar-horizontal">
-                            <div
-                              style={{
-                                width: `${(
-                                  aggregateData()[0].topic_count * 100
-                                ).toFixed(2)}%`,
-                                backgroundColor: "purple",
-                              }}
-                            />
-                          </div>
-                          <p>Average Status: {aggregateData()[0].comment}</p>
-                        </div>
-                      </div>
-                      <br />
-                    </>
+                    ))
                   ) : (
-                    viewMode === "topics" && <h1>No progress!</h1>
+                    <p>No faculty members found</p>
                   )}
-                </>
+                </div>
               )}
+
+              {viewMode === "topics" && courseDataOverall.length > 0 ? (
+                <>
+                  <div className="handlingfaculty-dashboard-aggregate" ref={progressSectionRef}>
+                    <p>Aggregate Progress</p>
+                    <div className="handlingfaculty-dashboard-aggregate-content">
+                      <p>
+                        Overall Progress: {(aggregateData()[0].topic_count * 100).toFixed(0)}%
+                      </p>
+                      <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                        <div
+                          style={{
+                            width: `${(aggregateData()[0].topic_count * 100).toFixed(2)}%`,
+                            backgroundColor: "purple",
+                          }}
+                        />
+                      </div>
+                      <p>Average Status: {aggregateData()[0].comment}</p>
+                    </div>
+                  </div>
+                  <br />
+                </>
+              ) : (
+                viewMode === "topics" && <h1>No progress!</h1>
+              )}
+
             </div>
           </div>
           <div>
@@ -692,6 +693,7 @@ function HandlingSupervisorDashboard() {
           )}
           {contentViewMode === "assignments" && assignmentData.length > 0 ? (
             <>
+              <h1>Assignment Data</h1>
               <div className="handlingfaculty-dashboard-card-container">
                 {assignmentData.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
