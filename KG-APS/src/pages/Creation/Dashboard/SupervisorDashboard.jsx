@@ -288,7 +288,6 @@ const CreationSupervisorDashboard = () => {
                   minWidth: "250px",  // Ensures fixed width for horizontal scrolling
                   maxWidth: "350px",  // Restricts max width
                   maxHeight: "600px", // Keeps container small
-                  overflowY: "auto", // Makes individual containers scrollable if needed
                   padding: "10px",
                   borderRadius: "8px",
                   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
