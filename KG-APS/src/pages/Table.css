@@ -15,7 +15,7 @@
 }
 
 .HFTbutton-1, .HFTbutton-2, .HFTbutton-3 {
-    background-color: #fe370f;
+    background-color: #fe370f; /* Red background to match HODDashboard */
     color: white;
     border: none;
     padding: 10px 15px;
@@ -23,10 +23,38 @@
     margin-right: 0.5vw;
     text-align: center;
     margin-bottom: 10px;
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
 }
 
+/* Hover effect for buttons */
 .HFTbutton-1:hover, .HFTbutton-2:hover, .HFTbutton-3:hover {
-    background-color: #c4310a;
+    background-color: #fe370f; /* Darker red on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Selected state for buttons */
+.HFTbutton-1.selected, .HFTbutton-2.selected, .HFTbutton-3.selected {
+    background-color: #fe370f; /* Darker red when selected */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+    border: 2px solid #fe370f; /* Add a border for selected state */
+}
+
+/* Add the "selected" indicator line at the bottom */
+.HFTbutton-1.selected::after, .HFTbutton-2.selected::after, .HFTbutton-3.selected::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.7); /* White line at the bottom */
 }
 
 h1 {

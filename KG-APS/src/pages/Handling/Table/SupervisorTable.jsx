@@ -248,53 +248,37 @@ const HandlingSupervisorTable = () => {
     <div className="HFTgrid-container" style={{ display: 'flex' }}>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
-        <div className="HFTbutton-group">
+      <div className="HFTbutton-group">
           <button className="HFTbutton-1">
             All contents
           </button>
           <select onChange={(e) => setDepartment_id(e.target.value)}>
             {Object.keys(departmentMap).map((departmentKey) => (
-              <option key={departmentKey} value={departmentKey}>
-                {departmentMap[departmentKey]}
-              </option>
+              <option key={departmentKey} value={departmentKey}>{departmentMap[departmentKey]}</option>
             ))}
           </select>
-          <select
-            value={selectedClass}
-            onChange={(e) => {
-              setSelectedClass(e.target.value);
-            }}
-          >
-            <option value="" disabled>
-              Select Class
-            </option>
+          <select value={selectedClass} onChange={(e) => { setSelectedClass(e.target.value); }}>
+            <option value="" disabled>Select Class</option>
             {Object.keys(classMap[department_id]).map((key) => (
-              <option key={key} value={key}>
-                {classMap[department_id][key]}
-              </option>
+              <option key={key} value={key}>{classMap[department_id][key]}</option>
             ))}
           </select>
-          <select
-            value={JSON.stringify(selectedOption)}
-            onChange={handleSelectChange}
-          >
-            <option value="" disabled>
-              Select an option
-            </option>
+          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+            <option value="" disabled>Select an option</option>
             {FacultyCourses.map((option, index) => (
               <option key={index} value={JSON.stringify(option)}>
-                {option.course_code + " - " + option.course_name + " - "  + option.handler_name}
+                {option.course_code + " - " + option.course_name + " - " + option.handler_name}
               </option>
             ))}
           </select>
         </div>
-        <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
+        <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
           Topics
         </button>
-        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
+        <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
           Assessments
         </button>
-        <button className="HFTbutton-2" onClick={() => setTableView("results")}>
+        <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
           Results
         </button>
         {tableView==="topics" && <table>

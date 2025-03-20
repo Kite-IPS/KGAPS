@@ -183,34 +183,34 @@ const HandlingDMTable = () => {
     <div className="HFTgrid-container" style={{ display: 'flex' }}>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
-        <div className="HFTbutton-group">
-          <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
-            All contents
-          </button>
-          <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>
-            <option value="" disabled>Select An option</option>
-            {Object.keys(courseList).map((year, index) => (
-              <option key={index} value={year}>{yearMap2[year]}</option>
-            ))}
-          </select>
-          <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
-        <option value="" disabled>Select an option</option>
-        {FacultyCourses.map((option, index) => (
-          <option key={index} value={JSON.stringify(option)}>
-            {option.course_code + " - " + option.course_name + " - " + convertToClass(option.class_id)}
-          </option>
-        ))}
-      </select>
+      <div className="HFTbutton-group">
+        <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+          All contents
+        </button>
+        <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>
+          <option value="" disabled>Select An option</option>
+          {Object.keys(courseList).map((year, index) => (
+            <option key={index} value={year}>{yearMap2[year]}</option>
+          ))}
+        </select>
+        <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
+          <option value="" disabled>Select an option</option>
+          {FacultyCourses.map((option, index) => (
+            <option key={index} value={JSON.stringify(option)}>
+              {option.course_code + " - " + option.course_name + " - " + convertToClass(option.class_id)}
+            </option>
+          ))}
+        </select>
       </div>
-      <button className="HFTbutton-1" onClick={() => setTableView("topics")}>
-          Topics
-        </button>
-        <button className="HFTbutton-2" onClick={() => setTableView("assignments")}>
-          Assessments
-        </button>
-        <button className="HFTbutton-2" onClick={() => setTableView("results")}>
-          Results
-        </button>
+      <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
+        Topics
+      </button>
+      <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
+        Assessments
+      </button>
+      <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
+        Results
+      </button>
       {tableView === "topics" && <table>
         <thead>
           <tr>
