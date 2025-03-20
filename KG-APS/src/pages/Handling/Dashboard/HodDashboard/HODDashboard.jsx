@@ -356,19 +356,19 @@ function HandlingHODDashboard() {
           <br></br>
           <div className="button-container">
             <button
-              className="HFTbutton-1"
+              className={`HFTbutton-1 ${viewMode === "course" ? "selected" : ""}`}
               onClick={() => setViewMode("course")}
             >
               Course wise
             </button>
             <button
-              className="HFTbutton-2"
+              className={`HFTbutton-2 ${viewMode === "class" ? "selected" : ""}`}
               onClick={() => setViewMode("class")}
             >
               Class wise
             </button>
             <button
-              className="HFTbutton-2"
+              className={`HFTbutton-2 ${viewMode === "faculty" ? "selected" : ""}`}
               onClick={() => setViewMode("faculty")}
             >
               Faculty wise
@@ -576,19 +576,19 @@ function HandlingHODDashboard() {
           {/* Content view mode buttons */}
           <div className="content-view-buttons">
             <button
-              className="HFTbutton-1"
+              className={`HFTbutton-1 ${contentViewMode === "topics" ? "selected" : ""}`}
               onClick={() => setContentViewMode("topics")}
             >
               Topics
             </button>
             <button
-              className="HFTbutton-2"
+              className={`HFTbutton-2 ${contentViewMode === "assignments" ? "selected" : ""}`}
               onClick={() => setContentViewMode("assignments")}
             >
               Assignments
             </button>
             <button
-              className="HFTbutton-1"
+              className={`HFTbutton-1 ${contentViewMode === "results" ? "selected" : ""}`}
               onClick={() => setContentViewMode("results")}
             >
               Results

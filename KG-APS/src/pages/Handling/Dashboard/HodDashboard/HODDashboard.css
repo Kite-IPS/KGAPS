@@ -455,7 +455,7 @@
 
 .faculty-info-section {
   padding: 0 15px;
-  border-right: 2px solid #fd7e14;
+  border-right: 2px solid #fe370f;
   display: flex;
   align-items: center;
 }
@@ -468,6 +468,50 @@
 .progress-status {
   font-weight: 500;
   margin-top: 5px;
+}
+
+.HFTbutton-1, .HFTbutton-2, .content-view-buttons button {
+  padding: 10px 20px;
+  background-color: #fe370f; /* Blue background */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Hover effect for buttons */
+.HFTbutton-1:hover, .HFTbutton-2:hover, .content-view-buttons button:hover {
+  background-color: #fe370f; /* Darker blue on hover */
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Selected state for buttons */
+.HFTbutton-1.selected, .HFTbutton-2.selected, .content-view-buttons button.selected {
+  background-color:#fe370f; /* Darker blue when selected */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  border: 2px solid #fe370f; /* Add a border for selected state */
+}
+
+/* Add the "selected" indicator line at the bottom */
+.HFTbutton-1.selected::after, .HFTbutton-2.selected::after, .content-view-buttons button.selected::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.7); /* White line at the bottom */
 }
 
 /* Responsive adjustments */
