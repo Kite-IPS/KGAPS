@@ -274,10 +274,10 @@ const HandlingHODTable = () => {
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />} 
       <div className="HFTtable-container">
       <div className="HFTbutton-group">
-          <button className={`HFTbutton-1 ${viewMode === "all" ? "selected" : ""}`} onClick={() => setViewMode("all")}>
+          <button className={`HFTbutton-1 ${viewMode === "all" ? "selected" : ""}`} style={{ width:"50%" }} onClick={() => setViewMode("all")}>
             All contents
           </button>
-          <button className={`HFTbutton-2 ${viewMode === "upload" ? "selected" : ""}`} onClick={() => setViewMode("upload")}>
+          <button className={`HFTbutton-2 ${viewMode === "upload" ? "selected" : ""}`} style={{ width:"50%" }} onClick={() => setViewMode("upload")}>
             Verify
           </button>
           <select value={selectedClass} onChange={(e) => { setSelectedClass(e.target.value); }}>
@@ -295,15 +295,17 @@ const HandlingHODTable = () => {
             ))}
           </select>
         </div>
-        <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
-          Topics
-        </button>
-        <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
-          Assessments
-        </button>
-        <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
-          Results
-        </button>
+        <div style={{ display:"flex" }}>
+          <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
+            Topics
+          </button>
+          <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
+            Assessments
+          </button>
+          <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
+            Results
+          </button>
+        </div>
         {tableView==="topics" && <table>
           <thead>
             <tr>

@@ -235,15 +235,17 @@ const HandlingFacultyTable = () => {
           ))}
         </select>
       </div>
-      <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
-        Topics
-      </button>
-      <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
-        Assessments
-      </button>
-      <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
-        Results
-      </button>
+      <div style={{ display:"flex" }}>
+        <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
+          Topics
+        </button>
+        <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
+          Assessments
+        </button>
+        <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
+          Results
+        </button>
+      </div>
       {tableView === "topics" && <table>
         <thead>
           <tr>

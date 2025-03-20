@@ -121,7 +121,7 @@ const CreationHODTable = () => {
     {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
     <div className="HFTtable-container">
       <div className="HFTbutton-group">
-        <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+        <button className="HFTbutton-1" style={{ width:"50%" }} onClick={() => setViewMode("all")}>
           All contents
         </button>
         <select value={selectedYear} onChange={((e)=> {setSelectedYear(e.target.value);})}>

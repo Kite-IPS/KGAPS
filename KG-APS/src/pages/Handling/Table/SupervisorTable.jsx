@@ -249,7 +249,7 @@ const HandlingSupervisorTable = () => {
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
       <div className="HFTbutton-group">
-          <button className="HFTbutton-1">
+          <button className="HFTbutton-1" style={{ width:"50%" }}>
             All contents
           </button>
           <select onChange={(e) => setDepartment_id(e.target.value)}>
@@ -272,15 +272,17 @@ const HandlingSupervisorTable = () => {
             ))}
           </select>
         </div>
-        <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
-          Topics
-        </button>
-        <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
-          Assessments
-        </button>
-        <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
-          Results
-        </button>
+        <div style={{ display:"flex" }}>
+          <button className={`HFTbutton-1 ${tableView === "topics" ? "selected" : ""}`} onClick={() => setTableView("topics")}>
+            Topics
+          </button>
+          <button className={`HFTbutton-2 ${tableView === "assignments" ? "selected" : ""}`} onClick={() => setTableView("assignments")}>
+            Assessments
+          </button>
+          <button className={`HFTbutton-2 ${tableView === "results" ? "selected" : ""}`} onClick={() => setTableView("results")}>
+            Results
+          </button>
+        </div>
         {tableView==="topics" && <table>
           <thead>
             <tr>

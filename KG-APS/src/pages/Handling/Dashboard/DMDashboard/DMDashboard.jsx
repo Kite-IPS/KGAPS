@@ -282,24 +282,26 @@ function HandlingDMDashboard() {
             </div>
           </div>
           <p style={{ fontSize: "20px", textAlign: "center" }}>
-            <button
-              className="HFTbutton-1"
-              onClick={() => setContentViewMode("topics")}
-            >
-              Topics
-            </button>
-            <button
-              className="HFTbutton-1"
-              onClick={() => setContentViewMode("assignments")}
-            >
-              Assessments
-            </button>
-            <button
-              className="HFTbutton-1"
-              onClick={() => setContentViewMode("results")}
-            >
-              Results
-            </button>
+            <div className="button-container">
+              <button
+                className="HFTbutton-1"
+                onClick={() => setContentViewMode("topics")}
+              >
+                Topics
+              </button>
+              <button
+                className="HFTbutton-1"
+                onClick={() => setContentViewMode("assignments")}
+              >
+                Assessments
+              </button>
+              <button
+                className="HFTbutton-1"
+                onClick={() => setContentViewMode("results")}
+              >
+                Results
+              </button>
+            </div>
           </p>
           <br></br>
           <hr></hr>

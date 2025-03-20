@@ -321,6 +321,7 @@ const CreationHodDashboard = () => {
         {creationViewMode === "faculty" && (
           <>
             <p style={{ margin: "10px" }} ref={courseSelectionRef}>Faculty view :</p>
+            <div className="faculty-list-container">
             {facultyList.length > 0 &&
               facultyList.map((faculty, index) => (
                 <div
@@ -340,7 +341,7 @@ const CreationHodDashboard = () => {
                   )}
                 </div>
               ))}
-
+              </div>
             {ChartData.length > 0 && (
               <>
                 <div className="chart-grid" ref={progressSectionRef}>

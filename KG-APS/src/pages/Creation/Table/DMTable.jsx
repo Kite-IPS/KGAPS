@@ -163,10 +163,10 @@ const CreationDMTable = () => {
     {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
         <div className="HFTbutton-group">
-          <button className="HFTbutton-1" onClick={() => setViewMode("all")}>
+          <button className="HFTbutton-1" style={{ width:"50%" }} onClick={() => setViewMode("all")}>
             All contents
           </button>
-          <button className="HFTbutton-2" onClick={() => setViewMode("upload")}>
+          <button className="HFTbutton-2" style={{ width:"80%" }} onClick={() => setViewMode("upload")}>
             Approve/Disapprove
           </button>
           <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>

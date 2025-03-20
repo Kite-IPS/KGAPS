@@ -430,18 +430,20 @@ const CreationSupervisorDashboard = () => {
 
                 <h1>Supervisor Dashboard</h1>
                 <div className="course-selector ">
-                  <button
-                    className="HFTbutton-1"
-                    onClick={() => setCreationViewMode("course")}
-                  >
-                    Course wise
-                  </button>
-                  <button
-                    className="HFTbutton-2"
-                    onClick={() => setCreationViewMode("faculty")}
-                  >
-                    Faculty wise
-                  </button>
+                  <div className="button-container">
+                      <button
+                        className="HFTbutton-1"
+                        onClick={() => setCreationViewMode("course")}
+                      >
+                        Course wise
+                      </button>
+                      <button
+                        className="HFTbutton-2"
+                        onClick={() => setCreationViewMode("faculty")}
+                      >
+                        Faculty wise
+                      </button>
+                  </div>
                   <div className="department-selector">
                     <label className="dropdown-label">Select a department:</label>
                     <select onChange={(e) => setSelectedDepartment(e.target.value)}>

@@ -370,24 +370,26 @@ function HandlingSupervisorDashboard() {
               </div>
             )}
             <div className="course-selector">
-              <button
-                className="HFTbutton-1"
-                onClick={() => setViewMode("course")}
-              >
-                Course wise
-              </button>
-              <button
-                className="HFTbutton-2"
-                onClick={() => setViewMode("class")}
-              >
-                Class wise
-              </button>
-              <button
-                className="HFTbutton-2"
-                onClick={() => setViewMode("faculty")}
-              >
-                Faculty wise
-              </button>
+            <div className="button-container">
+                <button
+                  className="HFTbutton-1"
+                  onClick={() => setViewMode("course")}
+                >
+                  Course wise
+                </button>
+                <button
+                  className="HFTbutton-2"
+                  onClick={() => setViewMode("class")}
+                >
+                  Class wise
+                </button>
+                <button
+                  className="HFTbutton-2"
+                  onClick={() => setViewMode("faculty")}
+                >
+                  Faculty wise
+                </button>
+              </div>
               {viewMode === "class" && (
                 <div ref={progressSectionRef}>
                   <div className="class-section-container">
@@ -578,7 +580,7 @@ function HandlingSupervisorDashboard() {
 
             </div>
           </div>
-          <div>
+          <div className="button-container">
             <button
               className="HFTbutton-1"
               onClick={() => setContentViewMode("topics")}
