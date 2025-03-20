@@ -107,7 +107,7 @@ const CreationSupervisorDashboard = () => {
         } else {
           setOverallProgress([]);
         }
-        console.log(overallProgress);
+        console.log(overallProgress, "hiiiiiiiiiiiiiiiiiiiiiiiii");
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -327,10 +327,8 @@ const CreationSupervisorDashboard = () => {
                       (item.department_overall[0].count > 0 && (
                         <span>
                           {(
-                            (item.department_overall[0].count /
-                              item.department_current[0].total_count) *
-                            100
-                          ).toFixed(0)}
+                            (item.department_overall[0].count)
+                          )}
                           %
                         </span>
                       ))}
