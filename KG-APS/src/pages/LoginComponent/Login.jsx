@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
-import Image from '../../assets/image.jpg'
-import './Login.css'
+import React, { useState } from 'react';
+import Image from '../../assets/image.jpg';
+import './Login.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -11,27 +11,42 @@ export default function Login() {
     const [error, setError] = useState("");
     const [role, setRole] = useState("1");
     const [section, setSection] = useState("0");
-    const roleMapping = {"1":'faculty',"2":'course-coordinator',"3":'domain-mentor',"4":'hod',"5":'supervisor'}
+
+    const roleMapping = {
+        "1": 'faculty', "2": 'course-coordinator',
+        "3": 'domain-mentor', "4": 'hod', "5": 'supervisor'
+    };
+
+    // Function to sanitize inputs
+    const sanitizeInput = (input) => {
+        const trimmedInput = input.trim();
+        const safeInput = trimmedInput.replace(/[^a-zA-Z0-9@._-]/g, ''); // Allow only safe characters
+        return safeInput;
+    };
+
     const submitCheck = async (e) => {
         e.preventDefault();
-        if (!username || !password) {
+
+        const cleanUsername = sanitizeInput(username);
+        const cleanPassword = sanitizeInput(password);
+
+        if (!cleanUsername || !cleanPassword) {
             setError('Invalid Username or Password.');
             clearErrorAfterTimeout();
             return;
         } else {
-            setError(''); 
+            setError('');
         }
 
         const loginData = {
-            username,
-            password,
+            username: cleanUsername,
+            password: cleanPassword,
             role,
             section
         };
 
         try {
             axios({
-                // Endpoint to send the request
                 url: "http://localhost:8000/api/login",
                 method: "POST",
                 data: loginData,
@@ -66,6 +81,7 @@ export default function Login() {
             setError('');
         }, 3000);
     };
+
     return (
         <>
             <div className="login-container">
@@ -76,7 +92,7 @@ export default function Login() {
                     </div>
                     <div className="login-form-container">
                         <div className="drop-down-container">
-                            <select name="roles" id="roles" value={role} onChange={((e) => setRole(e.target.value))}>
+                            <select name="roles" id="roles" value={role} onChange={(e) => setRole(e.target.value)}>
                                 <option value="1">Faculty</option>
                                 <option value="2">Course Coordinator</option>
                                 <option value="3">Domain Mentor</option>
@@ -84,17 +100,33 @@ export default function Login() {
                                 <option value="5">Supervisor</option>
                             </select>
                         </div>
-                        {role !== "5" && <div className="drop-down-container">
-                            <select name="section" id="roles" value={section} onChange={((e) => setSection(e.target.value))}>
-                                <option value="0">Creation</option>
-                                <option value="1">Handling</option>
-                            </select>
-                        </div>}
+                        {role !== "5" && (
+                            <div className="drop-down-container">
+                                <select name="section" id="roles" value={section} onChange={(e) => setSection(e.target.value)}>
+                                    <option value="0">Creation</option>
+                                    <option value="1">Handling</option>
+                                </select>
+                            </div>
+                        )}
                         <form onSubmit={submitCheck}>
                             <div className="login-form-wrapper">
-                                <input type="text" name="username" id="username" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} />
-                                <input type="password" name="password" id="password" placeholder='Enter Password' value={password} onChange={(e) => setPassword(e.target.value)} />
-                                <button type='submit'>Login</button>
+                                <input
+                                    type="text"
+                                    name="username"
+                                    id="username"
+                                    placeholder="Enter username"
+                                    value={username}
+                                    onChange={(e) => setUsername(sanitizeInput(e.target.value))}
+                                />
+                                <input
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    placeholder="Enter Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(sanitizeInput(e.target.value))}
+                                />
+                                <button type="submit">Login</button>
                             </div>
                         </form>
                     </div>
@@ -106,5 +138,5 @@ export default function Login() {
                 )}
             </div>
         </>
-    )
+    );
 }
