@@ -46,32 +46,26 @@ export default function Login() {
         };
 
         try {
-            axios({
-                url: "http://localhost:8000/api/login",
-                method: "POST",
-                data: loginData,
-              })
-              .then((res) => {
-                console.log(loginData);
-                const response = res.data;
-                console.log(response);
-                if(loginData.section === "0" && 'name' in response && loginData.role !== "5"){
-                    sessionStorage.setItem('userData', JSON.stringify(response));
-                    navigate('/creation/'+roleMapping[loginData.role]+'/dashboard');
-                }
-                else if(loginData.role === "5" && 'name' in response){
-                    sessionStorage.setItem('userData', JSON.stringify(response));
-                    navigate('/supervisor/dashboard');
-                }
-                else if(loginData.section === "1" && 'name' in response){
-                    sessionStorage.setItem('userData', JSON.stringify(response));
-                    navigate('/handling/'+roleMapping[loginData.role]+'/dashboard');
-                }
-                
-              });
+            const res = await axios.post("http://localhost:8000/api/login", loginData);
+            const response = res.data;
+            console.log(response);
+
+            if (loginData.section === "0" && 'name' in response && loginData.role !== "5") {
+                sessionStorage.setItem('userData', JSON.stringify(response));
+                navigate('/creation/' + roleMapping[loginData.role] + '/dashboard');
+            } else if (loginData.role === "5" && 'name' in response) {
+                sessionStorage.setItem('userData', JSON.stringify(response));
+                navigate('/supervisor/dashboard');
+            } else if (loginData.section === "1" && 'name' in response) {
+                sessionStorage.setItem('userData', JSON.stringify(response));
+                navigate('/handling/' + roleMapping[loginData.role] + '/dashboard');
+            } else {
+                setError('Invalid Username or Password.'); // Handle invalid login
+                clearErrorAfterTimeout();
+            }
         } catch (error) {
             console.log(error);
-            setError('Something went wrong. Please try again later.');
+            setError('Invalid Username or Password.'); // Show error message for failed login
             clearErrorAfterTimeout();
         }
     };

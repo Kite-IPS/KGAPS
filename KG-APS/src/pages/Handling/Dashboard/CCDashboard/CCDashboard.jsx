@@ -147,10 +147,16 @@ function HandlingCCDashboard() {
   {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
   <div className="handlingfaculty-dashboard-container">
     <div className="handlingfaculty-dashboard-content">
-      <div className="handlingfaculty-dashboard-nametext" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center' , marginTop: '20px'}}>
-        <button className="HFTbutton-1" onClick={() => setViewMode("topics")}>Topics</button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("assignments")}>Assessments</button>
-        <button className="HFTbutton-2" onClick={() => setViewMode("results")}>Results</button>
+    <div className="handlingfaculty-dashboard-nametext" style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'center', marginTop: '20px' }}>
+        <button className={`HFTbutton-1 ${viewMode === "topics" ? "selected" : ""}`} onClick={() => setViewMode("topics")}>
+          Topics
+        </button>
+        <button className={`HFTbutton-2 ${viewMode === "assignments" ? "selected" : ""}`} onClick={() => setViewMode("assignments")}>
+          Assessments
+        </button>
+        <button className={`HFTbutton-2 ${viewMode === "results" ? "selected" : ""}`} onClick={() => setViewMode("results")}>
+          Results
+        </button>
       </div>
 
       {viewMode === "topics" && courseDataOverall.length > 0 && courseDataCurrent.length > 0 ? (

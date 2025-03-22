@@ -32,13 +32,13 @@ const CreationDMTable = () => {
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   useEffect(() => {
-  const handleResize = () => {
-    setWindowWidth(window.innerWidth);
-  };
-  window.addEventListener("resize", handleResize);
-  return () => {
-    window.removeEventListener("resize", handleResize);
-  };
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const handleDisapproval = async (topic_id) => {
@@ -95,7 +95,7 @@ const CreationDMTable = () => {
           setCourseList(courseResponse.data);
           if (courseResponse.data.length > 0) {
             setSelectedOption(courseResponse.data[0].courses[0]);
-            setSelectedYear(courseResponse.data[0].year -1);
+            setSelectedYear(courseResponse.data[0].year - 1);
           }
         }
       } catch (error) {
@@ -111,7 +111,7 @@ const CreationDMTable = () => {
     if (!courseList.length > 0) return;
     console.log(selectedYear);
     filteredCourse = courseList.filter((item) => {
-      if (item.year -1 == parseInt(selectedYear)) return item;
+      if (item.year - 1 == parseInt(selectedYear)) return item;
     });
     setFacultyCourses(filteredCourse[0].courses);
     setSelectedOption(filteredCourse[0].courses[0]);
@@ -160,19 +160,19 @@ const CreationDMTable = () => {
 
   return (
     <div className="HFTgrid-container" style={{ display: 'flex' }}>
-    {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
+      {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
       <div className="HFTtable-container">
         <div className="HFTbutton-group">
-          <button className="HFTbutton-1" style={{ width:"50%" }} onClick={() => setViewMode("all")}>
+          <button className="HFTbutton-1" style={{ width: "50%" }} onClick={() => setViewMode("all")}>
             All contents
           </button>
-          <button className="HFTbutton-2" style={{ width:"80%" }} onClick={() => setViewMode("upload")}>
+          <button className="HFTbutton-2" style={{ width: "80%" }} onClick={() => setViewMode("upload")}>
             Approve/Disapprove
           </button>
           <select value={selectedYear} onChange={(e) => { setSelectedYear(e.target.value); }}>
             <option value="" disabled>Select An option</option>
             {Object.keys(courseList).map((year, index) => (
-              <option key={index} value={courseList[year].year-1}>{yearMap[courseList[year].year-1]}</option>
+              <option key={index} value={courseList[year].year - 1}>{yearMap[courseList[year].year - 1]}</option>
             ))}
           </select>
           <select value={JSON.stringify(selectedOption)} onChange={handleSelectChange}>
@@ -222,16 +222,15 @@ const CreationDMTable = () => {
                       <span>No Link Available</span>
                     )}
                   </td>
-                    <td style={{ textAlign: "center", verticalAlign: "middle" }}>
-                      {item.comment && item.status_code !== 3 ? (
-                        <span style={{ display: "block" }}>{item.comment}</span>
-                      ) : (
-                        <span style={{ display: "block" }}>No message</span>
-                      )}
-                    </td>
-                  
-                    {item.url && viewMode === "upload" && (
-                      <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
+                  <td style={{ textAlign: "center", verticalAlign: "middle" }}>
+                    {item.comment && item.status_code !== 3 ? (
+                      <span style={{ display: "block" }}>{item.comment}</span>
+                    ) : (
+                      <span style={{ display: "block" }}>No message</span>
+                    )}
+                  </td>
+                  {item.url && viewMode === "upload" && (
+                    <td style={{ textAlign: 'center', verticalAlign: 'middle' }}>
                       <div className="button-group" style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                         <button
                           className="dynamic-button"
@@ -248,17 +247,17 @@ const CreationDMTable = () => {
                           Disapprove
                         </button>
                       </div>
-                      </td>
-                    )}
-                  
+                    </td>
+                  )}
                 </tr>
               ))
             ) : (
-              <tr>{viewMode !== 'upload' ? (
-                <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>No topics assigned yet.</td>
-              ) : (
-                <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>Nothing to approve.</td>
-              )}
+              <tr>
+                {viewMode !== 'upload' ? (
+                  <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>No topics assigned yet.</td>
+                ) : (
+                  <td colSpan={6} style={{ textAlign: 'center', verticalAlign: 'middle' }}>Nothing to approve.</td>
+                )}
               </tr>
             )}
           </tbody>
@@ -268,4 +267,4 @@ const CreationDMTable = () => {
   );
 };
 
-export default CreationDMTable;
+export default CreationDMTable; 

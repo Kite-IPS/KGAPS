@@ -144,9 +144,9 @@ const CreationDMDashboard = () => {
       <div className="dashboard-container">
         <div className="dashboard-content">
           <div className="">
-            <div className="course-selector" ref={courseSelectionRef}>
+          <div className="course-selector" ref={courseSelectionRef}>
               <h1>Domain Mentor Dashboard - {domainMap[data.domain_id]}</h1>
-              <p className="HFTbutton-1">Course wise</p>
+              <button className="course-wise-button">Course wise</button> {/* Updated line */}
               {DomainCourses.length > 0 ? (
                 <>
                   <label className="dropdown-label">
@@ -156,8 +156,7 @@ const CreationDMDashboard = () => {
                     {DomainCourses.map((yearOption, yearIndex) => (
                       <div key={yearIndex} className="year-section">
                         <div
-                          className={`year-card ${selectedYear === yearIndex ? "expanded" : ""
-                            }`}
+                          className={`year-card ${selectedYear === yearIndex ? "expanded" : ""}`}
                           onClick={async () => { setSelectedYear(yearIndex); setSelectedCard(0); }}
                         >
                           <h3>{yearMap[yearOption.year]}</h3>
@@ -167,8 +166,7 @@ const CreationDMDashboard = () => {
                             {yearOption.courses.map((courseOption, courseIndex) => (
                               <div
                                 key={courseIndex}
-                                className={`course-card ${selectedCard === courseIndex ? "expanded" : ""
-                                  }`}
+                                className={`course-card ${selectedCard === courseIndex ? "expanded" : ""}`}
                                 onClick={async () => {
                                   setSelectedCard(courseIndex);
                                   setSelectedOption(courseOption);
@@ -187,7 +185,11 @@ const CreationDMDashboard = () => {
                         )}
                       </div>
                     ))}
-                  </div></>) : (<h1>No courses available</h1>)}
+                  </div>
+                </>
+              ) : (
+                <h1>No courses available</h1>
+              )}
             </div>
           </div>
 
