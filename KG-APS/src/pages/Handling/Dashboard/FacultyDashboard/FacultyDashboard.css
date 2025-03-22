@@ -78,7 +78,7 @@
   /* border: 2px solid #ff8c00; Orange border around the entire header */
   border-radius: 8px; /* Rounded corners for the header */
   padding: 10px; /* Inner padding for the header */
-  background-color: #fff4e6; /* Light orange background */
+  /* background-color: #fff4e6;  */
   color: #003366; /* Dark blue text */
 }
 
@@ -89,7 +89,7 @@
   font-size: 1rem;
   font-weight: normal;
   color: #003366;
-  background-color: #fff4e6;
+  /* background-color: #fff4e6; */
   border-right: 2px solid #ff8c00; /* Orange vertical border */
 }
 
@@ -107,8 +107,17 @@
 
 .handlingfaculty-dashboard-card-header {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr); /* Five equally spaced columns */
+  gap: 0; /* No gap for consistent vertical borders */
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  align-items: center; /* Align text vertically in the center */
+  /* border: 2px solid #ff8c00; Orange border around the entire header */
+  border-radius: 8px; /* Rounded corners for the header */
+  padding: 10px; /* Inner padding for the header */
+  /* background-color: #fff4e6; */
+  color: #003366; /* Dark blue text */
 }
 
 .grid-item {

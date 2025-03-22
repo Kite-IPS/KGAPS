@@ -93,7 +93,7 @@ html {
   margin-bottom: 10px;
   border-radius: 8px;
   padding: 10px;
-  background-color: #fff4e6;
+  /* background-color: #fff4e6; */
   color: #003366;
   white-space: nowrap; /* Prevent items from wrapping */
 }

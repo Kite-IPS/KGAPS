@@ -172,7 +172,7 @@
     /* border: 2px solid #ff8c00; Orange border around the entire header */
     border-radius: 8px; /* Rounded corners for the header */
     padding: 10px; /* Inner padding for the header */
-    background-color: #fff4e6; /* Light orange background */
+    /* background-color: #fff4e6; */
     color: #003366; /* Dark blue text */
   }
   
@@ -183,7 +183,7 @@
     font-size: 1rem;
     font-weight: normal;
     color: #003366;
-    background-color: #fff4e6;
+    /* background-color: #fff4e6; */
     border-right: 2px solid #ff8c00; /* Orange vertical border */
   }
   
