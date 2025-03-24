@@ -33,6 +33,7 @@ const CreationSupervisorDashboard = () => {
 
     requestAnimationFrame(scrollStep);
   };
+
   const scrollToCourseCard = () => {
     if (courseSelectionRef.current) {
       console.log("Scrolling to course selection section...");
@@ -41,6 +42,7 @@ const CreationSupervisorDashboard = () => {
       console.log("courseSelectionRef is not available");
     }
   };
+
   const data = JSON.parse(sessionStorage.getItem("userData"));
   const [overallView, setOverallView] = useState("creation");
   const [selectedCard, setSelectedCard] = useState(0);
@@ -407,13 +409,13 @@ const CreationSupervisorDashboard = () => {
       </div>
       <div className="super">
         <button
-          className="HFTbutton-1"
+          className={`HFTbutton-1 ${overallView === "creation" ? "selected" : ""}`}
           onClick={() => setOverallView("creation")}
         >
           Creation
         </button>
         <button
-          className="HFTbutton-1"
+          className={`HFTbutton-1 ${overallView === "handling" ? "selected" : ""}`}
           onClick={() => setOverallView("handling")}
         >
           Handling
@@ -430,13 +432,13 @@ const CreationSupervisorDashboard = () => {
                 <div className="course-selector ">
                   <div className="button-container">
                       <button
-                        className="HFTbutton-1"
+                        className={`HFTbutton-1 ${creationViewMode === "course" ? "selected" : ""}`}
                         onClick={() => setCreationViewMode("course")}
                       >
                         Course wise
                       </button>
                       <button
-                        className="HFTbutton-2"
+                        className={`HFTbutton-2 ${creationViewMode === "faculty" ? "selected" : ""}`}
                         onClick={() => setCreationViewMode("faculty")}
                       >
                         Faculty wise

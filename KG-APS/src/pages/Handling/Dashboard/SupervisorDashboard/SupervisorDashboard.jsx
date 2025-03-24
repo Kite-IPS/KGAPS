@@ -28,6 +28,7 @@ function HandlingSupervisorDashboard() {
 
     requestAnimationFrame(scrollStep);
   };
+
   const scrollToCourseCard = () => {
     if (courseSelectionRef.current) {
       console.log("Scrolling to course selection section...");
@@ -36,17 +37,14 @@ function HandlingSupervisorDashboard() {
       console.log("courseSelectionRef is not available");
     }
   };
+
   const [courseDataCurrent, setCourseDataCurrent] = useState([]);
   const [courseDataOverall, setCourseDataOverall] = useState([]);
   const [facultyList, setFacultyList] = useState([]);
   const [department_id, setDepartment_id] = useState(1);
   const [selectedYear, setSelectedYear] = useState(0);
-  const [departmentProgressOverall, setDepartmentProgressOverall] = useState(
-    []
-  );
-  const [departmentProgressCurrent, setDepartmentProgressCurrent] = useState(
-    []
-  );
+  const [departmentProgressOverall, setDepartmentProgressOverall] = useState([]);
+  const [departmentProgressCurrent, setDepartmentProgressCurrent] = useState([]);
   const [assignmentData, setAssignmentData] = useState([]);
   const [resultsData, setResultsData] = useState([]);
   const [selectedOption, setSelectedOption] = useState({});
@@ -57,6 +55,7 @@ function HandlingSupervisorDashboard() {
   const progressSectionRef = useRef(null);
   const courseSelectionRef = useRef(null); // Reference for the course card section
   const [contentViewMode, setContentViewMode] = useState("topics");
+
   const value = (current, total) => {
     if (total === 0 || current === 0 || current > total) {
       return 100;
@@ -158,6 +157,7 @@ function HandlingSupervisorDashboard() {
       console.error("Error fetching data:", error);
     }
   };
+
   const fetchFacultyData = async (option) => {
     try {
       const res = await axios.post(
@@ -177,6 +177,7 @@ function HandlingSupervisorDashboard() {
       console.error("Error fetching data:", error);
     }
   };
+
   const UpdateChart = async (option) => {
     console.log(option);
     if ("course_code" in option) {
@@ -219,6 +220,7 @@ function HandlingSupervisorDashboard() {
         return null;
     }
   };
+
   const departmentMap = {
     1: "CSE",
     2: "AI & DS",
@@ -292,6 +294,7 @@ function HandlingSupervisorDashboard() {
     console.log(aggrdata);
     return aggrdata;
   };
+
   return (
     <>
       <HandlingSidebar />
@@ -304,7 +307,6 @@ function HandlingSupervisorDashboard() {
               <select
                 onChange={(e) => {
                   setDepartment_id(e.target.value);
-
                 }}
               >
                 {Object.keys(departmentMap).map((departmentKey) => (
@@ -353,16 +355,16 @@ function HandlingSupervisorDashboard() {
                     {departmentProgressCurrent[0].completed_hours -
                       departmentProgressCurrent[0].total_hours <
                       0 && (
-                        <span style={{ color: "lightgreen" }}>Ahead of time</span>
-                      )}
+                      <span style={{ color: "lightgreen" }}>Ahead of time</span>
+                    )}
                     {!departmentProgressCurrent[0].completed_hours == null &&
                       departmentProgressCurrent[0].completed_hours -
-                      departmentProgressCurrent[0].total_hours ===
-                      0 && <span style={{ color: "green" }}>On time</span>}
+                        departmentProgressCurrent[0].total_hours ===
+                        0 && <span style={{ color: "green" }}>On time</span>}
                     {departmentProgressCurrent[0].completed_hours == null &&
                       departmentProgressCurrent[0].completed_hours -
-                      departmentProgressCurrent[0].total_hours ===
-                      0 && (
+                        departmentProgressCurrent[0].total_hours ===
+                        0 && (
                         <span style={{ color: "black" }}>Not yet started</span>
                       )}
                   </p>
@@ -370,21 +372,21 @@ function HandlingSupervisorDashboard() {
               </div>
             )}
             <div className="course-selector">
-            <div className="button-container">
+              <div className="button-container">
                 <button
-                  className="HFTbutton-1"
+                  className={`HFTbutton-1 ${viewMode === "course" ? "selected" : ""}`}
                   onClick={() => setViewMode("course")}
                 >
                   Course wise
                 </button>
                 <button
-                  className="HFTbutton-2"
+                  className={`HFTbutton-2 ${viewMode === "class" ? "selected" : ""}`}
                   onClick={() => setViewMode("class")}
                 >
                   Class wise
                 </button>
                 <button
-                  className="HFTbutton-2"
+                  className={`HFTbutton-2 ${viewMode === "faculty" ? "selected" : ""}`}
                   onClick={() => setViewMode("faculty")}
                 >
                   Faculty wise
@@ -465,8 +467,6 @@ function HandlingSupervisorDashboard() {
                   </div>
                 </div>
               )}
-
-
 
               {DomainCourses.length > 0 ? (
                 viewMode === "course" ? (
@@ -577,26 +577,26 @@ function HandlingSupervisorDashboard() {
               ) : (
                 viewMode === "topics" && <h1>No progress!</h1>
               )}
-
             </div>
           </div>
           <div className="button-container">
             <button
-              className="HFTbutton-1"
+              className={`HFTbutton-1 ${contentViewMode === "topics" ? "selected" : ""}`}
               onClick={() => setContentViewMode("topics")}
             >
               Topics
             </button>
             <button
-              className="HFTbutton-2"
+              className={`HFTbutton-2 ${contentViewMode === "assignments" ? "selected" : ""}`}
               onClick={() => setContentViewMode("assignments")}
             >
               Assessments
             </button>
             <button
-              className="HFTbutton-1"
+              className={`HFTbutton-1 ${contentViewMode === "results" ? "selected" : ""}`}
               onClick={() => setContentViewMode("results")}
-            > Results
+            >
+              Results
             </button>
           </div>
           {contentViewMode === "topics" &&
@@ -639,52 +639,71 @@ function HandlingSupervisorDashboard() {
               <div className="handlingfaculty-dashboard-card-container">
                 {courseDataCurrent.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
-                    <div className="handlingfaculty-dashboard-card-header">
-                      <p ref={progressSectionRef}>
-                        {(viewMode === "course" || viewMode === "class") && (
-                          <span>
-                            Faculty - {item.uid} - {item.name}
-                          </span>
-                        )}{" "}
-                        {convertToClass(item.class_id)} - {item.course_code} -{" "}
-                        {item.course_name}
-                      </p>
+                    <div className="faculty-info-header">
+                      {viewMode === "course" && (
+                        <>
+                          <div className="faculty-info-section">Faculty {item.uid}</div>
+                          <div className="faculty-info-section">{item.name}</div>
+                          <div className="faculty-info-section">{convertToClass1(item.class_id)}</div>
+                          <div className="faculty-info-section">{convertToClass2(item.class_id)}</div>
+                          <div className="faculty-info-section">{convertToClass3(item.class_id)}</div>
+                        </>
+                      )}
+                      {viewMode === "class" && (
+                        <>
+                          <div className="faculty-info-section">Faculty {item.uid}</div>
+                          <div className="faculty-info-section">{item.name}</div>
+                          <div className="faculty-info-section">{item.course_code}</div>
+                          <div className="faculty-info-section">{item.course_name}</div>
+                        </>
+                      )}
+                      {viewMode === "faculty" && (
+                        <>
+                          <div className="faculty-info-section">{item.course_code}</div>
+                          <div className="faculty-info-section">{item.course_name}</div>
+                          <div className="faculty-info-section">{convertToClass1(item.class_id)}</div>
+                          <div className="faculty-info-section">{convertToClass2(item.class_id)}</div>
+                          <div className="faculty-info-section">{convertToClass3(item.class_id)}</div>
+                        </>
+                      )}
                     </div>
+
                     <div className="handlingfaculty-dashboard-card-content">
-                      <p>
-                        Hours Completed: {item.completed_hours} /{" "}
-                        {item.total_hours}
-                      </p>
+                      {/* Hours Completed */}
+                      <p>Hours Completed: {item.completed_hours} / {item.total_hours}</p>
                       <div className="handlingfaculty-dashboard-progressbar-horizontal">
                         <div
                           style={{
-                            width: `${value(
-                              item.completed_hours,
-                              item.total_hours
-                            ).toFixed(2)}%`,
-                            backgroundColor: item.bar_color,
+                            width: `${value(item.completed_hours, item.total_hours).toFixed(2)}%`,
+                            backgroundColor: item.completed_hours < item.total_hours ? '#1a8754' :
+                              item.completed_hours > item.total_hours ? '#dc3545' : '#0d6efd',
                           }}
                         />
                       </div>
-                      <p>
-                        Topics Completed: {courseDataOverall[i].count}/
-                        {courseDataOverall[i].total_count}
-                      </p>
+
+                      {/* Topics Completed */}
+                      <p>Topics Completed: {courseDataOverall[i].count}/{courseDataOverall[i].total_count}</p>
                       <div className="handlingfaculty-dashboard-progressbar-horizontal">
                         <div
                           style={{
-                            width: `${(
-                              (courseDataOverall[i].count /
-                                courseDataOverall[i].total_count) *
-                              100
-                            ).toFixed(2)}%`,
-                            backgroundColor: "green",
+                            width: `${((courseDataOverall[i].count / courseDataOverall[i].total_count) * 100).toFixed(2)}%`,
+                            backgroundColor: '#1a8754',
                           }}
                         />
                       </div>
-                      <div className="handlingfaculty-dashboard-colorcomment">
-                        {renderColorComment(item.bar_color)}
-                      </div>
+
+                      {/* Status */}
+                      <p className="progress-status">
+                        {item.completed_hours < item.total_hours ? (
+                          <span className="status-ahead">Ahead of time</span>
+                        ) : item.completed_hours > item.total_hours ? (
+                          <span className="status-delayed">Delayed</span>
+                        ) : item.completed_hours === 0 && item.total_hours === 0 ? (
+                          <span className="status-notstarted">Not yet started</span>
+                        ) : (
+                          <span className="status-ontime">On time</span>
+                        )}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -714,7 +733,7 @@ function HandlingSupervisorDashboard() {
                     </div>
                     <div className="handlingfaculty-dashboard-card-content">
                       <p>
-                        Overall Progress for Assessment: {item.avg_progress}%
+                        Overall Progress for Assignment: {item.avg_progress}%
                       </p>
                       <div className="handlingfaculty-dashboard-progressbar-horizontal">
                         <div
@@ -730,7 +749,7 @@ function HandlingSupervisorDashboard() {
               </div>
             </>
           ) : (
-            contentViewMode === "assignments" && <h1>No assessments!</h1>
+            contentViewMode === "assignments" && <h1>No assignments!</h1>
           )}
           {contentViewMode === "results" && resultsData.length > 0 ? (
             <>
