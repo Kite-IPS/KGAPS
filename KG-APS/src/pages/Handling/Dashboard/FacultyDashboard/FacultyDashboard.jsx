@@ -188,6 +188,7 @@ function HandlingFacultyDashboard() {
             <h1>No progress!</h1>
           )}
           {viewMode === "assignments" && assignmentData.length > 0 ? ( <>
+            <h1>Assessment data</h1>
             <div className="handlingfaculty-dashboard-card-container">
                 {assignmentData.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>
@@ -210,6 +211,7 @@ function HandlingFacultyDashboard() {
           </>
           ): viewMode==="assignments" && (<h1>No progress!</h1>)}
            {viewMode === "results" && resultsData.length > 0 ? ( <>
+            <h1>Result data</h1>
             <div className="handlingfaculty-dashboard-card-container">
                 {resultsData.map((item, i) => (
                   <div className="handlingfaculty-dashboard-card" key={i}>

@@ -205,6 +205,7 @@ function HandlingCCDashboard() {
       {viewMode === "assignments" && (
         assignmentData.length > 0 ? (
           <>
+          <h1>Assessment data</h1>
             <div className="handlingfaculty-dashboard-card-container">
               {assignmentData.map((item, i) => (
                 <div className="handlingfaculty-dashboard-card" key={i}>
@@ -231,7 +232,7 @@ function HandlingCCDashboard() {
       {viewMode === "results" && (
         resultsData.length > 0 ? (
           <>
-            <h1>Result Data</h1>
+            <h1>Result data</h1>
             <div className="handlingfaculty-dashboard-card-container">
               {resultsData.map((item, i) => (
                 <div className="handlingfaculty-dashboard-card" key={i}>

@@ -245,9 +245,9 @@ const HandlingSupervisorTable = () => {
 
 
   return (
-    <div className="HFTgrid-container" style={{ display: 'flex' }}>
+    <div className="HFTtable-container" style={{ display: 'flex' }}>
       {windowWidth > 1500 ? <HandlingSidebar /> : <HandlingSidebar2 />}
-      <div className="HFTtable-container">
+      <div>
       <div className="HFTbutton-group">
           <button className="HFTbutton-1" style={{ width:"50%" }}>
             All contents
