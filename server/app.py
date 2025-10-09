@@ -655,7 +655,7 @@ def add_topic():
             """)
             conn.execute(q)
         except Exception as e:
-            print(e)
+            print('not all classes have faculty assigned to course')
             return json.dumps({'error': 'not all classes have faculty assigned to course'})
             # logic to add a old topics to new staff but indirectly this case is handled as above query will throw error if each course code doesnt have an assigned staff
             # not tested
