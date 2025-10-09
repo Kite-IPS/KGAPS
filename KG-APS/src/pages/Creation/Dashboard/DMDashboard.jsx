@@ -11,6 +11,149 @@ import "./Dashboard.css";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationDMDashboard = () => {
+  // Extraordinary Professional Chart Options - Main Charts
+  const modernChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+        align: 'center',
+        labels: {
+          padding: 20,
+          font: {
+            size: 13,
+            family: "'Poppins', 'Inter', 'Segoe UI', sans-serif",
+            weight: '600'
+          },
+          color: '#1a202c',
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
+          boxWidth: 14,
+          boxHeight: 14,
+          textAlign: 'left',
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const value = dataset.data[i];
+                const total = dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(1);
+                
+                return {
+                  text: `${label} — ${percentage}%`,
+                  fillStyle: dataset.backgroundColor[i],
+                  strokeStyle: dataset.backgroundColor[i],
+                  hidden: false,
+                  index: i,
+                  pointStyle: 'rectRounded',
+                  lineWidth: 0
+                };
+              });
+            }
+            return [];
+          }
+        }
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(17, 24, 39, 0.98)',
+        titleColor: '#ffffff',
+        bodyColor: '#f3f4f6',
+        borderColor: 'rgba(59, 130, 246, 0.5)',
+        borderWidth: 2,
+        padding: {
+          top: 16,
+          bottom: 16,
+          left: 18,
+          right: 18
+        },
+        cornerRadius: 14,
+        titleMarginBottom: 12,
+        bodySpacing: 8,
+        bodyFont: {
+          size: 14,
+          family: "'Poppins', 'Inter', sans-serif",
+          weight: '500',
+          lineHeight: 1.8
+        },
+        titleFont: {
+          size: 16,
+          weight: '700',
+          family: "'Poppins', 'Inter', sans-serif"
+        },
+        displayColors: true,
+        boxWidth: 16,
+        boxHeight: 16,
+        boxPadding: 8,
+        usePointStyle: true,
+        caretSize: 10,
+        caretPadding: 14,
+        callbacks: {
+          title: function(context) {
+            return `📊 ${context[0].label}`;
+          },
+          label: function(context) {
+            if (context.parsed !== null) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return `   Count: ${context.parsed}   |   ${percentage}%`;
+            }
+            return '';
+          },
+          afterLabel: function(context) {
+            if (context.parsed !== null) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              return `   Total: ${total}`;
+            }
+            return '';
+          }
+        }
+      }
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 2000,
+      easing: 'easeInOutQuart',
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === 'data' && context.mode === 'default') {
+          delay = context.dataIndex * 200 + Math.random() * 100;
+        }
+        return delay;
+      }
+    },
+    layout: {
+      padding: {
+        top: 20,
+        bottom: 20,
+        left: 20,
+        right: 20
+      }
+    },
+    elements: {
+      arc: {
+        borderWidth: 0,
+        borderColor: 'transparent',
+        hoverBorderWidth: 8,
+        hoverBorderColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 12,
+        hoverOffset: 25,
+        shadowOffsetX: 4,
+        shadowOffsetY: 4,
+        shadowBlur: 15,
+        shadowColor: 'rgba(0, 0, 0, 0.15)'
+      }
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    cutout: '0%'
+  };
   const smoothScrollTo = (element, duration = 50) => {
     const targetY = element.getBoundingClientRect().top + window.scrollY;
     const startY = window.scrollY;
@@ -58,11 +201,12 @@ const CreationDMDashboard = () => {
   const [selectedCard, setSelectedCard] = useState(0);
   const progressSectionRef = useRef(null);
   const courseSelectionRef = useRef(null); // Reference for the course card section
-  const [MainChartData, setMainChartData] = useState({
+  const [courseProgressData, setCourseProgressData] = useState([]);
+  const [mainChartData, setMainChartData] = useState({
     labels: [],
     datasets: [
       {
-        label: "No Data to show",
+        label: "Course Progress",
         data: [],
         backgroundColor: [],
       },
@@ -104,11 +248,23 @@ const CreationDMDashboard = () => {
       console.log(res.data);
       const { status_code, count, color } = res.data.main;
 
+      // Transform the data for progress bars
+      const totalCount = count.reduce((a, b) => a + b, 0);
+      const progressData = status_code.map((status, index) => ({
+        status: status,
+        count: count[index],
+        color: color[index],
+        percentage: totalCount > 0 ? (count[index] / totalCount) * 100 : 0
+      }));
+
+      setCourseProgressData(progressData);
+
+      // Set chart data for pie chart
       setMainChartData({
         labels: status_code,
         datasets: [
           {
-            label: "Overall Progress",
+            label: "Course Progress",
             data: count,
             backgroundColor: color,
           },
@@ -193,11 +349,38 @@ const CreationDMDashboard = () => {
             </div>
           </div>
 
-          {MainChartData.labels.length > 0 ? (<>
+          {courseProgressData.length > 0 ? (<>
             <h3>Progress for {selectedOption.course_code} - {selectedOption.course_name}</h3>
-            <div className="chart-grid">
-              <div className="chart-container">
-                <Pie data={MainChartData} />
+            
+            {/* Chart and Progress Section Layout */}
+            <div className="chart-and-progress-container">
+              {/* Left side - Chart */}
+              <div className="chart-section">
+                <div className="chart-container">
+                  <Pie data={mainChartData} options={modernChartOptions} />
+                </div>
+              </div>
+              
+              {/* Right side - Progress Details */}
+              <div className="progress-section">
+                <div className="handlingfaculty-dashboard-aggregate">
+                  <p>Course Progress Breakdown</p>
+                  <div className="handlingfaculty-dashboard-aggregate-content">
+                    {courseProgressData.map((item, index) => (
+                      <div key={index} className="progress-item">
+                        <p>{item.status}: {item.count} ({item.percentage.toFixed(1)}%)</p>
+                        <div className="handlingfaculty-dashboard-progressbar-horizontal">
+                          <div
+                            style={{
+                              width: `${item.percentage}%`,
+                              backgroundColor: item.color,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div></>
           ) : (
