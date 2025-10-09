@@ -589,7 +589,7 @@
   display: flex;
   flex-direction: row;
   gap: 45px;
-  margin-top: 60px;
+  margin-top: 20px;
   padding: 40px;
   /* background: linear-gradient(135deg, rgba(249, 250, 251, 0.9) 0%, rgba(243, 244, 246, 0.95) 100%); */
   border-radius: 24px;
@@ -1164,5 +1164,312 @@
   
   .progress-section {
     width: 100%;
+  }
+}
+
+/* Faculty Dashboard Title Styles */
+.chf-faculty-header {
+  text-align: center;
+  margin-bottom: 15px;
+  padding: 15px 0;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.chf-faculty-title {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e40af;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.chf-faculty-id {
+  font-size: 20px;
+  font-weight: 500;
+  color: #64748b;
+  margin-left: 10px;
+}
+
+/* Faculty Dashboard Chart Container Styles */
+.chf-overall-progress-section {
+  text-align: center;
+  margin: 10px 0 20px 0;
+  padding: 10px;
+}
+
+.chf-overall-progress-section h3 {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e40af;
+  margin: 0 0 -40px 0;
+  line-height: 1.3;
+}
+
+.chf-overall-progress-chart {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 550px;
+  max-height: 550px;
+  margin: 0 auto;
+  padding: 5px;
+}
+
+.chf-overall-progress-chart canvas {
+  max-width: 500px !important;
+  max-height: 500px !important;
+}
+
+.chf-sub-progress-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-top: 15px;
+  padding: 0 20px;
+}
+
+.chf-sub-progress-chart {
+  background: linear-gradient(145deg, #ffffff 0%, #fcfcfd 100%);
+  padding: 20px;
+  border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 
+              0 8px 24px rgba(0, 0, 0, 0.05),
+              0 0 0 1px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 320px;
+  height: 360px;
+  max-height: 360px;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(226, 232, 240, 0.3);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.chf-sub-progress-chart:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.12), 
+              0 10px 28px rgba(0, 0, 0, 0.08);
+}
+
+.chf-sub-progress-chart canvas {
+  max-width: 240px !important;
+  max-height: 240px !important;
+  width: 240px !important;
+  height: 240px !important;
+}
+
+.chf-sub-chart-header {
+  text-align: center;
+  margin-bottom: 8px;
+  padding: 5px 0;
+}
+
+.chf-sub-chart-title {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e40af;
+  margin: 0 0 8px 0;
+  line-height: 1.4;
+}
+
+.chf-sub-chart-faculty {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Faculty Dashboard Status Information Styles */
+.chf-status-info {
+  margin-top: 15px;
+  padding: 10px;
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 8px;
+  border: 1px solid rgba(226, 232, 240, 0.6);
+  max-width: 200px;
+}
+
+.chf-status-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+}
+
+.chf-status-item:last-child {
+  margin-bottom: 0;
+}
+
+.chf-status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.chf-status-text {
+  color: #475569;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Unstarted Course Placeholder for Faculty Dashboard */
+.chf-sub-progress-chart .unstarted-course-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 240px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border: 2px dashed #cbd5e1;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.chf-sub-progress-chart .unstarted-course-placeholder:hover {
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  border-color: #94a3b8;
+}
+
+.chf-sub-progress-chart .placeholder-icon {
+  font-size: 40px;
+  margin-bottom: 16px;
+  opacity: 0.7;
+}
+
+.chf-sub-progress-chart .placeholder-text {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #64748b;
+  margin: 0 0 8px 0;
+  line-height: 1.3;
+}
+
+.chf-sub-progress-chart .placeholder-subtext {
+  font-family: 'Poppins', 'Inter', 'Segoe UI', sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* Responsive styles for titles */
+@media (max-width: 768px) {
+  .chf-faculty-title {
+    font-size: 22px;
+  }
+  
+  .chf-faculty-id {
+    font-size: 16px;
+    display: block;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+  
+  .chf-sub-chart-title {
+    font-size: 14px;
+  }
+  
+  .chf-sub-chart-faculty {
+    font-size: 11px;
+  }
+
+  .chf-faculty-header {
+    margin-bottom: 10px;
+    padding: 10px 0;
+  }
+
+  .chf-overall-progress-section {
+    margin: 5px 0 15px 0;
+    padding: 5px;
+  }
+
+  .chf-overall-progress-chart {
+    max-width: 380px;
+    max-height: 380px;
+    padding: 10px;
+  }
+
+  .chf-overall-progress-chart canvas {
+    max-width: 350px !important;
+    max-height: 350px !important;
+  }
+
+  .chf-sub-progress-section {
+    gap: 15px;
+    margin-top: 10px;
+    padding: 0 15px;
+  }
+
+  .chf-sub-progress-chart {
+    width: 280px;
+    height: 320px;
+    max-height: 320px;
+    padding: 15px;
+  }
+
+  .chf-sub-progress-chart canvas {
+    max-width: 200px !important;
+    max-height: 200px !important;
+    width: 200px !important;
+    height: 200px !important;
+  }
+
+  .chf-sub-chart-header {
+    margin-bottom: 5px;
+    padding: 3px 0;
+  }
+
+  .chf-status-info {
+    margin-top: 10px;
+    padding: 8px;
+    max-width: 180px;
+  }
+
+  .chf-status-item {
+    font-size: 10px;
+    margin-bottom: 4px;
+  }
+
+  .chf-status-indicator {
+    width: 10px;
+    height: 10px;
+    margin-right: 6px;
+  }
+
+  .chf-sub-progress-chart .unstarted-course-placeholder {
+    height: 200px;
+    padding: 20px;
+  }
+
+  .chf-sub-progress-chart .placeholder-icon {
+    font-size: 32px;
+    margin-bottom: 12px;
+  }
+
+  .chf-sub-progress-chart .placeholder-text {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .chf-sub-progress-chart .placeholder-subtext {
+    font-size: 12px;
   }
 }
