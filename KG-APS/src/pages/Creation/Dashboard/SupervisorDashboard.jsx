@@ -8,9 +8,338 @@ import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import HandlingSupervisorDashboard from "../../Handling/Dashboard/SupervisorDashboard/SupervisorDashboard";
+import "./Dashboard.css";
 Chart.register(ArcElement, Tooltip, Legend);
 
 const CreationSupervisorDashboard = () => {
+  // Extraordinary Professional Chart Options - Main Charts
+  const modernChartOptions = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'right',
+        align: 'center',
+        labels: {
+          padding: 20,
+          font: {
+            size: 13,
+            family: "'Poppins', 'Inter', 'Segoe UI', sans-serif",
+            weight: '600'
+          },
+          color: '#1a202c',
+          usePointStyle: true,
+          pointStyle: 'rectRounded',
+          boxWidth: 14,
+          boxHeight: 14,
+          textAlign: 'left',
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const value = dataset.data[i];
+                const total = dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(1);
+                
+                return {
+                  text: `${label} — ${percentage}%`,
+                  fillStyle: dataset.backgroundColor[i],
+                  strokeStyle: dataset.backgroundColor[i],
+                  hidden: false,
+                  index: i,
+                  pointStyle: 'rectRounded',
+                  lineWidth: 0
+                };
+              });
+            }
+            return [];
+          }
+        }
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(17, 24, 39, 0.98)',
+        titleColor: '#ffffff',
+        bodyColor: '#f3f4f6',
+        borderColor: 'rgba(59, 130, 246, 0.5)',
+        borderWidth: 2,
+        padding: {
+          top: 16,
+          bottom: 16,
+          left: 18,
+          right: 18
+        },
+        cornerRadius: 14,
+        titleMarginBottom: 12,
+        bodySpacing: 8,
+        bodyFont: {
+          size: 14,
+          family: "'Poppins', 'Inter', sans-serif",
+          weight: '500',
+          lineHeight: 1.8
+        },
+        titleFont: {
+          size: 16,
+          weight: '700',
+          family: "'Poppins', 'Inter', sans-serif"
+        },
+        displayColors: true,
+        boxWidth: 16,
+        boxHeight: 16,
+        boxPadding: 8,
+        usePointStyle: true,
+        caretSize: 10,
+        caretPadding: 14,
+        callbacks: {
+          title: function(context) {
+            return `📊 ${context[0].label}`;
+          },
+          label: function(context) {
+            if (context.parsed !== null) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return `   Count: ${context.parsed}   |   ${percentage}%`;
+            }
+            return '';
+          },
+          afterLabel: function(context) {
+            if (context.parsed !== null) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              return `   Total: ${total}`;
+            }
+            return '';
+          }
+        }
+      }
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 2000,
+      easing: 'easeInOutQuart',
+      delay: (context) => {
+        let delay = 0;
+        if (context.type === 'data' && context.mode === 'default') {
+          delay = context.dataIndex * 200 + Math.random() * 100;
+        }
+        return delay;
+      }
+    },
+    layout: {
+      padding: {
+        top: 30,
+        bottom: 30,
+        left: 30,
+        right: 30
+      }
+    },
+    elements: {
+      arc: {
+        borderWidth: 0,
+        borderColor: 'transparent',
+        hoverBorderWidth: 8,
+        hoverBorderColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 12,
+        hoverOffset: 25,
+        shadowOffsetX: 4,
+        shadowOffsetY: 4,
+        shadowBlur: 15,
+        shadowColor: 'rgba(0, 0, 0, 0.15)'
+      }
+    },
+    interaction: {
+      mode: 'index',
+      intersect: false
+    },
+    cutout: '0%'
+  };
+
+  // Extraordinary Professional Chart Options - Small Charts with Doughnut Style (No Hover)
+  const noHoverChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        align: 'center',
+        labels: {
+          padding: 16,
+          font: {
+            size: 11,
+            family: "'Poppins', 'Inter', 'Segoe UI', sans-serif",
+            weight: '600'
+          },
+          color: '#0f172a',
+          usePointStyle: true,
+          pointStyle: 'circle',
+          boxWidth: 10,
+          boxHeight: 10,
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const value = dataset.data[i];
+                const total = dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                
+                return {
+                  text: `${label}: ${percentage}%`,
+                  fillStyle: dataset.backgroundColor[i],
+                  hidden: false,
+                  index: i,
+                  pointStyle: 'circle',
+                  lineWidth: 0
+                };
+              });
+            }
+            return [];
+          }
+        }
+      },
+      tooltip: {
+        enabled: false // Disable tooltips to prevent hover reactions
+      }
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 1800,
+      easing: 'easeInOutCubic'
+    },
+    layout: {
+      padding: {
+        top: 15,
+        bottom: 15,
+        left: 15,
+        right: 15
+      }
+    },
+    elements: {
+      arc: {
+        borderWidth: 0,
+        borderColor: 'transparent',
+        hoverBorderWidth: 0, // No hover border
+        hoverBorderColor: 'transparent',
+        borderRadius: 8,
+        hoverOffset: 0 // No hover offset
+      }
+    },
+    cutout: '45%'
+  };
+
+  // Extraordinary Professional Chart Options - Small Charts with Doughnut Style
+  const smallChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'bottom',
+        align: 'center',
+        labels: {
+          padding: 16,
+          font: {
+            size: 11,
+            family: "'Poppins', 'Inter', 'Segoe UI', sans-serif",
+            weight: '600'
+          },
+          color: '#0f172a',
+          usePointStyle: true,
+          pointStyle: 'circle',
+          boxWidth: 10,
+          boxHeight: 10,
+          generateLabels: function(chart) {
+            const data = chart.data;
+            if (data.labels.length && data.datasets.length) {
+              return data.labels.map((label, i) => {
+                const dataset = data.datasets[0];
+                const value = dataset.data[i];
+                const total = dataset.data.reduce((a, b) => a + b, 0);
+                const percentage = ((value / total) * 100).toFixed(0);
+                
+                return {
+                  text: `${label}: ${percentage}%`,
+                  fillStyle: dataset.backgroundColor[i],
+                  hidden: false,
+                  index: i,
+                  pointStyle: 'circle',
+                  lineWidth: 0
+                };
+              });
+            }
+            return [];
+          }
+        }
+      },
+      tooltip: {
+        enabled: true,
+        backgroundColor: 'rgba(15, 23, 42, 0.96)',
+        titleColor: '#ffffff',
+        bodyColor: '#e2e8f0',
+        borderColor: 'rgba(96, 165, 250, 0.4)',
+        borderWidth: 2,
+        padding: 14,
+        cornerRadius: 10,
+        titleFont: {
+          size: 13,
+          weight: '700',
+          family: "'Poppins', 'Inter', sans-serif"
+        },
+        bodyFont: {
+          size: 12,
+          weight: '500',
+          family: "'Poppins', 'Inter', sans-serif"
+        },
+        displayColors: true,
+        boxWidth: 12,
+        boxHeight: 12,
+        usePointStyle: true,
+        callbacks: {
+          title: function(context) {
+            return `📈 ${context[0].label}`;
+          },
+          label: function(context) {
+            if (context.parsed !== null) {
+              const total = context.dataset.data.reduce((a, b) => a + b, 0);
+              const percentage = ((context.parsed / total) * 100).toFixed(1);
+              return `  ${context.parsed} (${percentage}%)`;
+            }
+            return '';
+          }
+        }
+      }
+    },
+    animation: {
+      animateRotate: true,
+      animateScale: true,
+      duration: 1800,
+      easing: 'easeInOutCubic'
+    },
+    layout: {
+      padding: {
+        top: 15,
+        bottom: 15,
+        left: 15,
+        right: 15
+      }
+    },
+    elements: {
+      arc: {
+        borderWidth: 0,
+        borderColor: 'transparent',
+        hoverBorderWidth: 6,
+        hoverBorderColor: 'rgba(255, 255, 255, 0.9)',
+        borderRadius: 8,
+        hoverOffset: 18
+      }
+    },
+    cutout: '45%'
+  };
+
   const smoothScrollTo = (element, duration = 50) => {
     const targetY = element.getBoundingClientRect().top + window.scrollY;
     const startY = window.scrollY;
@@ -166,7 +495,27 @@ const CreationSupervisorDashboard = () => {
           {
             label: "Overall Progress",
             data: count,
-            backgroundColor: color,
+            backgroundColor: color.map((c, idx) => {
+              // Add gradient-like enhanced colors
+              const enhancedColors = {
+                '#4ade80': 'rgba(74, 222, 128, 0.95)',
+                '#fbbf24': 'rgba(251, 191, 36, 0.95)',
+                '#f87171': 'rgba(248, 113, 113, 0.95)',
+                '#60a5fa': 'rgba(96, 165, 250, 0.95)',
+                '#a78bfa': 'rgba(167, 139, 250, 0.95)',
+                '#34d399': 'rgba(52, 211, 153, 0.95)',
+                '#fb923c': 'rgba(251, 146, 60, 0.95)',
+              };
+              return enhancedColors[c] || c;
+            }),
+            borderWidth: 0,
+            borderColor: 'transparent',
+            hoverOffset: 25,
+            hoverBorderWidth: 8,
+            hoverBorderColor: 'rgba(255, 255, 255, 0.8)',
+            spacing: 6,
+            offset: 10,
+            borderRadius: 12
           },
         ],
       });
@@ -197,7 +546,27 @@ const CreationSupervisorDashboard = () => {
           {
             label: "Overall Progress",
             data: count,
-            backgroundColor: color,
+            backgroundColor: color.map((c, idx) => {
+              // Add gradient-like enhanced colors
+              const enhancedColors = {
+                '#4ade80': 'rgba(74, 222, 128, 0.95)',
+                '#fbbf24': 'rgba(251, 191, 36, 0.95)',
+                '#f87171': 'rgba(248, 113, 113, 0.95)',
+                '#60a5fa': 'rgba(96, 165, 250, 0.95)',
+                '#a78bfa': 'rgba(167, 139, 250, 0.95)',
+                '#34d399': 'rgba(52, 211, 153, 0.95)',
+                '#fb923c': 'rgba(251, 146, 60, 0.95)',
+              };
+              return enhancedColors[c] || c;
+            }),
+            borderWidth: 0,
+            borderColor: 'transparent',
+            hoverOffset: 25,
+            hoverBorderWidth: 8,
+            hoverBorderColor: 'rgba(255, 255, 255, 0.8)',
+            spacing: 6,
+            offset: 10,
+            borderRadius: 12
           },
         ],
       });
@@ -211,19 +580,44 @@ const CreationSupervisorDashboard = () => {
 
         Object.keys(courseData).forEach((statusKey) => {
           const [statusCount, statusColor] = courseData[statusKey];
+          labels.push(statusKey);
           dataValues.push(statusCount);
           backgroundColors.push(statusColor);
         });
+
+        // Check if course is unstarted (all values are 0)
+        const isUnstarted = dataValues.every(val => val === 0);
 
         return {
           labels,
           datasets: [
             {
               label: `Progress for ${courseKey}`,
-              data: dataValues,
-              backgroundColor: backgroundColors,
+              data: isUnstarted ? [1] : dataValues,
+              backgroundColor: isUnstarted ? ['rgba(226, 232, 240, 0.4)'] : backgroundColors.map((c, idx) => {
+                // Add gradient-like enhanced colors for small charts
+                const enhancedColors = {
+                  '#4ade80': 'rgba(74, 222, 128, 0.9)',
+                  '#fbbf24': 'rgba(251, 191, 36, 0.9)',
+                  '#f87171': 'rgba(248, 113, 113, 0.9)',
+                  '#60a5fa': 'rgba(96, 165, 250, 0.9)',
+                  '#a78bfa': 'rgba(167, 139, 250, 0.9)',
+                  '#34d399': 'rgba(52, 211, 153, 0.9)',
+                  '#fb923c': 'rgba(251, 146, 60, 0.9)',
+                };
+                return enhancedColors[c] || c;
+              }),
+              borderWidth: 0,
+              borderColor: 'transparent',
+              hoverOffset: 18,
+              hoverBorderWidth: 6,
+              hoverBorderColor: 'rgba(255, 255, 255, 0.9)',
+              spacing: 5,
+              offset: 8,
+              borderRadius: 8
             },
           ],
+          isUnstarted: isUnstarted
         };
       });
       console.log(chartConfigs);
@@ -291,7 +685,7 @@ const CreationSupervisorDashboard = () => {
                 style={{
                   minWidth: "250px",  // Ensures fixed width for horizontal scrolling
                   maxWidth: "350px",  // Restricts max width
-                  maxHeight: "600px", // Keeps container small
+                  // maxHeight: "600px", // Keeps container small
                   padding: "10px",
                   borderRadius: "8px",
                   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
@@ -304,7 +698,7 @@ const CreationSupervisorDashboard = () => {
                 {item.creation && (
                   <>
                     <h3>Overall Course Materials</h3>
-                    <div className="overall-progress-chart" style={{ height: "200px", marginLeft: "auto", marginRight: "auto" }}>
+                    <div className="overall-progress-chart">
                       <Pie
                         data={{
                           labels: item.creation.status_code,
@@ -312,10 +706,30 @@ const CreationSupervisorDashboard = () => {
                             {
                               label: "Overall Progress",
                               data: item.creation.count,
-                              backgroundColor: item.creation.color,
+                              backgroundColor: item.creation.color.map((c, idx) => {
+                                const enhancedColors = {
+                                  '#4ade80': 'rgba(74, 222, 128, 0.9)',
+                                  '#fbbf24': 'rgba(251, 191, 36, 0.9)',
+                                  '#f87171': 'rgba(248, 113, 113, 0.9)',
+                                  '#60a5fa': 'rgba(96, 165, 250, 0.9)',
+                                  '#a78bfa': 'rgba(167, 139, 250, 0.9)',
+                                  '#34d399': 'rgba(52, 211, 153, 0.9)',
+                                  '#fb923c': 'rgba(251, 146, 60, 0.9)',
+                                };
+                                return enhancedColors[c] || c;
+                              }),
+                              borderWidth: 0,
+                              borderColor: 'transparent',
+                              hoverOffset: 18,
+                              hoverBorderWidth: 6,
+                              hoverBorderColor: 'rgba(255, 255, 255, 0.9)',
+                              spacing: 5,
+                              offset: 8,
+                              borderRadius: 8
                             },
                           ],
                         }}
+                        options={smallChartOptions}
                       />
                     </div>
                   </>
@@ -519,7 +933,7 @@ const CreationSupervisorDashboard = () => {
                             )}
                             <div className="chart-grid">
                               <div className="chart-container">
-                                <Pie data={MainChartData} />
+                                <Pie data={MainChartData} options={modernChartOptions} />
                               </div>
                             </div>
                           </>
@@ -543,11 +957,9 @@ const CreationSupervisorDashboard = () => {
                             }}
                           >
                             <h3>{faculty.name}</h3>
-                            {selectedCard === faculty.uid && (
-                              <div className="card-details">
-                                <p ref={courseSelectionRef}>Faculty ID: {faculty.uid}</p>
-                              </div>
-                            )}
+                            <div className="card-details">
+                              <p ref={courseSelectionRef}>Faculty ID: {faculty.uid}</p>
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -555,16 +967,29 @@ const CreationSupervisorDashboard = () => {
                     
 
                       {ChartData.length > 0 && <>
-                        <div className="chart-grid">
+                        {selectedCard && facultyList.find(faculty => faculty.uid === selectedCard) && (
+                          <h3 ref={progressSectionRef} style={{textAlign: 'center', margin: '40px 0 20px 0', fontSize: '20px', color: '#1e40af'}}>
+                            Progress for {facultyList.find(faculty => faculty.uid === selectedCard).name} (Faculty ID: {selectedCard})
+                          </h3>
+                        )}
+                        <div className="chart-grid" style={{marginTop: "20px"}}>
                           <div className="chart-container">
-                            <Pie data={MainChartData} />
+                            <Pie data={MainChartData} options={smallChartOptions} />
                           </div>
                         </div>
-                        <div className="sub-progress-section" style={{ width: "100vw" }}>
+                        <div className="sub-progress-section">
                           {ChartData.map((chartData, index) => (
                             <div key={index} className="sub-progress-chart">
                               <h3>{chartData.datasets[0].label}</h3>
-                              <Pie data={chartData} />
+                              {chartData.isUnstarted ? (
+                                <div className="unstarted-course-placeholder">
+                                  <div className="placeholder-icon">�</div>
+                                  <p className="placeholder-text">No Course Work Yet</p>
+                                  <p className="placeholder-subtext">This course hasn't been started</p>
+                                </div>
+                              ) : (
+                                <Pie data={chartData} options={smallChartOptions} />
+                              )}
                             </div>
                           ))}
                         </div></>}

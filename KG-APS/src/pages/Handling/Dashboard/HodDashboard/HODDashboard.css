@@ -291,7 +291,7 @@
 
 /* Subtle hover effect for faculty cards */
 .faculty-card::after {
-  content: "";
+  /* content: ""; */
   position: absolute;
   top: 0;
   left: 0;

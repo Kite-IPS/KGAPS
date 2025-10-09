@@ -97,30 +97,77 @@
   
  
   .chart-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: 20px;
+    width: 100%;
   }
   
 
   .chart-container {
-    background-color: white;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: linear-gradient(145deg, #ffffff 0%, #fcfcfd 100%);
+    padding: 45px;
+    margin-bottom: 35px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 28px;
+    box-shadow: 0 24px 72px rgba(0, 0, 0, 0.1), 
+                0 10px 28px rgba(0, 0, 0, 0.06),
+                0 0 0 1px rgba(0, 0, 0, 0.03),
+                inset 0 2px 0 rgba(255, 255, 255, 1);
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 350px;
-    max-height: 350px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 520px;
+    height: 520px;
+    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    position: relative;
+    overflow: visible;
+  }
+
+  .chart-container::before {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    /* background: linear-gradient(135deg, 
+      rgba(96, 165, 250, 0.15) 0%, 
+      rgba(167, 139, 250, 0.12) 25%,
+      rgba(244, 114, 182, 0.10) 50%,
+      rgba(251, 146, 60, 0.12) 75%,
+      rgba(251, 191, 36, 0.15) 100%); */
+    border-radius: 28px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+    filter: blur(8px);
+  }
+  
+  .chart-container:hover::before {
+    opacity: 1;
   }
   
   .chart-container:hover {
-    transform: scale(1.03); 
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    /* transform: translateY(-16px) scale(1.04);  */
+    box-shadow: 0 32px 96px rgba(0, 0, 0, 0.14), 
+                0 16px 40px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(96, 165, 250, 0.3),
+                inset 0 2px 0 rgba(255, 255, 255, 1);
+    border-color: rgba(96, 165, 250, 0.4);
+  }
+  
+  canvas {
+    max-width: 100% !important;
+    max-height: 100% !important;
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+    margin: auto;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08));
   }
   
   canvas {
@@ -255,6 +302,207 @@
     color: #555;
   }
 
+  /* Extraordinary Faculty List Styling */
+  .faculty-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
+    margin: 50px 0 40px 0;
+    padding: 45px;
+    background: linear-gradient(135deg, 
+      rgba(249, 250, 251, 0.95) 0%, 
+      rgba(243, 244, 246, 0.98) 50%,
+      rgba(249, 250, 251, 0.95) 100%);
+    border-radius: 28px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06),
+                inset 0 2px 12px rgba(0, 0, 0, 0.03),
+                inset 0 -2px 8px rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    position: relative;
+    overflow: visible;
+  }
+
+  .faculty-list-container::before {
+    content: '';
+    position: absolute;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(135deg, 
+      rgba(96, 165, 250, 0.1) 0%, 
+      rgba(167, 139, 250, 0.08) 50%,
+      rgba(244, 114, 182, 0.1) 100%);
+    border-radius: 28px;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    z-index: -1;
+    filter: blur(12px);
+  }
+
+  .faculty-list-container:hover::before {
+    opacity: 1;
+  }
+
+  .faculty-card {
+    /* background: linear-gradient(145deg, #ffffff 0%, #fefefe 100%); */
+    padding: 28px 24px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08),
+                0 2px 8px rgba(0, 0, 0, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(226, 232, 240, 0.6);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* .faculty-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+      #60a5fa 0%, 
+      #a78bfa 50%, 
+      #f472b6 100%);
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    border-radius: 18px 18px 0 0;
+  } */
+
+  /* .faculty-card:hover::before {
+    opacity: 0;
+  } */
+
+  /* .faculty-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15),
+                0 6px 20px rgba(0, 0, 0, 0.08);
+    border-color: rgba(59, 130, 246, 0.4);
+    background: linear-gradient(145deg, #ffffff 0%, #f8fafc 100%);
+  } */
+
+  .faculty-card.selected {
+    background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+    box-shadow: 0 12px 36px rgba(59, 130, 246, 0.15),
+                0 4px 12px rgba(59, 130, 246, 0.1),
+                0 0 0 2px rgba(59, 130, 246, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+    border-color: rgba(59, 130, 246, 0.4);
+    /* transform: scale(1.04); */
+  }
+
+  /* .faculty-card.selected::before {
+    opacity: 1;
+    height: 5px;
+    background: linear-gradient(90deg, 
+      #3b82f6 0%, 
+      #8b5cf6 50%, 
+      #ec4899 100%);
+  } */
+
+  .faculty-card h3 {
+    margin: 0 0 16px 0;
+    padding: 12px 16px;
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
+    font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+    letter-spacing: 0.3px;
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    background: transparent;
+  }
+
+  .faculty-card.selected h3 {
+    color: #1e40af;
+    font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+  }
+
+  .faculty-card .card-details {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border-top: 2px solid rgba(59, 130, 246, 0.2);
+    border-radius: 6px;
+    font-size: 15px;
+    color: #1e293b;
+    font-weight: 600;
+    font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  }
+
+  .faculty-card:hover .card-details {
+    background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+    color: #1e40af;
+    border-top-color: rgba(59, 130, 246, 0.5);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(30, 64, 175, 0.15);
+  }
+
+  .faculty-card.selected .card-details {
+    color: #3b82f6;
+    border-top-color: rgba(59, 130, 246, 0.3);
+  }
+
+  .faculty-card .card-details p {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .faculty-card .card-details p::before {
+    content: '👤';
+    font-size: 16px;
+    /* opacity: 0.7; */
+  }
+
+  .faculty-card:hover h3 {
+    color: #1e40af;
+    font-weight: 700;
+  }
+
+  .faculty-card:hover {
+    transform: translateY(-6px) scale(1.02);
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12), 
+                0 6px 18px rgba(0, 0, 0, 0.08),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+/* 
+  .faculty-card::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #cbd5e1;
+    transition: all 0.3s ease;
+  } */
+
+  /* .faculty-card.selected::after {
+    background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+    width: 12px;
+    height: 12px;
+  } */
+
+  /* .faculty-card:hover::after {
+    background: #1e40af;
+    transform: translateY(-50%) scale(1.5);
+    box-shadow: 0 0 12px rgba(30, 64, 175, 0.6);
+    color: white;
+  } */
+
   .overall-progress-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);  /* Limit to exactly 5 columns */
@@ -313,4 +561,377 @@
   width: 100%;
   height: 3px;
   background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Modern sub-progress section styling - Extraordinary Design with Horizontal Scroll */
+.sub-progress-section {
+  display: flex;
+  flex-direction: row;
+  gap: 45px;
+  margin-top: 60px;
+  padding: 40px;
+  /* background: linear-gradient(135deg, rgba(249, 250, 251, 0.9) 0%, rgba(243, 244, 246, 0.95) 100%); */
+  border-radius: 24px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.03);
+  max-width: 100%;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(96, 165, 250, 0.5) rgba(226, 232, 240, 0.3);
+}
+
+.sub-progress-section::-webkit-scrollbar {
+  height: 10px;
+}
+
+.sub-progress-section::-webkit-scrollbar-track {
+  background: rgba(226, 232, 240, 0.3);
+  border-radius: 12px;
+}
+
+.sub-progress-section::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, 
+    rgba(96, 165, 250, 0.6) 0%, 
+    rgba(167, 139, 250, 0.6) 100%);
+  border-radius: 12px;
+  transition: background 0.3s ease;
+}
+
+.sub-progress-section::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, 
+    rgba(96, 165, 250, 0.9) 0%, 
+    rgba(167, 139, 250, 0.9) 100%);
+}
+
+.sub-progress-chart {
+  background: linear-gradient(145deg, #ffffff 0%, #fcfcfd 100%);
+  padding: 45px;
+  margin-bottom: 35px;
+  border-radius: 28px;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.1), 
+              0 10px 28px rgba(0, 0, 0, 0.06),
+              0 0 0 1px rgba(0, 0, 0, 0.03),
+              inset 0 2px 0 rgba(255, 255, 255, 1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 300px;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  position: relative;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.sub-progress-chart::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  /* background: linear-gradient(90deg, 
+    #60a5fa 0%, 
+    #a78bfa 25%, 
+    #f472b6 50%, 
+    #fb923c 75%, 
+    #fbbf24 100%); */
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  border-radius: 20px 20px 0 0;
+}
+
+.sub-progress-chart:hover::before {
+  opacity: 1;
+}
+
+.sub-progress-chart:hover {
+  box-shadow: 0 32px 96px rgba(0, 0, 0, 0.15), 
+              0 16px 48px rgba(0, 0, 0, 0.08),
+              0 0 0 1px rgba(0, 0, 0, 0.03),
+              inset 0 2px 0 rgba(255, 255, 255, 1);
+  transform: translateY(-10px) scale(1.02);
+  border-color: rgba(59, 130, 246, 0.15);
+}
+
+.sub-progress-chart h3 {
+  margin: 0 0 25px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0f172a;
+  font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+  text-align: center;
+  width: 100%;
+  padding-bottom: 16px;
+  border-bottom: 3px solid transparent;
+  background: linear-gradient(to right, transparent 0%, #e0e7ff 50%, transparent 100%) bottom;
+  background-size: 100% 3px;
+  background-repeat: no-repeat;
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+.sub-progress-chart:hover h3 {
+  color: #1e40af;
+  font-weight: 700;
+  border-bottom-color: rgba(59, 130, 246, 0.5);
+  background: linear-gradient(to right, transparent 0%, #dbeafe 50%, transparent 100%) bottom;
+}
+
+.sub-progress-chart > canvas {
+  width: 100% !important;
+  height: 340px !important;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.05));
+}
+
+/* Unstarted course placeholder - Extraordinary Design */
+.unstarted-course-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 380px;
+  max-width: 420px;
+  background: linear-gradient(135deg, 
+    rgba(241, 245, 249, 0.95) 0%, 
+    rgba(248, 250, 252, 0.98) 50%,
+    rgba(241, 245, 249, 0.95) 100%);
+  border-radius: 16px;
+  border: 2px dashed rgba(148, 163, 184, 0.4);
+  text-align: center;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.unstarted-course-placeholder::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    rgba(148, 163, 184, 0.08) 50%,
+    transparent 70%
+  );
+  animation: shimmer-rotate 3s linear infinite;
+}
+
+@keyframes shimmer-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.unstarted-course-placeholder:hover {
+  background: linear-gradient(135deg, 
+    rgba(226, 232, 240, 0.95) 0%, 
+    rgba(241, 245, 249, 0.98) 50%,
+    rgba(226, 232, 240, 0.95) 100%);
+  border-color: rgba(100, 116, 139, 0.5);
+  transform: scale(1.03);
+  box-shadow: inset 0 2px 12px rgba(0, 0, 0, 0.06),
+              0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.placeholder-icon {
+  font-size: 72px;
+  margin-bottom: 24px;
+  opacity: 0.5;
+  filter: grayscale(20%);
+  transition: all 0.4s ease;
+  z-index: 1;
+}
+
+.unstarted-course-placeholder:hover .placeholder-icon {
+  transform: scale(1.1) translateY(-4px);
+  opacity: 0.7;
+}
+
+.placeholder-text {
+  font-size: 19px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 12px 0;
+  font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+  letter-spacing: 0.3px;
+  z-index: 1;
+}
+
+.placeholder-subtext {
+  font-size: 15px;
+  font-weight: 500;
+  color: #64748b;
+  margin: 0 0 20px 0;
+  font-family: "'Poppins', 'Inter', 'Segoe UI', sans-serif";
+  z-index: 1;
+}
+
+.unstarted-course-placeholder::after {
+  content: 'Awaiting Data';
+  position: absolute;
+  bottom: 24px;
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  z-index: 1;
+}
+
+/* Enhanced overall progress chart styling - Extraordinary Design */
+.overall-progress-chart {
+  position: relative;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(226, 232, 240, 0.5);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06),
+              inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  transition: all 0.3s ease;
+}
+
+.overall-progress-chart:hover {
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+  transform: translateY(-2px);
+}
+
+.overall-progress-chart canvas {
+  width: 100% !important;
+  height: 340px !important;
+  max-width: 300px;
+  margin: 0 auto;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.05));
+}
+
+/* Enhanced legend visibility for all charts - Extraordinary Professional */
+.overall-progress-chart ul,
+.sub-progress-chart ul,
+.chart-container ul {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  margin: 20px 0 0 0 !important;
+  padding: 0 !important;
+  gap: 12px 16px !important;
+  line-height: 2 !important;
+}
+
+.overall-progress-chart ul li,
+.sub-progress-chart ul li,
+.chart-container ul li {
+  display: inline-flex !important;
+  align-items: center !important;
+  margin: 0 !important;
+  padding: 8px 14px !important;
+  background: linear-gradient(135deg, rgba(248, 250, 252, 0.8) 0%, rgba(241, 245, 249, 0.6) 100%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.6) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.overall-progress-chart ul li:hover,
+.sub-progress-chart ul li:hover,
+.chart-container ul li:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%) !important;
+  border-color: rgba(96, 165, 250, 0.4) !important;
+}
+
+.overall-progress-chart ul li span,
+.sub-progress-chart ul li span,
+.chart-container ul li span {
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+  font-family: 'Poppins', 'Inter', 'Segoe UI', 'Roboto', sans-serif !important;
+  letter-spacing: 0.2px !important;
+}
+
+/* Ensure chart containers allow content flow */
+.overall-progress-chart,
+.sub-progress-chart,
+.chart-container {
+  overflow: visible !important;
+}
+
+.overall-progress-container-1 h3 {
+  color: #2d3748;
+  font-family: "'Inter', 'Segoe UI', sans-serif";
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+.overall-progress-container-1 h1 {
+  color: #2d3748;
+  font-family: "'Inter', 'Segoe UI', sans-serif";
+  font-weight: 700;
+  font-size: 17px;
+  margin-bottom: 18px;
+  text-align: center;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 10px;
+}
+
+.overall-progress-container-1 {
+  background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08), 
+              0 4px 12px rgba(0, 0, 0, 0.04),
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+  position: relative;
+  overflow: visible;
+}
+
+.overall-progress-container-1::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(135deg, 
+    rgba(255, 255, 255, 0.9) 0%, 
+    rgba(240, 240, 240, 0.9) 50%,
+    rgba(255, 255, 255, 0.9) 100%);
+  border-radius: 8px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: -1;
+}
+
+.overall-progress-container-1:hover::before {
+  opacity: 1;
+}
+
+.overall-progress-container-1:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.12), 
+              0 6px 18px rgba(0, 0, 0, 0.08),
+              inset 0 1px 0 rgba(255, 255, 255, 1);
+  border-color: rgba(0, 0, 0, 0.1);
 }

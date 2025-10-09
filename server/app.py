@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@172.16.30.17/kgaps")
+    "postgresql://admin:admin@172.16.30.63/kgaps")
 conn = engine.connect()
 
 # helper functions
@@ -568,9 +568,10 @@ def head_of_department():
 # view for faculty
 @app.route('/api/handling_faculty', methods=['POST', 'GET'])
 def handling_faculty():
+    uid = request.json['uid']
     course_code=request.json['course_code']
     class_id = request.json['class_id']
-    q = sqlalchemy.text(f"SELECT * FROM faculty_table_handling WHERE course_code='{course_code}' and class_id='{class_id}';")
+    q = sqlalchemy.text(f"SELECT * FROM faculty_table_handling WHERE uid={uid} and course_code='{course_code}' and class_id='{class_id}';")
     if (conn.execute(q).fetchall()):
         r = conn.execute(q).fetchall()
         data = [dict(i._mapping) for i in r]
