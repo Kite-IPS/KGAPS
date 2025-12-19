@@ -28,7 +28,7 @@ services:
     env_file:
       - ./server/sqls/db.env
     volumes:
-      - local_pgdata:/var/lib/postgresql/data
+      - local_pgdata:/var/lib/postgresql
       - ./server/sqls/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - mynetwork

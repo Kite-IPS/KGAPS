@@ -16,7 +16,7 @@ app = Flask(__name__)
 CORS(app)
 app.secret_key = "helloworld"
 engine = sqlalchemy.create_engine(
-    "postgresql://admin:admin@172.16.30.63/kgaps")
+    "postgresql://admin:admin@192.168.56.1/kgaps")
 conn = engine.connect()
 
 # helper functions
@@ -87,30 +87,38 @@ print("Scheduler started")
 # verifies user details
 @app.route('/api/login', methods=['POST', 'GET'])
 def login():
-    if request.method == 'POST':
-        role = request.json['role']
-        uid = request.json['username']
-        password = request.json['password']
-        if uid.isalpha():
-            print("error")
-            return json.dumps({'Error': 'Incorrect details entered'})
-        q = sqlalchemy.text(f"SELECT uid,name,role_id,department_id FROM user_details_check WHERE uid='{uid}' and password='{password}' and role_id={role};")
-        r = conn.execute(q).fetchall()
-        if r:
-            data = [dict(i._mapping) for i in r]
-            if data[0]['role_id']==3:
-                print("here")
-                q = sqlalchemy.text(f"SELECT domain_id from l_domain_mentors where mentor_id={uid};")
-                if conn.execute(q).fetchone():
-                    data[0]['domain_id']=conn.execute(q).fetchone()[0]
-                else:
-                    return json.dumps({'Error':'Mentor has no assigned Domain'})
-            print(data)
-            response = jsonify(data[0])
-            return response
-        else:
-            print("error - incorrect details entered")
-            return json.dumps({'Error': 'Incorrect details entered'})
+    try:
+        if request.method == 'POST':
+            role = request.json.get('role')
+            uid = request.json.get('username')
+            password = request.json.get('password')
+
+            if not uid or not password:
+                return jsonify({'error': 'Username and password are required'}), 400
+
+            if uid.isalpha():
+                return jsonify({'error': 'Invalid username format'}), 400
+
+            q = sqlalchemy.text(
+                "SELECT uid, name, role_id, department_id FROM user_details_check WHERE uid=:uid AND password=:password AND role_id=:role"
+            )
+            r = conn.execute(q, {"uid": uid, "password": password, "role": role}).fetchall()
+
+            if r:
+                data = [dict(i._mapping) for i in r]
+                if data[0]['role_id'] == 3:
+                    q = sqlalchemy.text("SELECT domain_id FROM l_domain_mentors WHERE mentor_id=:uid")
+                    domain_result = conn.execute(q, {"uid": uid}).fetchone()
+                    if domain_result:
+                        data[0]['domain_id'] = domain_result[0]
+                    else:
+                        return jsonify({'error': 'Mentor has no assigned domain'}), 400
+                return jsonify(data[0]), 200
+            else:
+                return jsonify({'error': 'Incorrect username, password, or role'}), 401
+    except Exception as e:
+        print(f"Error during login: {e}")
+        return jsonify({'error': 'An unexpected error occurred'}), 500
 
 # creates new user
 @app.route('/api/register', methods=['POST', 'GET'])
@@ -915,8 +923,8 @@ def course_progress():
     q = sqlalchemy.text(f"""
         SELECT all_courses.uid, t.name, all_courses.course_code, COALESCE(active_courses.hours_completed, 0) AS hours_completed, COALESCE(active_courses.total_hours, 0) AS total_hours, cd.course_name,all_courses.class_id 
         FROM (SELECT DISTINCT course_code, uid,class_id FROM faculty_table_handling WHERE course_code = '{course_code}') AS all_courses 
-        LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) AS total_hours,class_id 
-        FROM faculty_table_handling WHERE status_code = 5 AND course_code = '{course_code}'  
+        LEFT JOIN (SELECT course_code, uid, SUM(hours_completed) AS hours_completed, SUM(total_hours) 
+        AS total_hours,class_id FROM faculty_table_handling WHERE status_code = 5 AND course_code = '{course_code}'  
         GROUP BY course_code, uid,class_id) AS active_courses ON all_courses.course_code = active_courses.course_code 
 		AND all_courses.uid = active_courses.uid and all_courses.class_id=active_courses.class_id JOIN t_users t ON all_courses.uid = t.uid 
 		JOIN t_course_details cd ON all_courses.course_code = cd.course_code order by class_id;
@@ -941,7 +949,6 @@ def course_progress():
             a.class_id,
             c.course_code,
             d.course_name,
-            a.handler_id,
             COALESCE(SUM(c.progress), 0) / NULLIF(COUNT(c.assignment_id), 0) AS avg_progress
         FROM 
             l_class_course a
@@ -963,7 +970,6 @@ def course_progress():
             a.class_id,
             c.course_code,
             d.course_name,
-            a.handler_id,
             COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
         FROM 
             l_class_course a
@@ -1064,7 +1070,7 @@ def department_overall_progress():
     department_id = request.json['department_id']
     q = sqlalchemy.text(f"""
         SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
-        COUNT(*) AS count FROM faculty_table f,l_course_departments l 
+        COUNT(*) FROM faculty_table f,l_course_departments l 
         WHERE f.course_code=l.course_code and department_id={department_id} 
         GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
     """)
@@ -1156,7 +1162,7 @@ def department_overall_progress():
         temp={'department_id':department_id,'avg_pass_percentage':i[0]}
         results_data.append(temp)
     print(assignment_data,codes,mdata,mcolor)
-    return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'assignment_data':assignment_data,'results_data':results_data})
+    return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'results_data':results_data})
 
 # used to generate data for progress of all departments
 @app.route('/api/all_department_overall_progress', methods=['POST', 'GET'])
@@ -1166,7 +1172,7 @@ def all_department_overall_progress():
     for department_id in departments:
         q = sqlalchemy.text(f"""
             SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
-            COUNT(*) AS count FROM faculty_table f,l_course_departments l 
+            COUNT(*) FROM faculty_table f,l_course_departments l 
             WHERE f.course_code=l.course_code and department_id={department_id} 
             GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
         """)
@@ -1268,4 +1274,4 @@ if __name__ == '__main__':
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()  # Graceful shutdown of the scheduler
         print("Scheduler stopped.")
-    
+
