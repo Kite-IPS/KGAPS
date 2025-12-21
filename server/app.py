@@ -252,17 +252,29 @@ def supervisor_courses():
 # gets the courses assigned to a particular faculty
 @app.route('/api/handling_faculty_courses', methods=['POST', 'GET'])
 def handling_faculty_courses():
-    uid = request.json['uid']
-    q = sqlalchemy.text(
-        f"SELECT l.course_code,t.course_name,l.class_id FROM l_class_course l,t_course_details t WHERE l.handler_id='{uid}' and l.course_code=t.course_code;")
-    if conn.execute(q).fetchall() is not None:
-        r = conn.execute(q).fetchall()
-        print(r)
+    try:
+        # Validate the request payload
+        if not request.json:
+            return jsonify({'error': 'Request payload must be in JSON format'}), 400
+        if 'uid' not in request.json:
+            return jsonify({'error': 'Missing required parameter: uid'}), 400
+
+        uid = request.json['uid']
+        q = sqlalchemy.text(
+            "SELECT l.course_code, t.course_name, l.class_id "
+            "FROM l_class_course l, t_course_details t "
+            "WHERE l.handler_id = :uid AND l.course_code = t.course_code;"
+        )
+        r = conn.execute(q, {"uid": uid}).fetchall()
+
         if r:
             data = [dict(i._mapping) for i in r]
-            return json.dumps(data)
-    else:
-        return json.dumps({"response":"no courses assigned"})
+            return jsonify(data), 200
+        else:
+            return jsonify({"response": "No courses assigned"}), 404
+    except Exception as e:
+        print(f"Error in handling_faculty_courses: {e}")
+        return jsonify({'error': 'An unexpected error occurred'}), 500
     
 
 # gets the course assigned to a particular course coordinator
@@ -576,16 +588,39 @@ def head_of_department():
 # view for faculty
 @app.route('/api/handling_faculty', methods=['POST', 'GET'])
 def handling_faculty():
-    uid = request.json['uid']
-    course_code=request.json['course_code']
-    class_id = request.json['class_id']
-    q = sqlalchemy.text(f"SELECT * FROM faculty_table_handling WHERE uid={uid} and course_code='{course_code}' and class_id='{class_id}';")
-    if (conn.execute(q).fetchall()):
-        r = conn.execute(q).fetchall()
-        data = [dict(i._mapping) for i in r]
-        print(data)
-        return json.dumps(data)
-    return json.dumps({'response':'No topics assigned yet'})
+    try:
+        if not request.json:
+            return jsonify({'error': 'Request payload must be in JSON format'}), 400
+        # course_code and class_id are required; uid is optional
+        for key in ('course_code', 'class_id'):
+            if key not in request.json:
+                return jsonify({'error': f'Missing required parameter: {key}'}), 400
+
+        uid = request.json.get('uid')
+        course_code = request.json.get('course_code')
+        class_id = request.json.get('class_id')
+
+        if uid is not None:
+            q = sqlalchemy.text(
+                "SELECT * FROM faculty_table_handling WHERE uid = :uid AND course_code = :course_code AND class_id = :class_id;"
+            )
+            params = {"uid": uid, "course_code": course_code, "class_id": class_id}
+        else:
+            q = sqlalchemy.text(
+                "SELECT * FROM faculty_table_handling WHERE course_code = :course_code AND class_id = :class_id;"
+            )
+            params = {"course_code": course_code, "class_id": class_id}
+
+        r = conn.execute(q, params).fetchall()
+
+        if r:
+            data = [dict(i._mapping) for i in r]
+            print(data)
+            return jsonify(data), 200
+        return jsonify({'response': 'No topics assigned yet'}), 404
+    except Exception as e:
+        print(f"Error in handling_faculty: {e}")
+        return jsonify({'error': 'An unexpected error occurred'}), 500
 
 
 # view for hod and supervisor (for admin-entry part)
@@ -1022,7 +1057,6 @@ def class_progress():
             a.class_id,
             c.course_code,
             d.course_name,
-            a.handler_id,
             COALESCE(SUM(c.progress), 0) / NULLIF(COUNT(c.assignment_id), 0) AS avg_progress
         FROM 
             l_class_course a
@@ -1044,7 +1078,6 @@ def class_progress():
             a.class_id,
             c.course_code,
             d.course_name,
-            a.handler_id,
             COALESCE(SUM(c.pass_percentage), 0) / NULLIF(COUNT(c.result_id), 0) AS avg_pass_percentage
         FROM 
             l_class_course a
