@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local envs, temp files, caches
+.env
+temp_bundle.js
+temp_*.js
+__pycache__/
+server/.env
+server/sqls/db.env

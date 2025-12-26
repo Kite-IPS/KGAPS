@@ -1,3 +1,8 @@
 .dist
 venv/
 
+# Local server secrets and caches
+server/.env
+server/sqls/db.env
+__pycache__/
+
