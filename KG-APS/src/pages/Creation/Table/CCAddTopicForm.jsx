@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
+import api from '@/apiConfig';
 import "./CreationTopicAddForm.css"; // Import the CSS file
 
 const CreationTopicAddForm = () => {
@@ -14,17 +14,13 @@ const CreationTopicAddForm = () => {
     useEffect(() => {
         const fetchStaffList = async () => {
             try {
-                const res = await axios.post("http://localhost:8000/api/coordinator_courses", {
+                const res = await api.post("/api/coordinator_courses", {
                     uid: data.uid,
                 });
                 const courseData = res.data[0];
                 setCourse(courseData);
                 if(courseData){
-                const response = await axios({
-                    url: 'http://localhost:8000/api/faculty_course_info',
-                    method: 'POST',
-                    data: { 'course_code': courseData.course_code }
-                });
+                const response = await api.post('/api/faculty_course_info', { 'course_code': courseData.course_code });
                 const resData = response.data.filter( (item, index, self) => index === self.findIndex((t) => t.uid === item.uid));
                 setStaffList(resData);}
                 else{
@@ -54,7 +50,7 @@ const CreationTopicAddForm = () => {
             return;
         }
         try {
-            const res = await axios.post("http://localhost:8000/api/add_topic", formData);
+            const res = await api.post("/api/add_topic", formData);
             console.log(res);
             window.location.reload();
         } catch (e) {

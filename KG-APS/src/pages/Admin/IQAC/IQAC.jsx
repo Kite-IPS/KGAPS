@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '@/apiConfig';
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import "./Admin-entry.css";
@@ -23,7 +23,7 @@ const AdminComponent = () => {
 
   const fetchCourses = async (data) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/courses",data=data);
+      const res = await api.post("/api/courses",data=data);
       if (res) {
         setResponse(res.data);
         setCourses(res.data);
@@ -36,7 +36,7 @@ const AdminComponent = () => {
 
   const addCourse = async (data) => {
     try {
-        const res = await axios.post("http://localhost:8000/api/add_course",data=data);
+        const res = await api.post("/api/add_course",data=data);
         if (res) {
           setResponse(res.data);
         }
@@ -47,7 +47,7 @@ const AdminComponent = () => {
 
   const getTopic = async (data) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/topics",data=data);
+      const res = await api.post("/api/topics",data=data);
       if (res) {
         setResponse(res.data);
         setTopics(res.data);
@@ -59,7 +59,7 @@ const AdminComponent = () => {
 
   const registerUserInfo = async (data) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/register",data=data);
+      const res = await api.post("/api/register", data);
       if (res) {
         setResponse(res.status);
         console.log(response);
@@ -72,7 +72,7 @@ const AdminComponent = () => {
 
   const getMentorListDetails = async (data) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/mentor_list",data=data);
+      const res = await api.post("/api/mentor_list", data);
       if (res) {
         setResponse(res.status);
         setMentorList(res.data);

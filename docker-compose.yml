@@ -16,22 +16,37 @@ services:
     ports:
       - '5001:5001'
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
     networks:
       - mynetwork
+    restart: unless-stopped
   db:
     container_name: postgres-server
-    image: postgres
+    image: postgres:15-alpine
     restart: always
     ports:
       - "5432:5432"
-    env_file:
-      - ./server/sqls/db.env
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: kgaps
+      PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
-      - local_pgdata:/var/lib/postgresql
+      - local_pgdata:/var/lib/postgresql/data
       - ./server/sqls/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     networks:
       - mynetwork
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d kgaps"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     
   pgadmin:
     image: dpage/pgadmin4
@@ -42,10 +57,12 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     environment:
-     PGADMIN_DEFAULT_EMAIL: admin@admin.com
-     PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     networks:
       - mynetwork
+    depends_on:
+      - db
     
     
 volumes:

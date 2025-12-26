@@ -23,9 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
-# Local envs, temp files, caches
-.env
-temp_bundle.js
+# Local build & modules
+node_modules/
+dist/
 temp_*.js
 __pycache__/
 server/.env

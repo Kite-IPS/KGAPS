@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../Table.css";
-import axios from "axios";
+import api from '../../../api.js';
 import HandlingSidebar from "../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2.jsx';
 
@@ -44,7 +44,7 @@ const HandlingHODTable = () => {
 
   const verifyTopic = async (key) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/verify_hours", {
+      const res = await api.post("/api/verify_hours", {
         topic_id: key,
         class_id: selectedClass,
       });
@@ -61,8 +61,8 @@ const HandlingHODTable = () => {
     const fetchCourses = async () => {
       try {
         if (selectedClass) {
-          const courseResponse = await axios.post(
-            "http://localhost:8000/api/handling_department_courses",
+          const courseResponse = await api.post(
+            "/api/handling_department_courses",
             {
               class_id: selectedClass,
             }
@@ -89,7 +89,7 @@ const HandlingHODTable = () => {
     if (!selectedOption) return;
     console.log(selectedOption);
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
+      const res = await api.post("/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });
@@ -112,7 +112,7 @@ const HandlingHODTable = () => {
   const fetchAssignmentTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+      const res = await api.post("/api/handling_faculty_assignments", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });
@@ -131,7 +131,7 @@ const HandlingHODTable = () => {
   const fetchResultTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+      const res = await api.post("/api/handling_faculty_results", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });

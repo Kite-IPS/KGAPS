@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import HandlingSidebar from "../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2.jsx';
-import axios from 'axios';
+import api from '../../../api.js';
 
 const HandlingSupervisorTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -44,8 +44,8 @@ const HandlingSupervisorTable = () => {
     const fetchCourses = async () => {
       try {
         if (selectedClass) {
-          const courseResponse = await axios.post(
-            "http://localhost:8000/api/handling_department_courses",
+          const courseResponse = await api.post(
+            "/api/handling_department_courses",
             {
               class_id: selectedClass,
             }
@@ -73,7 +73,7 @@ const HandlingSupervisorTable = () => {
     if (!selectedOption) return;
     console.log(selectedOption);
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
+      const res = await api.post("/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });
@@ -93,7 +93,7 @@ const HandlingSupervisorTable = () => {
   const fetchAssignmentTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+      const res = await api.post("/api/handling_faculty_assignments", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });
@@ -112,7 +112,7 @@ const HandlingSupervisorTable = () => {
   const fetchResultTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+      const res = await api.post("/api/handling_faculty_results", {
         course_code: selectedOption.course_code,
         class_id: selectedClass,
       });

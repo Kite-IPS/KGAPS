@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import "../../Table.css";
-import axios from 'axios';
+import api from '@/apiConfig';
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 
@@ -51,7 +51,7 @@ const CreationHODTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/department_courses",data);
+        const courseResponse = await api.post("/api/department_courses", data);
         if (courseResponse.data) {
           setCourseList(courseResponse.data); 
           if (courseResponse.data.length > 0) {
@@ -80,7 +80,7 @@ const CreationHODTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/head_of_department", {
+      const res = await api.post("/api/head_of_department", {
         course_code: selectedOption.course_code,
       }); 
       if (res.data && !('response' in res.data)) {

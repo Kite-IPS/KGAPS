@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Image from '../../assets/image.jpg';
 import './Login.css';
-import axios from 'axios';
+import api from '@/apiConfig';
 import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
@@ -46,7 +46,7 @@ export default function Login() {
         };
 
         try {
-            const res = await axios.post("http://localhost:8000/api/login", loginData);
+            const res = await api.post("/api/login", loginData);
             const response = res.data;
             console.log(response);
 
@@ -96,7 +96,7 @@ export default function Login() {
                         </div>
                         {role !== "5" && (
                             <div className="drop-down-container">
-                                <select name="section" id="roles" value={section} onChange={(e) => setSection(e.target.value)}>
+                                <select name="section" id="section" value={section} onChange={(e) => setSection(e.target.value)}>
                                     <option value="0">Creation</option>
                                     <option value="1">Handling</option>
                                 </select>

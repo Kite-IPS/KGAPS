@@ -2,7 +2,12 @@
 venv/
 
 # Local server secrets and caches
-server/.env
-server/sqls/db.env
 __pycache__/
+
+# Common project envs and frontend build
+*.env.local
+KG-APS/node_modules/
+KG-APS/dist/
+
+
 

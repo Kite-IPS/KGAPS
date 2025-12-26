@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./HODDashboard.css";
-import axios from "axios";
+import api from '@/apiConfig';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
@@ -39,8 +39,8 @@ function HandlingHODDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/department_courses",
+        const course = await api.post(
+          "/api/department_courses",
           data,
           {
             headers: { "Content-Type": "application/json" },
@@ -51,8 +51,8 @@ function HandlingHODDashboard() {
         console.error("Error fetching data:", error);
       }
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/department_overall_progress",
+        const course = await api.post(
+          "/api/department_overall_progress",
           { department_id: data.department_id },
           {
             headers: { "Content-Type": "application/json" },
@@ -84,8 +84,8 @@ function HandlingHODDashboard() {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const faculty = await axios.post(
-          "http://localhost:8000/api/faculty_info",
+        const faculty = await api.post(
+          "/api/faculty_info",
           { department_id: data.department_id },
           {
             headers: { "Content-Type": "application/json" },
@@ -140,8 +140,8 @@ function HandlingHODDashboard() {
 
   const fetchChartDataCourse = async (selectedCourse) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/course_progress",
+      const res = await api.post(
+        "/api/course_progress",
         selectedCourse,
         {
           headers: { "Content-Type": "application/json" },
@@ -159,8 +159,8 @@ function HandlingHODDashboard() {
 
   const fetchChartDataClass = async (class_id) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/class_progress",
+      const res = await api.post(
+        "/api/class_progress",
         { class_id: class_id },
         {
           headers: { "Content-Type": "application/json" },
@@ -177,8 +177,8 @@ function HandlingHODDashboard() {
   };
   const fetchFacultyData = async (option) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/faculty_progress",
+      const res = await api.post(
+        "/api/faculty_progress",
         option,
         {
           headers: { "Content-Type": "application/json" },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from "axios";
+import api from '@/apiConfig';
 import "./FacultyAddAssignment.css"; // Import the CSS file
 
 const FacultyAddResult = () => {
@@ -14,7 +14,7 @@ const FacultyAddResult = () => {
     useEffect(() => {
         const fetchFacultyCourseList = async () => {
             try {
-                const res = await axios.post("http://localhost:8000/api/faculty_courses", {
+                const res = await api.post("/api/faculty_courses", {
                     uid: data.uid,
                 });
                 const courseData = res.data[0];
@@ -54,7 +54,7 @@ const FacultyAddResult = () => {
             alert("Please enter a valid Google Sheets link!");
             return;}
         try {
-            const res = await axios.post("http://localhost:8000/api/add_result", formData);
+            const res = await api.post("/api/add_result", formData);
             console.log(res);
             window.location.reload();
         } catch (e) {
@@ -66,7 +66,7 @@ const FacultyAddResult = () => {
         const getclass = async () => {
             console.log(resultCourse);
             if(resultCourse){
-        const res = await axios.post("http://localhost:8000/api/course_classes_assignments", {
+        const res = await api.post("/api/course_classes_assignments", {
             uid: data.uid,
             course_code:resultCourse,
         });

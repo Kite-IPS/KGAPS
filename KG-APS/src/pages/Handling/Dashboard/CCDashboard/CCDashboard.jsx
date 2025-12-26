@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import './CCDashboard.css';
-import axios from 'axios';
+import api from '@/apiConfig';
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../HandlingSidebar2/HandlingSidebar2.jsx';
 
@@ -51,23 +51,17 @@ function HandlingCCDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios({
-          url: "http://localhost:8000/api/coordinator_courses",
-          method: "POST",
+        const course = await api.post("/api/coordinator_courses", data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          data: data,
         });
         console.log(course.data);
         setCourse(course.data);
-        const res = await axios({
-          url: "http://localhost:8000/api/course_progress",
-          method: "POST",
+        const res = await api.post("/api/course_progress", course.data[0], {
           headers: {
             'Content-Type': 'application/json'
           },
-          data: course.data[0],
         });
         console.log(res.data);
         if(res){

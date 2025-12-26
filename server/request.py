@@ -286,8 +286,11 @@ def send_post_requests(base_url, routes, data):
             print(f"Failed to send POST to {url}: {e}\n")
 
 if __name__ == "__main__":
-    # Base URL of the API server
-    base_url = "http://127.0.0.1:8000/api"
+    # Allow overriding host/port via environment (useful for Docker or host runs)
+    import os
+    host = os.getenv('API_HOST', '127.0.0.1')
+    port = os.getenv('API_PORT', '5001')
+    base_url = f"http://{host}:{port}/api"
 
     # List of routes to send POST requests to
     routes = [

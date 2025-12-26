@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
-import axios from "axios";
+import api from '@/apiConfig';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
@@ -174,7 +174,7 @@ const CreationCCDashboard = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/coordinator_courses", {
+        const courseResponse = await api.post("/api/coordinator_courses", {
           uid: data.uid,
         });
         if (courseResponse.data) {
@@ -191,23 +191,17 @@ const CreationCCDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios({
-          url: "http://localhost:8000/api/coordinator_courses",
-          method: "POST",
+        const course = await api.post("/api/coordinator_courses", data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          data: data,
         });
         console.log(course.data[0]);
         if (course) {
-          const res = await axios({
-            url: "http://localhost:8000/api/course_progress",
-            method: "POST",
+          const res = await api.post("/api/course_progress", course.data[0], {
             headers: {
               'Content-Type': 'application/json',
             },
-            data: course.data[0],
           });
           if (res.data.main.status_code.length > 0) {
             setShowStuff(true);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useRef } from "react";
 import "./DMDashboard.css";
-import axios from "axios";
+import api from '@/apiConfig';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
@@ -75,8 +75,8 @@ function HandlingDMDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/domain_courses",
+        const course = await api.post(
+          "/api/domain_courses",
           data,
           {
             headers: { "Content-Type": "application/json" },
@@ -98,8 +98,8 @@ function HandlingDMDashboard() {
 
   const fetchChartData = async (selectedCourse) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/course_progress",
+      const res = await api.post(
+        "/api/course_progress",
         selectedCourse,
         {
           headers: { "Content-Type": "application/json" },

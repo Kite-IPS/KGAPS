@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import "../../Table.css";
 import HandlingSidebar from "../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2.jsx';
-import axios, { Axios } from 'axios';
+import api from '@/apiConfig';
 
 const HandlingCCTable = () => {
   const data = JSON.parse(sessionStorage.getItem("userData"));
@@ -41,7 +41,7 @@ const HandlingCCTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/handling_coordinator_courses", {
+        const courseResponse = await api.post("/api/handling_coordinator_courses", {
           uid: data.uid,
     
         });
@@ -62,7 +62,7 @@ const HandlingCCTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
+      const res = await api.post("/api/handling_faculty", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });
@@ -83,7 +83,7 @@ const HandlingCCTable = () => {
   const fetchAssignmentTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+      const res = await api.post("/api/handling_faculty_assignments", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });
@@ -100,7 +100,7 @@ const HandlingCCTable = () => {
   const fetchResultTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+      const res = await api.post("/api/handling_faculty_results", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });

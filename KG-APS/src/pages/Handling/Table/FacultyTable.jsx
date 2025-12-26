@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from 'react';
 import "../../Table.css";
-import axios from 'axios';
+import api from '../../../api.js';
 import HandlingSidebar from '../HandlingSidebar/HandlingSidebar';
 import HandlingSidebar2 from '../HandlingSidebar2/HandlingSidebar2';
 import FacultyAddAssignment from '../Forms/FacultyAddAssignment';
@@ -51,7 +51,7 @@ const HandlingFacultyTable = () => {
 
   const updateHours = async (key) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/edithourscompleted", {
+      const res = await api.post("/api/edithourscompleted", {
         topic_id: key,
         handler_id: data.uid,
         class_id: selectedOption.class_id,
@@ -68,7 +68,7 @@ const HandlingFacultyTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/handling_faculty_courses", {
+        const courseResponse = await api.post("/api/handling_faculty_courses", {
           uid: data.uid,
         });
         if (courseResponse.data) {
@@ -88,7 +88,7 @@ const HandlingFacultyTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty", {
+      const res = await api.post("/api/handling_faculty", {
         uid: data.uid,
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
@@ -114,7 +114,7 @@ const HandlingFacultyTable = () => {
   const fetchAssignmentTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_assignments", {
+      const res = await api.post("/api/handling_faculty_assignments", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });
@@ -132,7 +132,7 @@ const HandlingFacultyTable = () => {
   const fetchResultTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/handling_faculty_results", {
+      const res = await api.post("/api/handling_faculty_results", {
         course_code: selectedOption.course_code,
         class_id: selectedOption.class_id,
       });

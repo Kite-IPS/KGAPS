@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
-import axios from "axios";
+import api from '@/apiConfig';
 import { useLocation } from "react-router-dom";
 import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -410,8 +410,8 @@ const CreationSupervisorDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/department_courses",
+        const course = await api.post(
+          "/api/department_courses",
           { department_id: selectedDepartment },
           {
             headers: { "Content-Type": "application/json" },
@@ -427,8 +427,9 @@ const CreationSupervisorDashboard = () => {
       }
 
       try {
-        const progress = await axios.post(
-          "http://localhost:8000/api/all_department_overall_progress",
+        const progress = await api.post(
+          "/api/all_department_overall_progress",
+          {},
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -450,8 +451,8 @@ const CreationSupervisorDashboard = () => {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const faculty = await axios.post(
-          "http://localhost:8000/api/faculty_info",
+        const faculty = await api.post(
+          "/api/faculty_info",
           { department_id: selectedDepartment },
           {
             headers: { "Content-Type": "application/json" },
@@ -479,8 +480,8 @@ const CreationSupervisorDashboard = () => {
 
   const fetchChartData = async (selectedCourse) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/course_progress",
+      const res = await api.post(
+        "/api/course_progress",
         selectedCourse,
         {
           headers: { "Content-Type": "application/json" },
@@ -526,13 +527,10 @@ const CreationSupervisorDashboard = () => {
 
   const fetchData = async (option) => {
     try {
-      const res = await axios({
-        url: "http://localhost:8000/api/faculty_progress",
-        method: "POST",
+      const res = await api.post("/api/faculty_progress", option, {
         headers: {
           "Content-Type": "application/json",
         },
-        data: option,
       });
 
       const response = res.data;

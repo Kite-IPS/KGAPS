@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Pie } from "react-chartjs-2";
-import axios from "axios";
+import api from '@/apiConfig';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { useLocation } from "react-router-dom";
@@ -319,8 +319,8 @@ const CreationHodDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/department_courses",
+        const course = await api.post(
+          "/api/department_courses",
           data,
           {
             headers: { "Content-Type": "application/json" },
@@ -353,8 +353,8 @@ const CreationHodDashboard = () => {
 
   const fetchChartData = async (selectedCourse) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/course_progress",
+      const res = await api.post(
+        "/api/course_progress",
         selectedCourse,
         {
           headers: { "Content-Type": "application/json" },
@@ -380,13 +380,10 @@ const CreationHodDashboard = () => {
 
   const fetchData = async (option) => {
     try {
-      const res = await axios({
-        url: "http://localhost:8000/api/faculty_progress",
-        method: "POST",
+      const res = await api.post("/api/faculty_progress", option, {
         headers: {
           "Content-Type": "application/json",
         },
-        data: option,
       });
 
       const response = res.data;
@@ -487,8 +484,8 @@ const CreationHodDashboard = () => {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const faculty = await axios.post(
-          "http://localhost:8000/api/faculty_info",
+        const faculty = await api.post(
+          "/api/faculty_info",
           { department_id: data.department_id },
           {
             headers: { "Content-Type": "application/json" },

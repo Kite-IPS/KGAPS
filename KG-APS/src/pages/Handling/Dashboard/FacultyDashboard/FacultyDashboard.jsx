@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './FacultyDashboard.css';
-import axios from 'axios';
+import api from '@/apiConfig';
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../HandlingSidebar2/HandlingSidebar2.jsx';
 
@@ -53,7 +53,7 @@ function HandlingFacultyDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.post("http://localhost:8000/api/faculty_progress", data, {
+        const res = await api.post("/api/faculty_progress", data, {
           headers: { 'Content-Type': 'application/json' },
         });
         if (res) {

@@ -13,6 +13,10 @@ RUN npm install
 # Copy all files to the container
 COPY . .
 
+# Allow passing API base URL at build time
+ARG VITE_API_URL=http://localhost:5001
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the React app
 RUN npm run build
 

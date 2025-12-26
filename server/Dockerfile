@@ -1,13 +1,19 @@
-FROM python:3.9-bullseye
+FROM python:3.11-slim
 
-RUN python3 -m pip install --upgrade pip
+# Install curl for health checks
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m pip install --upgrade pillow
+WORKDIR /app
 
-WORKDIR /server
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . /server
+# Copy application code
+COPY . .
 
-RUN python3 -m pip install -r requirements.txt
+# Expose port
+EXPOSE 5001
 
-CMD [ "python", "app.py"]
+# Run the application
+CMD ["python", "app.py"]

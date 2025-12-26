@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from '@/apiConfig';
 import React, { useState, useEffect } from 'react';
 import "./Admin-entry.css";
 
@@ -28,7 +28,7 @@ const AssigningRoleToCoursesComponent = () => {
     const value = parseInt(event.target.value);
     setFacultyDepartment(value);
     try {
-        const res = await axios.post("http://localhost:8000/api/faculty_info",{department_id:value});
+        const res = await api.post("/api/faculty_info", { department_id: value });
         if (res) {
           setFaculty(res.data);
           console.log(res.data);
@@ -42,7 +42,7 @@ const AssigningRoleToCoursesComponent = () => {
     const value = parseInt(event.target.value);
     setCoordinatorDepartment(value);
     try {
-        const res = await axios.post("http://localhost:8000/api/course_coordinator_info",{department_id:value});
+        const res = await api.post("/api/course_coordinator_info", { department_id: value });
         if (res) {
           setCoordinators(res.data);
           console.log(res.data);
@@ -56,7 +56,7 @@ const AssigningRoleToCoursesComponent = () => {
     const value = parseInt(event.target.value);
     setDomainMentorDepartment(value);
     try {
-        const res = await axios.post("http://localhost:8000/api/domain_mentor_info",{department_id:value});
+        const res = await api.post("/api/domain_mentor_info", { department_id: value });
         if (res) {
           setDomainMentors(res.data);
           console.log(res.data);
@@ -71,7 +71,7 @@ const AssigningRoleToCoursesComponent = () => {
     const value = parseInt(event.target.value);
     setCourseDepartment(value);
     try {
-      const res = await axios.post("http://localhost:8000/api/courses",{department_id:value});
+      const res = await api.post("/api/courses", { department_id: value });
       if (res) {
         setCourses(res.data);
         console.log(res.data);
@@ -84,7 +84,7 @@ const AssigningRoleToCoursesComponent = () => {
   const facultyClassChange = async (event) => {
     const value = event.target.value;
     try {
-      const res = await axios.post("http://localhost:8000/api/course_classes",{course_code:value});
+      const res = await api.post("/api/course_classes", { course_code: value });
       if (res) {
         setClasses(res.data);
         console.log(res.data);
@@ -101,7 +101,7 @@ const AssigningRoleToCoursesComponent = () => {
    }else{
     console.log(facultyClass);
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_course",{course_code:selectedCourse,uid:selectedFaculty,class_id:facultyClass});
+      const res = await api.post("/api/assign_course", { course_code: selectedCourse, uid: selectedFaculty, class_id: facultyClass });
       if (res) {
         setSelectedCourse("");
         setCourseDepartment(0);
@@ -120,7 +120,7 @@ const AssigningRoleToCoursesComponent = () => {
       console.log("Please select all the fields");
    }else{
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_mentor",{course_code:selectedCourse,uid:selectedCoordinator});
+      const res = await api.post("/api/assign_mentor", { course_code: selectedCourse, uid: selectedCoordinator });
       if (res) {
         setSelectedCourse("");
         setCourseDepartment(0);
@@ -138,7 +138,7 @@ const AssigningRoleToCoursesComponent = () => {
       console.log("Please select all the fields");
    }else{
     try {
-      const res = await axios.post("http://localhost:8000/api/assign_domain_mentor",{domain_id:selectedDomain,mentor_id:selectedDomainMentor});
+      const res = await api.post("/api/assign_domain_mentor", { domain_id: selectedDomain, mentor_id: selectedDomainMentor });
       if (res) {
         setSelectedDomain("");
         alert(res.data.response);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Pie } from 'react-chartjs-2';
-import axios from "axios";
+import api from '@/apiConfig';
 import { Chart, ArcElement, Tooltip, Legend } from 'chart.js';
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
@@ -289,13 +289,10 @@ const CreationFacultyDashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios({
-          url: "http://localhost:8000/api/faculty_progress",
-          method: "POST",
+        const res = await api.post("/api/faculty_progress", data, {
           headers: {
             'Content-Type': 'application/json',
           },
-          data: data,
         });
 
         const response = res.data;

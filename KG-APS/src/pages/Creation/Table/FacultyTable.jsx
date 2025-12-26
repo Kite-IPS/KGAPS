@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from '@/apiConfig';
 import "../../Table.css";
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
@@ -49,7 +49,7 @@ const CreationFacultyTable = () => {
     const isValid = await checkLinkStructure(updatedLink);
     if(isValid){
     try {
-      const res = await axios.post("http://localhost:8000/api/editlink", {
+      const res = await api.post("/api/editlink", {
         topic_id: key,
         url: updatedLink,
       });
@@ -73,7 +73,7 @@ const CreationFacultyTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/faculty_courses", {
+        const courseResponse = await api.post("/api/faculty_courses", {
           uid: data.uid,
         });
         if (courseResponse.data) {
@@ -102,7 +102,7 @@ const CreationFacultyTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/faculty", {
+      const res = await api.post("/api/faculty", {
         uid: data.uid,
         course_code: selectedOption.course_code,
       });

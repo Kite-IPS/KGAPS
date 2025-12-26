@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "../../Table.css";
-import axios from 'axios';
+import api from '@/apiConfig';
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 
@@ -17,7 +17,7 @@ const CreationDMTable = () => {
 
   const handleApproval = async (topic_id) => {
     try {
-      const res = await axios.post("http://localhost:8000/api/editcomment/1", {
+      const res = await api.post("/api/editcomment/1", {
         topic_id,
         status: "approved",
       });
@@ -45,7 +45,7 @@ const CreationDMTable = () => {
     const message = prompt("Please enter a reason for disapproval:");
     if (message) {
       try {
-        const res = await axios.post("http://localhost:8000/api/editcomment/0", {
+        const res = await api.post("/api/editcomment/0", {
           topic_id,
           status: "disapproved",
           comment: message,
@@ -87,7 +87,7 @@ const CreationDMTable = () => {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const courseResponse = await axios.post("http://localhost:8000/api/domain_courses", {
+        const courseResponse = await api.post("/api/domain_courses", {
           domain_id: data.domain_id,
         });
         if (courseResponse.data) {
@@ -120,7 +120,7 @@ const CreationDMTable = () => {
   const fetchTableData = async () => {
     if (!selectedOption) return;
     try {
-      const res = await axios.post("http://localhost:8000/api/domain_mentor", {
+      const res = await api.post("/api/domain_mentor", {
         domain_id: data.domain_id,
         course_code: selectedOption.course_code,
       });

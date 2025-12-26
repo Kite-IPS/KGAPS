@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./SupervisorDashboard.css";
-import axios from "axios";
+import api from '@/apiConfig';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import HandlingSidebar from "../../HandlingSidebar/HandlingSidebar";
@@ -66,8 +66,8 @@ function HandlingSupervisorDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const course = await axios.post(
-          "http://localhost:8000/api/department_courses",
+        const course = await api.post(
+          "/api/department_courses",
           { department_id: department_id },
           {
             headers: { "Content-Type": "application/json" },
@@ -78,8 +78,8 @@ function HandlingSupervisorDashboard() {
         console.error("Error fetching data:", error);
       }
       try {
-        const progress = await axios.post(
-          "http://localhost:8000/api/department_overall_progress",
+        const progress = await api.post(
+          "/api/department_overall_progress",
           { department_id: department_id },
           {
             headers: { "Content-Type": "application/json" },
@@ -104,8 +104,8 @@ function HandlingSupervisorDashboard() {
   useEffect(() => {
     const fetchFaculty = async () => {
       try {
-        const faculty = await axios.post(
-          "http://localhost:8000/api/faculty_info",
+        const faculty = await api.post(
+          "/api/faculty_info",
           { department_id: department_id },
           {
             headers: { "Content-Type": "application/json" },
@@ -122,8 +122,8 @@ function HandlingSupervisorDashboard() {
 
   const fetchChartDataCourse = async (selectedCourse) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/course_progress",
+      const res = await api.post(
+        "/api/course_progress",
         selectedCourse,
         {
           headers: { "Content-Type": "application/json" },
@@ -141,8 +141,8 @@ function HandlingSupervisorDashboard() {
 
   const fetchChartDataClass = async (class_id) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/class_progress",
+      const res = await api.post(
+        "/api/class_progress",
         { class_id: class_id },
         {
           headers: { "Content-Type": "application/json" },
@@ -160,8 +160,8 @@ function HandlingSupervisorDashboard() {
 
   const fetchFacultyData = async (option) => {
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/faculty_progress",
+      const res = await api.post(
+        "/api/faculty_progress",
         option,
         {
           headers: { "Content-Type": "application/json" },

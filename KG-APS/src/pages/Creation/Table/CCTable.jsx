@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import "../../Table.css";
-import axios from 'axios';
+import api from '@/apiConfig';
 import HandlingSidebar from "../../Handling/HandlingSidebar/HandlingSidebar.jsx";
 import HandlingSidebar2 from '../../Handling/HandlingSidebar2/HandlingSidebar2.jsx';
 import CreationTopicAddForm from './CCAddTopicForm';
@@ -48,7 +48,7 @@ const CreationCCTable = () => {
     const isValid = await checkLinkStructure(updatedLink);
     if (isValid) {
       try {
-        const res = await axios.post("http://localhost:8000/api/editlink", {
+        const res = await api.post("/api/editlink", {
           topic_id: key,
           url: updatedLink,
         });
@@ -78,10 +78,10 @@ const CreationCCTable = () => {
 
   const fetchTableData = async () => {
     try {
-      const res = await axios.post("http://localhost:8000/api/course_mentor", {
+      const res = await api.post("/api/course_mentor", {
         uid: data.uid,
       });
-      const res2 = await axios.post("http://localhost:8000/api/coordinator_courses", {
+      const res2 = await api.post("/api/coordinator_courses", {
         uid: data.uid,
       });
       const courseData = res2.data[0];
