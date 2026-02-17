@@ -973,6 +973,8 @@ def facultyprogress():
             results_data.append(temp)
         print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data})
         return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data})
+
+@app.route('/api/course_progress', methods=['POST', 'GET'])
 def course_progress():
     course_code = request.json['course_code']
     with engine.connect() as conn:
@@ -1228,14 +1230,15 @@ def department_overall_progress():
 def all_department_overall_progress():
     departments = [1,2,3,4,5,6,7,8,9]
     overall_progress=[]
-    for department_id in departments:
-        q = sqlalchemy.text(f"""
-            SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
-            COUNT(*) FROM faculty_table f,l_course_departments l 
-            WHERE f.course_code=l.course_code and department_id={department_id} 
-            GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
-        """)
-        r = conn.execute(q).fetchall()
+    with engine.connect() as conn:
+        for department_id in departments:
+            q = sqlalchemy.text(f"""
+                SELECT CASE WHEN f.status_code > 3 THEN 3 ELSE f.status_code END AS status_code, 
+                COUNT(*) FROM faculty_table f,l_course_departments l 
+                WHERE f.course_code=l.course_code and department_id={department_id} 
+                GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END;
+            """)
+            r = conn.execute(q).fetchall()
         status = {0:"Not uploaded",1:"Uploaded",2:"Disapproved",3:"Approved"}
         color_status = {0:'lightgrey',1:'orange',2:'red',3:'green'}
         codes,mdata,mcolor = [status[i[0]] for i in r],[i[1] for i in r],[color_status[i[0]] for i in r]
@@ -1321,7 +1324,7 @@ def all_department_overall_progress():
         for i in r:
             temp={'department_id':department_id,'avg_pass_percentage':i[0]}
             results_data.append(temp)
-        overall_progress.append({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'results_data':results_data})
+            overall_progress.append({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'results_data':results_data})
     print({'overall_progress':overall_progress})
     return json.dumps({'overall_progress':overall_progress})
 
