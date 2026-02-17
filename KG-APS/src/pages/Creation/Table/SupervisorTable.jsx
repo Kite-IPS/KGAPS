@@ -84,24 +84,34 @@ const CreationSupervisorTable = () => {
   }, [selectedDepartment]);
 
   useEffect(() => {
-    if('response' in courseList) {alert("No courses available for this department yet");window.location.reload();};
-    if(courseList.length === 0 || 'response' in courseList) {
+    if(courseList && typeof courseList === 'object' && 'response' in courseList) {
+      alert("No courses available for this department yet");
+      window.location.reload();
+      return;
+    }
+    if(!Array.isArray(courseList) || courseList.length === 0) {
       setFacultyCourses([]);
-      return;}
+      return;
+    }
     var filteredCourse = courseList.filter((item)=>{
       if(item.year==parseInt(selectedYear)+1) return item;
     });
-    var year = selectedYear;
-    while(filteredCourse.length === 0 && year<=4){
+    var year = parseInt(selectedYear);
+    while(filteredCourse.length === 0 && year < 3){
       year++;
       filteredCourse = courseList.filter((item)=>{
         if(item.year==parseInt(year)+1) return item;
       });
-    };
-    setSelectedYear(year);
-    setFacultyCourses(filteredCourse[0].courses);
-    setSelectedOption(filteredCourse[0].courses[0]);}
-    ,[courseList,selectedYear]);
+    }
+    if(filteredCourse.length > 0 && filteredCourse[0].courses && filteredCourse[0].courses.length > 0) {
+      setSelectedYear(year);
+      setFacultyCourses(filteredCourse[0].courses);
+      setSelectedOption(filteredCourse[0].courses[0]);
+    } else {
+      setFacultyCourses([]);
+      setSelectedOption(null);
+    }
+  },[courseList,selectedYear]);
 
   const fetchTableData = async () => {
     if (!selectedOption) return;
@@ -155,13 +165,13 @@ const CreationSupervisorTable = () => {
         <button className="HFTbutton-1" style={{width:"50%"}} onClick={() => setViewMode("all")}>
           All contents
         </button>
-        <select value={selectedDepartment} onChange={((e)=> {setSelectedYear(0);setSelectedDepartment(e.target.value);})}>
+        <select value={selectedDepartment} onChange={((e)=> {setSelectedYear(0);setSelectedDepartment(parseInt(e.target.value));})}>
           <option value="" disabled>Select An option</option>
           {Object.keys(departmentMap).map((department,index)=>(
             <option key={index} value={department}>{departmentMap[department]}</option>
           ))}
         </select>
-        <select value={selectedYear} onChange={((e)=> {setSelectedYear(e.target.value);})}>
+        <select value={selectedYear} onChange={((e)=> {setSelectedYear(parseInt(e.target.value));})}>
           <option value="" disabled>Select An option</option>
           {Object.keys(courseList).map((year,index)=>(
             <option key={index} value={year}>{yearMap[year]}</option>

@@ -128,28 +128,33 @@ const HandlingSupervisorTable = () => {
   };
 
   useEffect(() => {
-    {tableView === "topics" && fetchTableData();}
-    {tableView === "assignments" && fetchAssignmentTableData();}
-    {tableView === "results" && fetchResultTableData();}
-  }, [selectedOption,tableView]);
+    if (tableView === "topics") {
+      fetchTableData();
+    } else if (tableView === "assignments") {
+      fetchAssignmentTableData();
+    } else if (tableView === "results") {
+      fetchResultTableData();
+    }
+  }, [selectedOption, tableView]);
 
   useEffect(() => {
     const resetData = () => {
       setFilteredData([]);
       setAssignmentTableData([]);
     };
-    resetData();}
-    ,[selectedClass]);
+    resetData();
+  }, [selectedClass]);
+  
   useEffect(() => {
-      const resetAllData = () => {
-        setFilteredData([]);
-        setAssignmentTableData([]);
-        setSelectedClass("");
-        setSelectedOption("");
-        setFacultyCourses([]);
-      };
-      resetAllData();}
-      ,[department_id]);
+    const resetAllData = () => {
+      setFilteredData([]);
+      setAssignmentTableData([]);
+      setSelectedClass("");
+      setSelectedOption("");
+      setFacultyCourses([]);
+    };
+    resetAllData();
+  }, [department_id]);
   const handleSelectChange = (event) => {
     const selected = JSON.parse(event.target.value);
     setSelectedOption(selected);
@@ -252,7 +257,7 @@ const HandlingSupervisorTable = () => {
           <button className="HFTbutton-1" style={{ width:"50%" }}>
             All contents
           </button>
-          <select onChange={(e) => setDepartment_id(e.target.value)}>
+          <select onChange={(e) => setDepartment_id(parseInt(e.target.value))}>
             {Object.keys(departmentMap).map((departmentKey) => (
               <option key={departmentKey} value={departmentKey}>{departmentMap[departmentKey]}</option>
             ))}
@@ -314,7 +319,7 @@ const HandlingSupervisorTable = () => {
               ))
             ) : (
               <tr>
-                <td colSpan={4} style={{ textAlign: "center" }}>
+                <td colSpan={3} style={{ textAlign: "center" }}>
                   No topics assigned yet.
                 </td>
               </tr>
@@ -337,7 +342,7 @@ const HandlingSupervisorTable = () => {
                 target="_blank"
                 rel="noopener noreferrer">View</a></td>
                 <td>{item.progress}</td>
-                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+                </tr>))):(<tr><td colSpan={3} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
           </tbody></table>}
           {tableView === "results" && <table>
         <thead>
@@ -356,7 +361,7 @@ const HandlingSupervisorTable = () => {
                 target="_blank"
                 rel="noopener noreferrer">View</a></td>
                 <td>{item.pass_percentage}</td>
-                </tr>))):(<tr><td colSpan={4} style={{ textAlign: "center" }}>No assignments alloted</td></tr>)}
+                </tr>))):(<tr><td colSpan={3} style={{ textAlign: "center" }}>No results available</td></tr>)}
           </tbody></table>}
       </div>
     </div>

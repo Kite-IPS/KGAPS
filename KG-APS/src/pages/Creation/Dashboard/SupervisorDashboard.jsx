@@ -858,7 +858,7 @@ const CreationSupervisorDashboard = () => {
                   </div>
                   <div className="department-selector">
                     <label className="dropdown-label">Select a department:</label>
-                    <select onChange={(e) => setSelectedDepartment(e.target.value)}>
+                    <select onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}>
                       {Object.keys(departmentMap).map((departmentKey) => (
                         <option key={departmentKey} value={departmentKey}>
                           {departmentMap[departmentKey]}

@@ -306,7 +306,7 @@ function HandlingSupervisorDashboard() {
               <label className="dropdown-label">Select a department:</label>
               <select
                 onChange={(e) => {
-                  setDepartment_id(e.target.value);
+                  setDepartment_id(parseInt(e.target.value));
                 }}
               >
                 {Object.keys(departmentMap).map((departmentKey) => (
@@ -350,21 +350,20 @@ function HandlingSupervisorDashboard() {
                   <p>
                     Status:{" "}
                     {departmentProgressCurrent[0].completed_hours -
-                      departmentProgressCurrent[0].total_hours >
-                      0 && <span style={{ color: "red" }}>Delayed</span>}
-                    {departmentProgressCurrent[0].completed_hours -
                       departmentProgressCurrent[0].total_hours <
+                      0 && <span style={{ color: "lightgreen" }}>Ahead of time</span>}
+                    {departmentProgressCurrent[0].completed_hours -
+                      departmentProgressCurrent[0].total_hours >
                       0 && (
-                      <span style={{ color: "lightgreen" }}>Ahead of time</span>
+                      <span style={{ color: "red" }}>Delayed</span>
                     )}
-                    {!departmentProgressCurrent[0].completed_hours == null &&
+                    {departmentProgressCurrent[0].completed_hours != null &&
                       departmentProgressCurrent[0].completed_hours -
                         departmentProgressCurrent[0].total_hours ===
                         0 && <span style={{ color: "green" }}>On time</span>}
-                    {departmentProgressCurrent[0].completed_hours == null &&
-                      departmentProgressCurrent[0].completed_hours -
-                        departmentProgressCurrent[0].total_hours ===
-                        0 && (
+                    {(departmentProgressCurrent[0].completed_hours == null ||
+                      (departmentProgressCurrent[0].completed_hours === 0 &&
+                        departmentProgressCurrent[0].total_hours === 0)) && (
                         <span style={{ color: "black" }}>Not yet started</span>
                       )}
                   </p>
@@ -395,7 +394,7 @@ function HandlingSupervisorDashboard() {
               {viewMode === "class" && (
                 <div ref={progressSectionRef}>
                   <div className="class-section-container">
-                    {department_id === 6 ? (
+                    {parseInt(department_id) === 6 ? (
                       // Science and Humanities department classes
                       <div className="grid-container">
                         {[
@@ -423,7 +422,7 @@ function HandlingSupervisorDashboard() {
                           </button>
                         ))}
                       </div>
-                    ) : [1, 2, 3].includes(department_id) ? (
+                    ) : [1, 2, 3].includes(parseInt(department_id)) ? (
                       // Departments with A & B sections
                       <div className="grid-container">
                         {[1, 2, 3, 4].map((year) =>
