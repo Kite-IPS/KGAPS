@@ -17,17 +17,44 @@ load_dotenv()
 app = Flask(__name__)
 # Configure CORS to allow requests from the React dev server (localhost:3000)
 # Use CORS_ORIGINS env var to override allowed origins (comma-separated)
+# Set FLASK_ENV=development to allow all origins (for development only)
+flask_env = os.getenv('FLASK_ENV', 'production')
 cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000')
-allowed_origins = [o.strip() for o in cors_origins.split(',') if o.strip()]
+
+# In development, allow all origins. In production, use specified origins
+if flask_env == 'development':
+    allowed_origins = "*"
+else:
+    allowed_origins = [o.strip() for o in cors_origins.split(',') if o.strip()]
+
 CORS(app, resources={
     r"/api/*": {
         "origins": allowed_origins,
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True
+        "supports_credentials": True,
+        "expose_headers": ["Content-Type", "Authorization"],
+        "max_age": 3600
     }
 })
 app.secret_key = "helloworld"
+
+# Handle preflight OPTIONS requests explicitly
+@app.after_request
+def after_request(response):
+    origin = request.headers.get('Origin')
+    if origin:
+        # In development mode, allow any origin
+        if flask_env == 'development':
+            response.headers['Access-Control-Allow-Origin'] = origin
+        # In production, check if origin is in allowed list
+        elif isinstance(allowed_origins, list) and origin in allowed_origins:
+            response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Max-Age'] = '3600'
+    return response
 DB_HOST = os.getenv('DB_HOST', '192.168.56.1')
 DB_USER = os.getenv('DB_USER', 'admin')
 DB_PASS = os.getenv('DB_PASS', 'admin')
