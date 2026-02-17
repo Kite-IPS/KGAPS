@@ -15,46 +15,66 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-# Configure CORS to allow requests from the React dev server (localhost:3000)
+app.secret_key = "helloworld"
+
+# CORS Configuration
 # Use CORS_ORIGINS env var to override allowed origins (comma-separated)
 # Set FLASK_ENV=development to allow all origins (for development only)
 flask_env = os.getenv('FLASK_ENV', 'production')
 cors_origins = os.getenv('CORS_ORIGINS', 'http://localhost:3000,http://127.0.0.1:3000')
+allowed_origins = [o.strip() for o in cors_origins.split(',') if o.strip()]
 
-# In development, allow all origins. In production, use specified origins
-if flask_env == 'development':
-    allowed_origins = "*"
+# In development mode, CORS will be handled dynamically in after_request
+# In production, use flask-cors with specific origins
+if flask_env != 'development':
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": allowed_origins,
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": True,
+            "expose_headers": ["Content-Type", "Authorization"],
+            "max_age": 3600
+        }
+    })
 else:
-    allowed_origins = [o.strip() for o in cors_origins.split(',') if o.strip()]
+    # In development, configure CORS to be permissive
+    CORS(app, resources={
+        r"/api/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+            "allow_headers": ["Content-Type", "Authorization"],
+            "supports_credentials": False,
+            "expose_headers": ["Content-Type", "Authorization"],
+            "max_age": 3600
+        }
+    })
 
-CORS(app, resources={
-    r"/api/*": {
-        "origins": allowed_origins,
-        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
-        "supports_credentials": True,
-        "expose_headers": ["Content-Type", "Authorization"],
-        "max_age": 3600
-    }
-})
-app.secret_key = "helloworld"
-
-# Handle preflight OPTIONS requests explicitly
+# Handle CORS headers explicitly for all responses
 @app.after_request
 def after_request(response):
     origin = request.headers.get('Origin')
-    if origin:
-        # In development mode, allow any origin
-        if flask_env == 'development':
-            response.headers['Access-Control-Allow-Origin'] = origin
-        # In production, check if origin is in allowed list
-        elif isinstance(allowed_origins, list) and origin in allowed_origins:
-            response.headers['Access-Control-Allow-Origin'] = origin
+    if origin and flask_env == 'development':
+        # In development, allow any origin without credentials
+        response.headers['Access-Control-Allow-Origin'] = '*'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
+        response.headers['Access-Control-Max-Age'] = '3600'
+    elif origin and origin in allowed_origins:
+        # In production, only allow specified origins
+        response.headers['Access-Control-Allow-Origin'] = origin
         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
         response.headers['Access-Control-Allow-Credentials'] = 'true'
         response.headers['Access-Control-Max-Age'] = '3600'
     return response
+
+# Explicit OPTIONS handler for all API routes
+@app.route('/api/<path:path>', methods=['OPTIONS'])
+def handle_options(path):
+    """Handle preflight OPTIONS requests for all API endpoints"""
+    return '', 200
+
 DB_HOST = os.getenv('DB_HOST', '192.168.56.1')
 DB_USER = os.getenv('DB_USER', 'admin')
 DB_PASS = os.getenv('DB_PASS', 'admin')
@@ -1001,8 +1021,16 @@ def facultyprogress():
         print({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data})
         return json.dumps({'main':{'status_code':codes,'count': mdata,'color': mcolor},'other':json_output,'course_data_current':course_data_current,'course_data_overall':course_data_overall,'assignment_data':assignment_data,'results_data':results_data})
 
-@app.route('/api/course_progress', methods=['POST', 'GET'])
+@app.route('/api/course_progress', methods=['POST', 'GET', 'OPTIONS'])
 def course_progress():
+    # Handle OPTIONS requests (preflight)
+    if request.method == 'OPTIONS':
+        return '', 200
+    
+    # Validate request has JSON data
+    if not request.json or 'course_code' not in request.json:
+        return jsonify({'error': 'Missing course_code parameter'}), 400
+    
     course_code = request.json['course_code']
     with engine.connect() as conn:
         q = sqlalchemy.text("SELECT CASE WHEN status_code > 3 THEN 3 ELSE status_code END AS status_code, COUNT(*) FROM domain_mentor_table WHERE course_code = :course_code GROUP BY CASE WHEN status_code > 3 THEN 3 ELSE status_code END, course_code;")
@@ -1253,8 +1281,12 @@ def department_overall_progress():
     return json.dumps({'department_id':department_id,'department_overall':course_data_overall,'assignment_data':assignment_data,'department_current':course_data_current,'creation':{'status_code':codes,'count': mdata,'color': mcolor},'results_data':results_data})
 
 # used to generate data for progress of all departments
-@app.route('/api/all_department_overall_progress', methods=['POST', 'GET'])
+@app.route('/api/all_department_overall_progress', methods=['POST', 'GET', 'OPTIONS'])
 def all_department_overall_progress():
+    # Handle OPTIONS requests (preflight)
+    if request.method == 'OPTIONS':
+        return '', 200
+    
     departments = [1,2,3,4,5,6,7,8,9]
     overall_progress=[]
     with engine.connect() as conn:
